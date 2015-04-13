@@ -26,7 +26,7 @@ proc updateCuve {} {
     set ::cuveAsked [lindex $::listePlateforme $::cuveIndex]
     set adresseIP   $::ip($::cuveAsked)
     
-    #puts "Demande hauteur cuve $::cuveAsked"
+    ::piLog::log [clock milliseconds] "debug" "Demande hauteur cuve $::cuveAsked"
     #::piServer::sendToServer 6006 "$::port(serverIrrigation) 0 getRepere ::sensor(1,value)" 192.168.0.55
     ::piServer::sendToServer $::port(serverAcqSensor) "$::port(serverIrrigation) 0 getRepere ::sensor(1,value)" $adresseIP
 
@@ -46,7 +46,7 @@ proc messageGestion {message host} {
     set commande            [::piTools::lindexRobust $message 2]
 
     if {$::cuveAsked != "" && [lindex $message 3] != ""} {
-        #puts "Reception hauteur cuve $::cuveAsked , message $message "
+        ::piLog::log [clock milliseconds] "debug" "Reception hauteur cuve $::cuveAsked , message $message "
         set ::cuve($::cuveAsked) [lindex $message 3]
         
         # On met à jour l'interface graphique
@@ -69,7 +69,7 @@ proc messageGestion {message host} {
         }
         
     } else {
-        puts "Message pas compris $message"
+        ::piLog::log [clock milliseconds] "error" "Message pas compris $message"
     }
 
 }

@@ -33,7 +33,7 @@ proc stopRegulation {} {
         
         # On etteint toutes les électrovannes
         foreach elem $::listeEVOuverteRegulation {
-            puts "Regul Cuve : Demande arret : IP : [lindex $elem 1] - Prise [lindex $elem 0]" 
+            ::piLog::log [clock milliseconds] "info" "Regul Cuve : Demande arret : IP : [lindex $elem 1] - Prise [lindex $elem 0]" 
             ::piServer::sendToServer $::port(serverPlugUpdate) "$::port(serverIrrigation) 0 setRepere [lindex $elem 0] off 10" [lindex $elem 1]
         }
         set ::listeEVOuverteRegulation ""
@@ -59,7 +59,7 @@ proc regulCuve {} {
     
     # Si la plateforme n'existe pas on recommence
     if {$plateforme == ""} {
-        puts "Regul Cuve : On recommence pour toutes les plateformes"
+        ::piLog::log [clock milliseconds] "info" "Regul Cuve : On recommence pour toutes les plateformes"
         set ::regulCuvePlateformeIndex 0
         set ::idAfterRegul [after 100 regulCuve]
         return
@@ -67,7 +67,7 @@ proc regulCuve {} {
     
     # Si la plateforme est désactivée, on passe à la suivante
     if {$::Activ($plateforme) == 0} {
-        puts "Regul Cuve : la plateforme $plateforme est désactivée, on passe à la suivante"
+        ::piLog::log [clock milliseconds] "info" "Regul Cuve : la plateforme $plateforme est désactivée, on passe à la suivante"
         incr ::regulCuvePlateformeIndex
         set ::idAfterRegul [after 1000 regulCuve]
         return
@@ -79,7 +79,7 @@ proc regulCuve {} {
         $::cuve($plateforme) == "DEFCOM" || 
         $::cuve($plateforme) == "TIMEOUT" ||
         [string is integer $::cuve($plateforme)] != 1} {
-        puts "Regul Cuve : Pas d'information sur la hauteur de cuve, on passe à la suivante"
+        ::piLog::log [clock milliseconds] "info" "Regul Cuve : Pas d'information sur la hauteur de cuve, on passe à la suivante"
         incr ::regulCuvePlateformeIndex
         set ::idAfterRegul [after 1000 regulCuve]
         return
@@ -91,7 +91,7 @@ proc regulCuve {} {
         $::cuve($plateforme,heureDernierPlein) == "DEFCOM" || 
         $::cuve($plateforme,heureDernierPlein) == "TIMEOUT" ||
         [string is integer $::cuve($plateforme,heureDernierPlein)] != 1} {
-        puts "Regul Cuve : Pas d'information sur le dernier remplissage, on passe à la suivante"
+        ::piLog::log [clock milliseconds] "info" "Regul Cuve : Pas d'information sur le dernier remplissage, on passe à la suivante"
         incr ::regulCuvePlateformeIndex
         set ::idAfterRegul [after 1000 regulCuve]
         return
@@ -101,7 +101,7 @@ proc regulCuve {} {
     # Si la cuve de la plateforme a été pleine lors des 3 dernières minutes, on passe à la suivante
     set TimeBeforeLastPlein   [expr [clock seconds] - $::cuve($plateforme,heureDernierPlein)]
     if {$TimeBeforeLastPlein <  [expr  3 * 60]} {
-        puts "Regul Cuve : Cuve pleine depuis moins de trois minutes (${TimeBeforeLastPlein}s Vs 180s), on passe à la suivante dans 27s"
+        ::piLog::log [clock milliseconds] "info" "Regul Cuve : Cuve pleine depuis moins de trois minutes (${TimeBeforeLastPlein}s Vs 180s), on passe à la suivante dans 27s"
         incr ::regulCuvePlateformeIndex
         set ::regulCuveZoneIndex 1
         set ::idAfterRegul [after 27000 regulCuve]
@@ -115,7 +115,7 @@ proc regulCuve {} {
     }
     # Si l'arrosage a été réalisé plus 10 minute durant l'heure, on passe à la suivante
     if {$::tempsIrrigation(${plateforme}) > $::TempsMaxRegul(general)} {
-        puts "Regul Cuve : Cuve trop remplie pour cette heure, on passe à la suivante dans 27s"
+        ::piLog::log [clock milliseconds] "info" "Regul Cuve : Cuve trop remplie pour cette heure, on passe à la suivante dans 27s"
         incr ::regulCuvePlateformeIndex
         set ::regulCuveZoneIndex 1
         set ::idAfterRegul [after 27000 regulCuve]
@@ -124,7 +124,7 @@ proc regulCuve {} {
     
     
     if {$::prise(${plateforme},ev,$::regulCuveZoneIndex) == "NA"} {
-        puts "Regul Cuve : Fin de toute les zones, on passe à la plate-forme suivante"
+        ::piLog::log [clock milliseconds] "info" "Regul Cuve : Fin de toute les zones, on passe à la plate-forme suivante"
         set ::regulCuveZoneIndex 1
         incr ::regulCuvePlateformeIndex
         set ::idAfterRegul [after 1000 regulCuve]
@@ -133,14 +133,14 @@ proc regulCuve {} {
     
     # Si la zone est en régulation, on passe à la suivante
     if {$::irrigationActive == ${plateforme}} {
-        puts "Regul Cuve : La plateforme est en régulation, on attend 15 secondes et on retente"
+        ::piLog::log [clock milliseconds] "info" "Regul Cuve : La plateforme est en régulation, on attend 15 secondes et on retente"
         set ::idAfterRegul [after 15000 regulCuve]
         return
     }
     
     # Si la zone est désactivée, on passe à la suivante
     if {$::Activ(${plateforme},ev,$::regulCuveZoneIndex) == 0} {
-        puts "Regul Cuve : La zone est désactivée, on passe à la suivante"
+        ::piLog::log [clock milliseconds] "info" "Regul Cuve : La zone est désactivée, on passe à la suivante"
         incr ::regulCuveZoneIndex
         set ::idAfterRegul [after 100 regulCuve]
         return 
@@ -152,14 +152,14 @@ proc regulCuve {} {
     # Le principe est le suivant : 30s de remplissage par zone
     # On met en route l'irrigation avec de l'eau fraiche
     # Mise en route de l'EV de la plateforme set prise(localtechnique,ev,engrais1)
-    puts "Regul Cuve : Mise en route ${plateforme},ev,$::regulCuveZoneIndex pendant 30 s"; update
+    ::piLog::log [clock milliseconds] "info" "Regul Cuve : Mise en route ${plateforme},ev,$::regulCuveZoneIndex pendant 30 s"; update
     ::piServer::sendToServer $::port(serverPlugUpdate) "$::port(serverIrrigation) 0 setRepere $::prise(${plateforme},ev,$::regulCuveZoneIndex) on 30" $::ip(${plateforme})
     lappend ::listeEVOuverteRegulation [list $::prise(${plateforme},ev,$::regulCuveZoneIndex) $::ip(localtechnique)]
     
 
     # On met en route l'irrigation avec de l'eau fraiche
     # Mise en route de l'EV de la plateforme set prise(localtechnique,ev,engrais1)
-    puts "Regul Cuve : Mise en route localtechnique,ev,${plateforme} pendant 30 s" ;update
+    ::piLog::log [clock milliseconds] "info" "Regul Cuve : Mise en route localtechnique,ev,${plateforme} pendant 30 s" ;update
     ::piServer::sendToServer $::port(serverPlugUpdate) "$::port(serverIrrigation) 0 setRepere $::prise(localtechnique,ev,${plateforme}) on 30" $::ip(localtechnique)
     lappend ::listeEVOuverteRegulation [list $::prise(localtechnique,ev,${plateforme}) $::ip(localtechnique)]
     
@@ -167,22 +167,22 @@ proc regulCuve {} {
     
     # On ouvre toutes les électrovannes des engrais associés
     if {$::EngraisEau == 1} {
-        puts "Regul Cuve : Mise en route localtechnique,ev,eau pendant 30 s";update
+        ::piLog::log [clock milliseconds] "info" "Regul Cuve : Mise en route localtechnique,ev,eau pendant 30 s";update
         ::piServer::sendToServer $::port(serverPlugUpdate) "$::port(serverIrrigation) 0 setRepere $::prise(localtechnique,ev,eau) on 30" $::ip(localtechnique)
         lappend ::listeEVOuverteRegulation [list $::prise(localtechnique,ev,eau) $::ip(localtechnique)]
     }
     if {$::Engrais1 == 1} {
-        puts "Regul Cuve : Mise en route localtechnique,ev,engrais1 pendant 30 s";update
+        ::piLog::log [clock milliseconds] "info" "Regul Cuve : Mise en route localtechnique,ev,engrais1 pendant 30 s";update
         ::piServer::sendToServer $::port(serverPlugUpdate) "$::port(serverIrrigation) 0 setRepere $::prise(localtechnique,ev,engrais1) on 30" $::ip(localtechnique)
         lappend ::listeEVOuverteRegulation [list $::prise(localtechnique,ev,engrais1) $::ip(localtechnique)]
     }
     if {$::Engrais2 == 1} {
-        puts "Regul Cuve : Mise en route localtechnique,ev,engrais2 pendant 30 s";update
+        ::piLog::log [clock milliseconds] "info" "Regul Cuve : Mise en route localtechnique,ev,engrais2 pendant 30 s";update
         ::piServer::sendToServer $::port(serverPlugUpdate) "$::port(serverIrrigation) 0 setRepere $::prise(localtechnique,ev,engrais2) on 30" $::ip(localtechnique)
         lappend ::listeEVOuverteRegulation [list $::prise(localtechnique,ev,engrais2) $::ip(localtechnique)]
     }
     if {$::Engrais3 == 1} {
-        puts "Regul Cuve : Mise en route localtechnique,ev,engrais3 pendant 30 s";update
+        ::piLog::log [clock milliseconds] "info" "Regul Cuve : Mise en route localtechnique,ev,engrais3 pendant 30 s";update
         ::piServer::sendToServer $::port(serverPlugUpdate) "$::port(serverIrrigation) 0 setRepere $::prise(localtechnique,ev,engrais3) on 30" $::ip(localtechnique)
         lappend ::listeEVOuverteRegulation [list $::prise(localtechnique,ev,engrais3) $::ip(localtechnique)]
     }
@@ -190,7 +190,7 @@ proc regulCuve {} {
     after 10
     
     # On met en route le pompe
-    puts "Regul Cuve : Mise en route localtechnique,surpresseur pendant 29 s";update
+    ::piLog::log [clock milliseconds] "info" "Regul Cuve : Mise en route localtechnique,surpresseur pendant 29 s";update
     ::piServer::sendToServer $::port(serverPlugUpdate) "$::port(serverIrrigation) 0 setRepere $::prise(localtechnique,pompe) on 29" $::ip(localtechnique)
     lappend ::listeEVOuverteRegulation [list $::prise(localtechnique,pompe) $::ip(localtechnique)]
     

@@ -22,7 +22,6 @@ package require piTools
 package require piXML
 
 source [file join $rootDir serverIrrigation src updateCuve.tcl]
-source [file join $rootDir serverIrrigation src loadSave.tcl]
 source [file join $rootDir serverIrrigation src regulCuve.tcl]
 
 # Initialisation d'un compteur pour les commandes externes envoyées
@@ -37,7 +36,7 @@ set RC [catch {
     array set configXML [::piXML::convertXMLToArray $confXML]
 } msg]
 if {$RC != 0} {
-    puts "serverIrrigation [clock milliseconds] error $msg"
+    ::piLog::log [clock milliseconds] "info" "serverIrrigation [clock milliseconds] error $msg"
 }
 
 # On initialise la connexion avec le server de log
@@ -51,7 +50,7 @@ if {$RC != 0} {
 # On affiche les infos dans le fichier de debug
 foreach element [lsort [array names configXML]] {
     #::piLog::log [clock milliseconds] "info" "$element : $configXML($element)"
-    puts "$element : $configXML($element)"
+    ::piLog::log [clock milliseconds] "info" "$element : $configXML($element)"
 }
 
 # On crée la liste des plateformes
@@ -124,7 +123,7 @@ proc stop {} {
         
         # On éteint toutes les électrovannes
         foreach elem $::listeEVOuverte {
-            puts "Demande arrêt : IP : [lindex $elem 1] - Prise [lindex $elem 0]" 
+            ::piLog::log [clock milliseconds] "info" "Demande arrêt : IP : [lindex $elem 1] - Prise [lindex $elem 0]" 
             ::piServer::sendToServer $::port(serverPlugUpdate) "$::port(serverIrrigation) 0 setRepere [lindex $elem 0] off 10" [lindex $elem 1]
         }
         set ::listeEVOuverte ""
@@ -149,7 +148,7 @@ proc irrigationLoop {} {
     
     # Si la plate-forme n'existe pas on recommence
     if {$plateforme == ""} {
-        puts "irrigation : On recommence pour toutes les plate-formes"
+        ::piLog::log [clock milliseconds] "info" "irrigation : On recommence pour toutes les plate-formes"
         set ::irrigationPlateformeIndex 0
         set ::irrigationZoneIndex 1
         set ::idAfter [after 100 irrigationLoop]
@@ -158,7 +157,7 @@ proc irrigationLoop {} {
     
     # Si la plate-forme est désactivée, on passe à la suivante
     if {$::Activ($plateforme) == 0} {
-        puts "irrigation : la plate-forme $plateforme est désactivée, on passe à la suivante"
+        ::piLog::log [clock milliseconds] "info" "irrigation : la plate-forme $plateforme est désactivée, on passe à la suivante"
         incr ::irrigationPlateformeIndex
         set ::idAfter [after 100 irrigationLoop]
         return
@@ -166,7 +165,7 @@ proc irrigationLoop {} {
 
     # Si on a fini les zones de la plate-forme
     if {$::prise(${plateforme},ev,$::irrigationZoneIndex) == "NA"} {
-        puts "irrigation : Fin de toute les zones, on passe à la plate-forme suivante"
+        ::piLog::log [clock milliseconds] "info" "irrigation : Fin de toute les zones, on passe à la plate-forme suivante"
         set ::irrigationZoneIndex 1
         incr ::irrigationPlateformeIndex
         set ::idAfter [after 100 irrigationLoop]
@@ -175,7 +174,7 @@ proc irrigationLoop {} {
     
     # Si la zone est désactivée
     if {$::Activ(${plateforme},ev,$::irrigationZoneIndex) == 0} {
-        puts "irrigation : La zone est désactivée, on passe à la suivante"
+        ::piLog::log [clock milliseconds] "info" "irrigation : La zone est désactivée, on passe à la suivante"
         incr ::irrigationZoneIndex
         set ::idAfter [after 100 irrigationLoop]
         return 
@@ -188,7 +187,7 @@ proc irrigationLoop {} {
         $::cuve($plateforme) == "TIMEOUT" ||
         [string is integer $::cuve($plateforme)] != 1 ||
         $::cuve($plateforme) < 5} {
-        puts "irrigation : La cuve n'est pas assez pleine pour irriguer - Fonctionnalité désactivée"
+        ::piLog::log [clock milliseconds] "info" "irrigation : La cuve n'est pas assez pleine pour irriguer - Fonctionnalité désactivée"
         #incr ::irrigationZoneIndex
         #set ::idAfter [after 30000 irrigationLoop]
         #return
@@ -200,34 +199,34 @@ proc irrigationLoop {} {
     
     # Si le temps On est de 1 ou inférieur, on ne réalise que le temps d'attente
     if {$TempsOnEV <= 1} {
-        puts "irrigation : Le temps On est trop petit"
+        ::piLog::log [clock milliseconds] "info" "irrigation : Le temps On est trop petit"
 
         incr ::irrigationZoneIndex 
 
-        puts "irrigation : Attente $TempsOffEV secondes avant zone suivante";update
+        ::piLog::log [clock milliseconds] "info" "irrigation : Attente $TempsOffEV secondes avant zone suivante";update
         set ::idAfter [after [expr 1000 * $TempsOffEV] irrigationLoop]
         return 
     }
     
     # Si la zone est en régulation, on rettente dans 10 secondes
     if {$::regulationActivePlateforme == ${plateforme}} {
-        puts "irrigation : La zone est actuellement en régulation, on attend 10 secondes"
+        ::piLog::log [clock milliseconds] "info" "irrigation : La zone est actuellement en régulation, on attend 10 secondes"
 
         set ::idAfter [after 10000 irrigationLoop]
         return 
     }    
     
-    # puts $::irrigationActive(montmartre)
+    # ::piLog::log [clock milliseconds] "debug" $::irrigationActive(montmartre)
     set ::irrigationActive ${plateforme}
     
 
     # On allume l'électrovanne 1 pour 2min30 secondes
-    puts "irrigation : Mise en route ${plateforme},ev,$::irrigationZoneIndex pendant [expr $TempsOnEV + 1] s"; update
+    ::piLog::log [clock milliseconds] "info" "irrigation : Mise en route ${plateforme},ev,$::irrigationZoneIndex pendant [expr $TempsOnEV + 1] s"; update
     ::piServer::sendToServer $::port(serverPlugUpdate) "$::port(serverIrrigation) 0 setRepere $::prise(${plateforme},ev,$::irrigationZoneIndex) on [expr $TempsOnEV + 1]" $::ip(${plateforme})
     lappend ::listeEVOuverte [list $::prise(${plateforme},ev,$::irrigationZoneIndex) $::ip(${plateforme})]
     
     # On allume la pompe
-    puts "irrigation : Mise en route ${plateforme},pompe pendant [expr $TempsOnEV] s" ;update
+    ::piLog::log [clock milliseconds] "info" "irrigation : Mise en route ${plateforme},pompe pendant [expr $TempsOnEV] s" ;update
     ::piServer::sendToServer $::port(serverPlugUpdate) "$::port(serverIrrigation) 0 setRepere $::prise(${plateforme},pompe) on [expr $TempsOnEV]" $::ip(${plateforme})
     lappend ::listeEVOuverte [list $::prise(${plateforme},pompe) $::ip(${plateforme})]
 
@@ -236,7 +235,7 @@ proc irrigationLoop {} {
 
     incr ::irrigationZoneIndex 
 
-    puts "irrigation : Attente $TempsOffEV secondes avant zone suivante";update
+    ::piLog::log [clock milliseconds] "info" "irrigation : Attente $TempsOffEV secondes avant zone suivante";update
     set ::idAfter [after [expr 1000 * $TempsOffEV] irrigationLoop]
     
 }
