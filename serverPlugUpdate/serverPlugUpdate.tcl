@@ -52,7 +52,7 @@ set RC [catch {
     array set configXML [::piXML::convertXMLToArray $confXML]
 } msg]
 if {$RC != 0} {
-    ::piLog::log [clock milliseconds] "error" "$msg"
+    puts "ServerPlugUpdate [clock milliseconds] error $msg"
 }
 
 # On initialise la connexion avec le server de log

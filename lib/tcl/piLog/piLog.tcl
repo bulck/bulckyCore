@@ -17,6 +17,7 @@ proc ::piLog::openLog {portNumber moduleName {level debug}} {
     variable channel
     variable module
     variable traceLevel
+    variable outputType
     
     # On initialise avec les parametres d'entrée de la fonction
     set port $portNumber
@@ -30,6 +31,7 @@ proc ::piLog::openLog {portNumber moduleName {level debug}} {
     # S'il y a une erreur lors de l'ouverture du socket
     if {$rc == 1} {
         puts $msg
+        set outputType puts
         return $msg
     }
     

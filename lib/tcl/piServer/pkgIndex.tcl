@@ -7,5 +7,10 @@
 # in response to "package require" commands.  When this
 # script is sourced, the variable $dir must contain the
 # full path name of this file's directory.
-package ifneeded piServer 1.0 [list source [file join $dir piServer.tcl]]
+if {$::tcl_platform(os) == "Windows NT"} {
+    package ifneeded piServer 1.0 [list source [file join $dir piServer_windobe.tcl]]
+} else {
+    package ifneeded piServer 1.0 [list source [file join $dir piServer.tcl]]
+}
+
 

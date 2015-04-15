@@ -168,7 +168,7 @@ puts "[clock format [clock seconds] -format "%b %d %H:%M:%S"] : CultiPi : starte
 
 vwait ::forever
 
-# tclsh "C:\cultibox\04_CultiPi\01_Software\01_cultiPi\cultiPi\cultiPi.tcl" "C:\cultibox\04_CultiPi\02_conf"
+# tclsh "D:\CBX\cultipiCore\cultiPi\cultiPi.tcl" "D:\CBX\cultipiCore_conf"
 
 # Linux start
 # tclsh /home/pi/cultipi/01_Software/01_cultiPi/cultiPi/cultiPi.tcl /home/pi/cultipi/02_conf

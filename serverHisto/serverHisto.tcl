@@ -63,6 +63,8 @@ proc stopIt {} {
     
     # Arrêt du server de log
     ::piLog::closeLog
+    
+    exit
 }
 
 
