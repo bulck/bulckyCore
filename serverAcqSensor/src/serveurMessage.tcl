@@ -44,8 +44,8 @@ proc messageGestion {message networkhost} {
                 incr indexVar
             }
 
-            ::piLog::log [clock milliseconds] "info" "response : $serverForResponse $indexForResponse getRepere - $returnList - to $networkhost"
-            ::piServer::sendToServer $serverForResponse "$serverForResponse $indexForResponse getRepere $returnList" $networkhost
+            ::piLog::log [clock milliseconds] "info" "response : $serverForResponse $indexForResponse _getRepere - $returnList - to $networkhost"
+            ::piServer::sendToServer $serverForResponse "$serverForResponse $indexForResponse _getRepere $returnList" $networkhost
 
         }
         "subscription" {

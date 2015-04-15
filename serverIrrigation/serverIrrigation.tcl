@@ -120,6 +120,10 @@ proc irrigationLoop {indexPlateforme indexZone} {
     set EVZone  $::configXML(plateforme,${indexPlateforme},zone,${indexZone},prise)
     set Pompe   $::configXML(plateforme,${indexPlateforme},pompePrise)
     
+    set TempsOnEV   $::configXML(plateforme,${indexPlateforme},zone,${indexZone},tempsOn)
+    set TempsOffEV  $::configXML(plateforme,${indexPlateforme},zone,${indexZone},tempsOff)
+    set TempsPerco  $::configXML(plateforme,${indexPlateforme},tempsPerco)
+    
     # Si la plate-forme est désactivée on arrête de vérifier
     if {$plateformeActive == 0 || $plateformeActive == "false"} {
         ::piLog::log [clock milliseconds] "info" "irrigation : plate-forme $plateformeNom : désactivée, on n'essaye pas de l'irriguer"
@@ -157,10 +161,7 @@ proc irrigationLoop {indexPlateforme indexZone} {
                  ::piLog::log [clock milliseconds] "info" "irrigation : plate-forme $plateformeNom : La cuve n'est pas assez pleine pour irriguer - Fonctionnalité désactivée"
             }
     }
-    
-    set TempsOnEV   $::configXML(plateforme,${indexPlateforme},zone,${indexZone},tempsOn)
-    set TempsOffEV  $::configXML(plateforme,${indexPlateforme},zone,${indexZone},tempsOff)
-    
+
     # Si le temps On est de 1 ou inférieur, on ne réalise que le temps d'attente
     if {$TempsOnEV <= 1} {
         ::piLog::log [clock milliseconds] "info" "irrigation : plate-forme $plateformeNom : zone $zoneNom : Le temps On est trop petit"
@@ -186,22 +187,28 @@ proc irrigationLoop {indexPlateforme indexZone} {
 
     # On allume l'électrovanne 1 pour 2min30 secondes
     ::piLog::log [clock milliseconds] "info" "irrigation : plate-forme $plateformeNom : zone $zoneNom : Mise en route EV pendant [expr $TempsOnEV + 1] s"; update
-    ::piServer::sendToServer $::port(serverPlugUpdate) "$::port(serverIrrigation) 0 setRepere $EVZone on [expr $TempsOnEV + 1]" $IP)
+    ::piServer::sendToServer $::port(serverPlugUpdate) "$::port(serverIrrigation) 0 setRepere $EVZone on [expr $TempsOnEV + 1]" $IP
 
     # On allume la pompe
     ::piLog::log [clock milliseconds] "info" "irrigation : plate-forme $plateformeNom : zone $zoneNom : Mise en route pompe pendant $TempsOnEV s"; update
-    ::piServer::sendToServer $::port(serverPlugUpdate) "$::port(serverIrrigation) 0 setRepere $Pompe on $TempsOnEV" $IP)
+    ::piServer::sendToServer $::port(serverPlugUpdate) "$::port(serverIrrigation) 0 setRepere $Pompe on $TempsOnEV" $IP
 
     # Dans X secondes, on indique que la zone n'est plus pilotée
     after [expr $TempsOnEV * 1000] "set ::irrigationActive($indexPlateforme) false"
 
     incr indexZone
+    # Si on a terminé toute les zones, on laisse le temps de perco
     if {$indexZone >= $plateformeNbZone} {
         set indexZone 0
+        
+        ::piLog::log [clock milliseconds] "info" "irrigation : plate-forme $plateformeNom : zone $zoneNom : Attente $TempsOffEV secondes + Temps Perco ($TempsPerco) avant zone suivante ($indexZone)";update
+        set ::idAfter [after [expr 1000 * ($TempsOffEV + $TempsPerco)] irrigationLoop $indexPlateforme $indexZone]
+    } else {
+        ::piLog::log [clock milliseconds] "info" "irrigation : plate-forme $plateformeNom : zone $zoneNom : Attente $TempsOffEV secondes avant zone suivante ($indexZone)";update
+        set ::idAfter [after [expr 1000 * $TempsOffEV] irrigationLoop $indexPlateforme $indexZone]
     }
     
-    ::piLog::log [clock milliseconds] "info" "irrigation : plate-forme $plateformeNom : zone $zoneNom : Attente $TempsOffEV secondes avant zone suivante ($indexZone)";update
-    set ::idAfter [after [expr 1000 * $TempsOffEV] irrigationLoop $indexPlateforme $indexZone]
+
     
 }
 
@@ -228,3 +235,4 @@ vwait forever
 
 # Lancement 
 # tclsh "D:\CBX\cultipiCore\serverIrrigation\serverIrrigation.tcl" 6005 "D:\CBX\cultipiCore\serverIrrigation\confExample\conf.xml" 6001 
+# tclsh /home/sdf/Bureau/cultipiCore/serverIrrigation/serverIrrigation.tcl 6005 "/home/sdf/Bureau/cultipiCore/serverIrrigation/confExample/conf.xml" 6001 
