@@ -67,11 +67,11 @@ proc ::piLog::log {time traceType trace} {
     }
     
     if {$outputType == "puts"} {
-        puts "$time $traceType $trace"
-        return 0
+        set StringToWrite "$time $traceType $trace"
+    } else {
+        set StringToWrite "<${time}><${module}><${traceType}><${trace}>"
     }
     
-    set StringToWrite "<${time}><${module}><${traceType}><${trace}>"
     
     # En fonction du niveau de trace demandé, on envoi ou pas
     set toSend 0
@@ -105,6 +105,11 @@ proc ::piLog::log {time traceType trace} {
         }
     }
 
+    if {$outputType == "puts" && $toSend == 1} {
+        puts $StringToWrite
+        return 0
+    }
+    
     if {$toSend == 1} {
         if {$channel == ""} {
             # If channel is not open, log in local

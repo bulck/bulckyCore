@@ -26,8 +26,8 @@ proc messageGestion {message networkhost} {
             
                 eval set returnValue $$variable
             
-                ::piLog::log [clock milliseconds] "info" "response : $serverForResponse $indexForResponse getRepere $returnValue"
-                ::piServer::sendToServer $serverForResponse "$serverForResponse $indexForResponse getRepere $returnValue" $networkhost
+                ::piLog::log [clock milliseconds] "info" "response : $serverForResponse $indexForResponse _getRepere $returnValue"
+                ::piServer::sendToServer $serverForResponse "$serverForResponse $indexForResponse _getRepere $returnValue" $networkhost
             } else {
                 ::piLog::log [clock milliseconds] "error" "Asked variable $variable - variable doesnot exists"
             }

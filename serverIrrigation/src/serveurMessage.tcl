@@ -8,32 +8,32 @@ proc messageGestion {message networkhost} {
 
     switch ${commande} {
         "stop" {
-            ::piLog::log [clock milliseconds] "info" "Asked stop"
+            ::piLog::log [clock milliseconds] "info" "messageGestion : Asked stop"
             stopIt
         }
         "reload" {
-            ::piLog::log [clock milliseconds] "info" "Asked reload"
+            ::piLog::log [clock milliseconds] "info" "messageGestion : Asked reload"
             reload
         }
         "pid" {
-            ::piLog::log [clock milliseconds] "info" "Asked pid"
+            ::piLog::log [clock milliseconds] "info" "messageGestion : Asked pid"
             ::piServer::sendToServer $serverForResponse "$::port(serverHisto) $indexForResponse pid serverHisto [pid]"
         }
         "getRepere" {
             # La variable est le nom de la variable à lire
             set variable  [::piTools::lindexRobust $message 3]
 
-            ::piLog::log [clock milliseconds] "info" "Asked getRepere $variable"
+            ::piLog::log [clock milliseconds] "info" "messageGestion : Asked getRepere $variable by $networkhost"
             # Les parametres d'un repere : nom Valeur 
             
             if {[info exists ::$variable] == 1} {
             
                 eval set returnValue $$variable
             
-                ::piLog::log [clock milliseconds] "info" "response : $serverForResponse $indexForResponse getRepere $returnValue"
-                ::piServer::sendToServer $serverForResponse "$serverForResponse $indexForResponse getRepere $returnValue" $networkhost
+                ::piLog::log [clock milliseconds] "info" "messageGestion : response : $serverForResponse $indexForResponse _getRepere $returnValue"
+                ::piServer::sendToServer $serverForResponse "$serverForResponse $indexForResponse _getRepere $returnValue" $networkhost
             } else {
-                ::piLog::log [clock milliseconds] "error" "Asked variable $variable - variable doesnot exists"
+                ::piLog::log [clock milliseconds] "error" "messageGestion : Asked variable $variable - variable doesnot exists"
             }
         }
         default {
@@ -41,7 +41,7 @@ proc messageGestion {message networkhost} {
             set plateformeNom     $::configXML(plateforme,$::cuveIndex,name)
         
             if {$::cuveIndex != "" && [lindex $message 3] != ""} {
-                ::piLog::log [clock milliseconds] "debug" "Reception hauteur cuve $::plateformeNom , message $message "
+                ::piLog::log [clock milliseconds] "debug" "messageGestion : Reception hauteur cuve $plateformeNom , message $message "
                 set ::cuve($::cuveIndex) [lindex $message 3]
                 
                 # On met à jour l'interface graphique

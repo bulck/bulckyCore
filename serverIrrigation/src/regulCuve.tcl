@@ -80,7 +80,7 @@ proc regulCuve {} {
     
     # Si la plate-forme est pleine, on passe à la suivante
     # Si la cuve de la plateforme a été pleine lors des 3 dernières minutes, on passe à la suivante
-    set TimeBeforeLastPlein   [expr [clock seconds] - $::cuve($plateforme,heureDernierPlein)]
+    set TimeBeforeLastPlein   [expr [clock seconds] - $::cuve($::regulCuvePlateformeIndex,heureDernierPlein)]
     if {$TimeBeforeLastPlein <  [expr  3 * 60]} {
         ::piLog::log [clock milliseconds] "info" "Regul Cuve : plateforme $plateformeNom : Cuve pleine depuis moins de trois minutes (${TimeBeforeLastPlein}s Vs 180s), on passe à la suivante dans 27s"
         incr ::regulCuvePlateformeIndex
@@ -99,7 +99,7 @@ proc regulCuve {} {
     }
     
     # Si l'arrosage a été réalisé plus 10 minute durant l'heure, on passe à la suivante
-    if {$::tempsIrrigation(${regulCuvePlateformeIndex}) > $::configXML(plateforme,${regulCuvePlateformeIndex},tempsMaxRemp)} {
+    if {$::tempsIrrigation($::regulCuvePlateformeIndex) > $::configXML(plateforme,$::regulCuvePlateformeIndex,tempsMaxRemp)} {
         ::piLog::log [clock milliseconds] "info" "Regul Cuve : plateforme $plateformeNom : Cuve trop remplie pour cette heure, on passe à la suivante dans 27s"
         incr ::regulCuvePlateformeIndex
         if {$::regulCuvePlateformeIndex >= $nbPlateforme} {
@@ -112,7 +112,7 @@ proc regulCuve {} {
     
 
     # Si la zone est en régulation, on passe à la suivante
-    if {::irrigationActive($::regulCuvePlateformeIndex) == "true"} {
+    if {$::irrigationActive($::regulCuvePlateformeIndex) == "true"} {
         ::piLog::log [clock milliseconds] "info" "Regul Cuve : plateforme $plateformeNom : La plateforme est en régulation, on attend 15 secondes et on retente"
         set ::idAfterRegul [after 15000 regulCuve]
         return
@@ -122,7 +122,7 @@ proc regulCuve {} {
     if {$zoneActive == 0 || $zoneActive == "false"} {
         ::piLog::log [clock milliseconds] "debug" "Regul Cuve : plateforme $plateformeNom : zone $zoneNom : La zone est désactivée, on passe à la suivante"
         incr ::regulCuveZoneIndex
-        if (::regulCuveZoneIndex >= $plateformeNbZone) {
+        if {$::regulCuveZoneIndex >= $plateformeNbZone} {
             set ::regulCuveZoneIndex 0
             incr ::regulCuvePlateformeIndex
             if {$::regulCuvePlateformeIndex >= $nbPlateforme} {
@@ -169,14 +169,14 @@ proc regulCuve {} {
     ::piServer::sendToServer $::port(serverPlugUpdate) "$::port(serverIrrigation) 0 setRepere $Surpresseur on 29" $IPlocalTechnique
     
     # On sauvegarde le temps d'irrigation pour vérifier qu'on ne remplie pas trop
-    set ::tempsIrrigation(${regulCuvePlateformeIndex}) [expr $::tempsIrrigation(${regulCuvePlateformeIndex}) + 30]
+    set ::tempsIrrigation($::regulCuvePlateformeIndex) [expr $::tempsIrrigation($::regulCuvePlateformeIndex) + 30]
     
     # DAns 30 secondes on indique que la régulation est terminée
     after 30000 "set ::regulationActivePlateforme($::regulCuvePlateformeIndex) false"
     
     # On incrémente le numéro de la zone à irriguer
     incr ::regulCuveZoneIndex
-    if (::regulCuveZoneIndex >= $plateformeNbZone) {
+    if {$::regulCuveZoneIndex >= $plateformeNbZone} {
         set ::regulCuveZoneIndex 0
         incr ::regulCuvePlateformeIndex
         if {$::regulCuvePlateformeIndex >= $nbPlateforme} {
