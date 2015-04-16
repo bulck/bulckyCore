@@ -163,11 +163,24 @@ proc ::MCP230XX::setValue {plugNumber value address} {
         set register(${moduleAdresse},GPIO_LAST) [expr $register(${moduleAdresse},GPIO_LAST) | (1 << $outputPin)] 
     } else {
         set register(${moduleAdresse},GPIO_LAST) [expr $register(${moduleAdresse},GPIO_LAST) & ~(1 << $outputPin)]
-    }    
+    }
+    
+    set RC [catch {
+        exec /usr/local/sbin/i2cset -y 1 $moduleAdresse $register(IODIR) 0x00
+        after 10
+    } msg]
+    if {$RC != 0} {
+        ::piLog::log [clock milliseconds] "error" "::MCP230XX::init Module $moduleAdresse does not respond :$msg "
+    } else {
+        ::piLog::log [clock milliseconds] "info" "::MCP230XX::init init IODIR to 0x00 OK"
+        set register(${moduleAdresse},init_done) 1
+    }
     
     # On pilote le registre de sortie
     # /usr/local/sbin/i2cset -y 1 0x20 0x09 0x0F
     # /usr/local/sbin/i2cget -y 1 0x20 0x09
+    # lecture de l'état des sorties
+    # /usr/local/sbin/i2cget -y 1 0x20 0x0A
     set RC [catch {
         exec /usr/local/sbin/i2cset -y 1 $moduleAdresse $register(GPIO) $register(${moduleAdresse},GPIO_LAST)
     } msg]
