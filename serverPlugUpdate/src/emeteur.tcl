@@ -205,7 +205,7 @@ proc updatePlug {plugNumber} {
 
     # On vérifie que le module utilisé pour le pilotage existe
     if {$::plug($plugNumber,module) == "NA"} {
-        ::piLog::log [clock milliseconds] "error" "Plug $plugNumber module $::plug($plugNumber,module) is not defined"
+        ::piLog::log [clock milliseconds] "error" "Plug $plugNumber module $module is not defined"
 
     } elseif {$::plug($plugNumber,source) == "force"} {
         # On regarde si la prise est forcée dans un état par l'utilisateur
@@ -224,7 +224,7 @@ proc updatePlug {plugNumber} {
         emeteur_regulation $plugNumber $plgPrgm 
         
     } else {
-        ::piLog::log [clock milliseconds] "info" "update plug $plugNumber with programm $plgPrgm"
+        ::piLog::log [clock milliseconds] "info" "update plug $plugNumber with programm $plgPrgm - module : -${module}-"
         
         # On envoi la commande au module
         ::${module}::setValue $plugNumber $plgPrgm $::plug($plugNumber,adress)
