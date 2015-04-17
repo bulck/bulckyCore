@@ -7,7 +7,7 @@ proc stopCultiPi {} {
         exec gpio -g write 18 0
     } msg]
     if {$RC != 0} {
-        ::piLog::log [clock milliseconds] "error" "restartSlave : stopCultiPi : error $msg"
+        ::piLog::log [clock milliseconds] "error" "stopCultiPi : error $msg"
     }
 
 
