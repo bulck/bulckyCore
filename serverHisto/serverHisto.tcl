@@ -34,6 +34,9 @@ array set configXML {
 set RC [catch {
 array set configXML [::piXML::convertXMLToArray $confXML]
 } msg]
+if {$RC != 0} {
+    ::piLog::log [clock milliseconds] "error" "$msg"
+}
 
 # On initialise la connexion avec le server de log
 ::piLog::openLog $port(serverLogs) "serverHisto" $configXML(verbose)
@@ -43,8 +46,9 @@ array set configXML [::piXML::convertXMLToArray $confXML]
 ::piLog::log [clock milliseconds] "info" "port serverLogs : $port(serverLogs)"
 ::piLog::log [clock milliseconds] "info" "port serverCultiPi : $port(serverCultiPi)"
 ::piLog::log [clock milliseconds] "info" "verbose : $configXML(verbose)"
-if {$RC != 0} {
-    ::piLog::log [clock milliseconds] "error" "$msg"
+# On affiche les infos dans le fichier de debug
+foreach element [array names configXML] {
+    ::piLog::log [clock milliseconds] "info" "$element : $configXML($element)"
 }
 
 proc bgerror {message} {

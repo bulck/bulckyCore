@@ -55,7 +55,7 @@ set killID [after 2000 {
 vwait forever
 
 # tclsh /opt/cultipi/cultiPi/get.tcl serverAcqSensor localhost "::sensor(1,value)" "::sensor(2,value)"
-# tclsh /opt/cultipi/cultiPi/get.tcl serverPlugUpdate localhost "::plug(1,value)" "::plug(2,value)"
+# tclsh /opt/cultipi/cultiPi/get.tcl serverPlugUpdate localhost "::plug(1,value)" "::plug(2,value)" "::plug(3,value)" "::plug(4,value)"
 # tclsh /opt/cultipi/cultiPi/get.tcl serverAcqSensor localhost "::sensor(firsReadDone)" 
 # tclsh "C:\cultibox\04_CultiPi\01_Software\01_cultiPi\cultiPi\get.tcl" serverAcqSensor 192.168.0.100 "::sensor(1,value)"
 # tclsh "C:\cultibox\04_CultiPi\01_Software\01_cultiPi\cultiPi\get.tcl" serverAcqSensor localhost "::sensor(1,value)"

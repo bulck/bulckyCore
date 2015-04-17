@@ -93,11 +93,7 @@ proc send_email {from to subject body} {
 } 
 
 
-send_email "Cultibox <alliaume.rico@gmail.com>" "Person <info@cultibox.fr>" "Test email Automatique" { 
-  This is my mail message. 
-} 
-
 vwait forever
 
-# tclsh "C:\cultibox\04_CultiPi\01_Software\01_cultiPi\serverMail\serverMail.tcl" 6004 "C:\cultibox\04_CultiPi\02_conf\00_defaultConf_Win\serverMail\conf.xml" 6003 6000
+# tclsh "D:\CBX\cultipiCore\serverMail\serverMail.tcl" 6004 "D:\CBX\cultipiCore\serverMail\confExample\conf.xml" 6003 6000
 # tclsh /opt/cultipi/serverMail/serverMail.tcl 6004 /etc/cultipi/01_defaultConf_RPi/./serverMail/conf.xml 6003 6000
