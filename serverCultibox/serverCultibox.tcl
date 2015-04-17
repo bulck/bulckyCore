@@ -104,10 +104,10 @@ proc updateSensorVal {sensor value1 value2} {
 
     # On calcul le numéro du registre
     set registre [expr 10 + $sensor - 1]
-    set val11 [expr int ( floor ($value1 / 256) )]
+    set val11 [expr int ( floor ($value1 / 2.56) )]
     set val12 [expr $value1 % 256]
     
-    set val21 [expr int ( floor ($value2 / 256) )]
+    set val21 [expr int ( floor ($value2 / 2.56) )]
     set val22 [expr $value2 % 256]
     
     # Mise à jour des valeurs de capteurs
