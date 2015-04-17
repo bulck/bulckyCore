@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<conf>
+    <item name="verbose" level="info" />
+    <item name="serveurSMTP" value="smtp.gmail.com" />
+    <item name="port" value="587" />
+    <item name="username" value="hercule.poirot@gmail.com" />
+    <item name="password" value="motdepasse" />
+</conf>
