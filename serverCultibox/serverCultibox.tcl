@@ -82,14 +82,19 @@ proc updateHour {} {
     set sec     [string trimleft [clock format $actualHour -format "%S"] "0"]
     
     # Mise à jour de l'heure
-    # /usr/local/sbin/i2cset -y 1 0x31 10 0 1 15 4 11 10 23 25 1 i
-    set RC [catch {
-        exec /usr/local/sbin/i2cset -y 1 0x31 0 11 0 1 $year $month $day $hour $min $sec 1 i
-    } msg]
-    if {$RC != 0} {
-        ::piLog::log [clock milliseconds] "error" "updateHour : Cultibox does not respond :$msg "
-    } else {
-        ::piLog::log [clock milliseconds] "debug" "updateHour : Hour is updated"
+    # /usr/local/sbin/i2cset -y 1 0x31 0 11 0 1 15 4 11 10 23 25 1 i
+    # Try 3 times
+    for {set i 0} {$i < 3} {incr i} {
+        set RC [catch {
+            exec /usr/local/sbin/i2cset -y 1 0x31 0 11 0 1 $year $month $day $hour $min $sec 1 i
+        } msg]
+        if {$RC != 0} {
+            ::piLog::log [clock milliseconds] "error" "updateHour : Cultibox does not respond (try [expr $i + 1] / 3) :$msg "
+        } else {
+            ::piLog::log [clock milliseconds] "debug" "updateHour : Hour is updated"
+            set i 4
+        }
+        after 20
     }
     
     after 2000 updateHour
@@ -107,15 +112,22 @@ proc updateSensorVal {sensor value1 value2} {
     
     # Mise à jour des valeurs de capteurs
     # Capteur 1 : 0 6 Mots envoyés Registre 0 10 , SHT 2 , T Haut 1 , T Bas 25 , H Haut 2 , H Bas 36
-    # /usr/local/sbin/i2cset -y 1 0x31 9 0 10 2 1 25 2 36 1 i
-    set RC [catch {
-        exec /usr/local/sbin/i2cset -y 1 0x31 0 10 0 $registre $::sensor($sensor,type) $val11 $val12 $val21 $val22 1 i
-    } msg]
-    if {$RC != 0} {
-        ::piLog::log [clock milliseconds] "error" "updateHour : Cultibox does not respond :$msg "
-    } else {
-        ::piLog::log [clock milliseconds] "debug" "updateHour : Sensor value is updated is updated"
+    # /usr/local/sbin/i2cset -y 1 0x31 0 10 0 10 2 1 25 2 36 1 i
+    # /usr/local/sbin/i2cset -y 1 0x31 0 10 0 11 2 1 25 2 36 1 i
+    # Try 3 times
+    for {set i 0} {$i < 3} {incr i} {
+        set RC [catch {
+            exec /usr/local/sbin/i2cset -y 1 0x31 0 10 0 $registre $::sensor($sensor,type) $val11 $val12 $val21 $val22 1 i
+        } msg]
+        if {$RC != 0} {
+            ::piLog::log [clock milliseconds] "error" "updateHour : Cultibox does not respond (try [expr $i + 1] / 3) :$msg "
+        } else {
+            ::piLog::log [clock milliseconds] "debug" "updateHour : Sensor value is updated is updated"
+            set i 4
+        }
+        after 20
     }
+
     
     after 2000 updateHour
 
