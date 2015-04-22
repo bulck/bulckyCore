@@ -13,24 +13,27 @@ proc emeteur_init {} {
 
 }
 
-proc load_plugXX {} {
+proc load_plugXX {{plugVFileName ""}} {
 
     # On efface l'ancien vecteur s'il existe
     if {[array exists ::programm]} {
         array unset ::programm
     }
 
-    set plugVFileName "plugv"
-    ::piLog::log [clock milliseconds] "info" "plugv index : -[::piTime::readMonth][::piTime::readDay]-"
-    set fid [open [file join $::confPath prg plgidx] r]
-    while {[eof $fid] != 1 } {
-        gets $fid UneLigne
-        if {[string range $UneLigne 0 3] == "[::piTime::readMonth][::piTime::readDay]"} {
-            set plugVFileName "plu[string range $UneLigne 4 5]"
-            break
+    # Si aucun nom de fichier à charger n'est donné, on récupère le fichier du jour
+    if {$plugVFileName == ""} {
+        set plugVFileName "plugv"
+        ::piLog::log [clock milliseconds] "info" "plugv index : -[::piTime::readMonth][::piTime::readDay]-"
+        set fid [open [file join $::confPath prg plgidx] r]
+        while {[eof $fid] != 1 } {
+            gets $fid UneLigne
+            if {[string range $UneLigne 0 3] == "[::piTime::readMonth][::piTime::readDay]"} {
+                set plugVFileName "plu[string range $UneLigne 4 5]"
+                break
+            }
         }
+        close $fid
     }
-    close $fid
 
     ::piLog::log [clock milliseconds] "info" "plugv filename : $plugVFileName"
 
@@ -96,6 +99,21 @@ proc getsProgramm {rtc_readSecondsOfTheDay {updateNextTimeToChange 0}} {
         
         set lastProgramm $::programm($timeS)
         
+    }
+    
+    # Si le programme est vide c'est qu'on a pas trouvé de commande dnas le programme avec un temps > au temps actuel 
+    # Le cas classique, je cherche un programme > 86399
+    if {$prg == ""} {
+        ::piLog::log [clock milliseconds] "error" "getsProgramm : Programm for hour -${rtc_readSecondsOfTheDay}- not found"
+        if {${rtc_readSecondsOfTheDay} >= 86399} {
+            ::piLog::log [clock milliseconds] "info" "getsProgramm : Hour is too big, we use last programm valid"
+            set prg $lastProgramm
+        } else {
+            ::piLog::log [clock milliseconds] "info" "getsProgramm :load by default plugv"
+            load_plugXX "plugv"
+            set ::nextTimeToChange 0
+            set prg $::programm($nextTimeToChange)
+        }
     }
     
     return $prg
