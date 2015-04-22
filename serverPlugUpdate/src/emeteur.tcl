@@ -21,7 +21,7 @@ proc load_plugXX {} {
     }
 
     set plugVFileName "plugv"
-    ::piLog::log [clock milliseconds] "info" "plugv -[::piTime::readMonth][::piTime::readDay]-"
+    ::piLog::log [clock milliseconds] "info" "plugv index : -[::piTime::readMonth][::piTime::readDay]-"
     set fid [open [file join $::confPath prg plgidx] r]
     while {[eof $fid] != 1 } {
         gets $fid UneLigne
@@ -130,7 +130,10 @@ proc emeteur_update_loop {} {
 
         # Load plugV
         load_plugXX
-
+        
+        # Relaod hour (cf bug 1189)
+        set uc24_seconds [::piTime::readSecondsOfTheDay]
+    
         set programmeToSend [getsProgramm $uc24_seconds "updatenextTimeToChange"]
         set ::actualProgramm $programmeToSend
 
