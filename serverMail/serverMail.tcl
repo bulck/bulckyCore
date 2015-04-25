@@ -6,6 +6,9 @@ set port(serverMail)  [lindex $argv 0]
 set confXML                 [lindex $argv 1]
 set port(serverLogs)        [lindex $argv 2]
 set port(serverCultiPi)     [lindex $argv 3]
+set port(serverAcqSensor)   6006
+set port(serverPlugUpdate)  6004
+set port(serverHisto)       6009
 
 # Load lib
 lappend auto_path [file join $rootDir lib tcl]

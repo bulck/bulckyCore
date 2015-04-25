@@ -6,7 +6,7 @@ proc messageGestion {message networkhost} {
     set indexForResponse    [::piTools::lindexRobust $message 1]
     set commande            [::piTools::lindexRobust $message 2]
 
-    switch ${commande} {
+    switch [string tolower ${commande}] {
         "stop" {
             ::piLog::log [clock milliseconds] "info" "Asked stop"
             stopIt
