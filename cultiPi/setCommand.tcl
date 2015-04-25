@@ -26,9 +26,9 @@ set adresseIP [lindex $argv 1]
 
 # Demande d'écriture du repere
 # Trame standard : [FROM] [INDEX] [commande] [argument]
-::piServer::sendToServer $port($module) "$port(serverSet) 0 setRepere [lrange $argv 2 [expr $argc - 1]]" $adresseIP
+::piServer::sendToServer $port($module) "$port(serverSet) 0 [lrange $argv 2 [expr $argc - 1]]" $adresseIP
 
 
-# tclsh /opt/cultipi/cultiPi/set.tcl serverPlugUpdate localhost 1 on 10
-# tclsh "C:\cultibox\04_CultiPi\01_Software\01_cultiPi\cultiPi\set.tcl" serverPlugUpdate localhost 1 on 10
-
+# tclsh /opt/cultipi/cultiPi/setCommand.tcl serverPlugUpdate localhost setRepere 1 on 10
+# tclsh "C:\cultibox\04_CultiPi\01_Software\01_cultiPi\cultiPi\setCommand.tcl" serverPlugUpdate localhost setRepere 1 on 10
+# tclsh /opt/cultipi/cultiPi/setCommand.tcl serverPlugUpdate localhost sendMail info@cultibox.fr info@cultibox.fr "Essai" "Corps du message"

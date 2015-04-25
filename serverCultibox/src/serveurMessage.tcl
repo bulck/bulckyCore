@@ -140,9 +140,8 @@ proc messageGestion {message networkhost} {
                             set valeur2      [::piTools::lindexRobust $message 5]
                             set time         [::piTools::lindexRobust $message 6]
                             # Si c'est la valeur
-                            # ::piLog::log [clock milliseconds] "debug" "_subscription response : save sensor value : $message - [lindex $splitted 1] $valeur1 $valeur2 $time"
                             if {$valeur1 == "DEFCOM"} {
-                                ::piLog::log [clock milliseconds] "info" "_subscription response : save sensor value : DEFCOM so not saved - msg : $message"
+                                ::piLog::log [clock milliseconds] "debug" "_subscription response : send value to cultibox : DEFCOM so not saved - msg : $message"
                             } else {
                                 set ::sensor([lindex $splitted 1],value,1) $valeur1
                                 set ::sensor([lindex $splitted 1],value,2) $valeur2
@@ -152,7 +151,7 @@ proc messageGestion {message networkhost} {
                             
                         } 
                         default {
-                            ::piLog::log [clock milliseconds] "error" "_subscription response : not rekognize type [lindex $splitted 2]  - msg : $message"
+                            ::piLog::log [clock milliseconds] "error" "_subscription response : not recognize type [lindex $splitted 2]  - msg : $message"
                         }
                     }
                 }

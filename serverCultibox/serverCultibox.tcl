@@ -24,7 +24,7 @@ set TrameIndex 0
 
 # On initialise la conf XML
 array set configXML {
-    verbose     debug
+    verbose     info
     updateFreq  6
 }
 
@@ -89,7 +89,7 @@ proc updateHour {} {
             exec /usr/local/sbin/i2cset -y 1 0x31 0 11 0 1 $year $month $day $hour $min $sec 1 i
         } msg]
         if {$RC != 0} {
-            ::piLog::log [clock milliseconds] "error" "updateHour : Cultibox does not respond (try [expr $i + 1] / 3) :$msg "
+            ::piLog::log [clock milliseconds] "debug" "updateHour : Cultibox does not respond (try [expr $i + 1] / 3) :$msg "
         } else {
             ::piLog::log [clock milliseconds] "debug" "updateHour : Hour is updated"
             set i 4
@@ -120,7 +120,7 @@ proc updateSensorVal {sensor value1 value2} {
             exec /usr/local/sbin/i2cset -y 1 0x31 0 10 0 $registre $::sensor($sensor,type) $val11 $val12 $val21 $val22 1 i
         } msg]
         if {$RC != 0} {
-            ::piLog::log [clock milliseconds] "error" "updateHour : Cultibox does not respond (try [expr $i + 1] / 3) :$msg "
+            ::piLog::log [clock milliseconds] "debug" "updateHour : Cultibox does not respond (try [expr $i + 1] / 3) :$msg "
         } else {
             ::piLog::log [clock milliseconds] "debug" "updateHour : Sensor value is updated is updated"
             set i 4
