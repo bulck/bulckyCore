@@ -17,16 +17,17 @@ package require piXML
 
 # Chargement des fichiers externes
 source [file join $rootDir serverSupervision src serveurMessage.tcl]
-
-package require smtp
-package require mime
+source [file join $rootDir serverSupervision src module_checkGoogle.tcl]
 
 # Initialisation d'un compteur pour les commandes externes envoyées
 set TrameIndex 0
 
 # On initialise la conf XML
 array set configXML {
-    verbose     debug
+    verbose             debug
+    checkGoogle,start   0
+    checkGoogle,IP      8.8.8.8
+    checkGoogle,timeMax 30
 }
 
 # Chargement de la conf XML
@@ -62,6 +63,7 @@ proc bgerror {message} {
 
 proc stopIt {} {
     ::piLog::log [clock milliseconds] "info" "Start stopping serverSupervision"
+    checkGoogle::stop
     set ::forever 0
     ::piLog::log [clock milliseconds] "info" "End stopping serverSupervision"
     
@@ -69,6 +71,10 @@ proc stopIt {} {
     ::piLog::closeLog
 }
 
+# On démarre la vérification google
+if {$configXML(checkGoogle,start) != 0} {
+    checkGoogle::start $configXML(checkGoogle,IP) $configXML(checkGoogle,timeMax)
+}
 
 vwait forever
 
