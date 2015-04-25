@@ -81,11 +81,11 @@ proc send_email {from to subject body} {
     set token [mime::initialize -canonical "text/plain" -encoding "7bit" -string $body]
       mime::setheader $token Subject $subject
       smtp::sendmessage $token \
-                    -servers [list smtp.gmail.com] -ports [list 587]\
+                    -servers [list $::configXML(serverSMTP)] -ports [list $::configXML(port)]\
                     -usetls true\
                     -debug true\
-                    -username alliaume.rico@gmail.com \
-                    -password g00gl3Monamour126\
+                    -username $::configXML(username) \
+                    -password $::configXML(password) \
                     -queue false\
                     -atleastone true\
                     -header [list From $from] \
