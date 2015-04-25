@@ -141,7 +141,7 @@ proc searchSensorsConnected {} {
                     set ::sensor($sensorType,$index,majorVersion) ""
                     set ::sensor($sensorType,$index,minorVersion) ""
                     set ::sensor($sensorType,$index,updateStatus) "DEFCOM"
-                    ::piLog::log [clock milliseconds] "info" "sensor $sensorType,$index (adress $moduleAdress) is not connected ($msg)"
+                    ::piLog::log [clock milliseconds] "debug" "sensor $sensorType,$index (adress $moduleAdress) is not connected ($msg)"
                 } else {
                     set ::sensor($sensorType,$index,connected) 1
                     set ::sensor($sensorType,$index,majorVersion) $majorVersion
