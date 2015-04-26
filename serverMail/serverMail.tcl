@@ -54,7 +54,9 @@ if {$RC != 0} {
 ::piLog::log [clock milliseconds] "info" "port serverCultiPi : $port(serverCultiPi)"
 # On affiche les infos dans le fichier de debug
 foreach element [array names configXML] {
-    ::piLog::log [clock milliseconds] "info" "$element : $configXML($element)"
+    if {$element != "password"} {
+        ::piLog::log [clock milliseconds] "info" "$element : $configXML($element)"
+    }
 }
 
 

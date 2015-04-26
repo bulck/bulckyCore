@@ -30,5 +30,6 @@ set adresseIP [lindex $argv 1]
 
 
 # tclsh /opt/cultipi/cultiPi/setCommand.tcl serverPlugUpdate localhost setRepere 1 on 10
-# tclsh "C:\cultibox\04_CultiPi\01_Software\01_cultiPi\cultiPi\setCommand.tcl" serverPlugUpdate localhost setRepere 1 on 10
+# tclsh "D:\CBX\cultipiCore\cultiPi\setCommand.tcl" serverPlugUpdate localhost setRepere 1 on 10
 # tclsh /opt/cultipi/cultiPi/setCommand.tcl serverMail localhost sendMail info@cultibox.fr "Essai 2 " "Corps du message et contenu"
+# tclsh "D:\CBX\cultipiCore\cultiPi\setCommand.tcl" serverMail localhost sendMail info@cultibox.fr "Essai 2 " "Corps du message et contenu"
