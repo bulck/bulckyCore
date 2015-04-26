@@ -76,7 +76,7 @@ proc stopIt {} {
     ::piLog::closeLog
 }
 
-proc send_email {from to subject body} { 
+proc send_email {to subject body} { 
 
     set token [mime::initialize -canonical "text/plain" -encoding "7bit" -string $body]
       mime::setheader $token Subject $subject
@@ -88,15 +88,14 @@ proc send_email {from to subject body} {
                     -password $::configXML(password) \
                     -queue false\
                     -atleastone true\
-                    -header [list From $from] \
+                    -header [list From $::configXML(username)] \
                     -header [list To $to] \
                     -header [list Subject $subject]\
                     -header [list Date "[clock format [clock seconds]]"]
       mime::finalize $token
 } 
 
-
 vwait forever
 
-# tclsh "D:\CBX\cultipiCore\serverMail\serverMail.tcl" 6004 "D:\CBX\cultipiCore\serverMail\confExample\conf.xml" 6003 6000
-# tclsh /opt/cultipi/serverMail/serverMail.tcl 6004 /etc/cultipi/01_defaultConf_RPi/./serverMail/conf.xml 6003 6000
+# tclsh "D:\CBX\cultipiCore\serverMail\serverMail.tcl" 6015 "D:\CBX\cultipiCore\serverMail\confExample\conf.xml" 6003 6000
+# tclsh /opt/cultipi/serverMail/serverMail.tcl 6015 /etc/cultipi/01_defaultConf_RPi/./serverMail/conf.xml 6003 6000

@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <conf>
-    <item name="verbose" level="info" />
-    <item name="checkGoogle,start"   value="0" />
-    <item name="checkGoogle,IP"      value="8.8.8.8" />
-    <item name="checkGoogle,timeMax" value="30" />
+    <item name="verbose"     level="info" />
+    <item name="nbProcess"   value="1" />
 </conf>

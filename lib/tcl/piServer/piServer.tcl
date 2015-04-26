@@ -19,7 +19,7 @@ proc ::piServer::server {channel host port} \
     set ::($channel:port) $port
     # log
     if {$debug == 1} {
-        ::piLog::log [clock milliseconds] "debug" "Ouverture connexion par $host - socket $channel"
+        ::piLog::log [clock milliseconds] "debug" "::piServer::server Ouverture connexion par $host - socket $channel"
     }
     set rc [catch \
     {
@@ -29,7 +29,7 @@ proc ::piServer::server {channel host port} \
     if {$rc == 1} \
     {
         # i/o error -> log
-        ::piLog::log [clock milliseconds] "error" "i/o error - $msg"
+        ::piLog::log [clock milliseconds] "error" "::piServer::server i/o error - $msg"
     }
 }
 
@@ -41,7 +41,7 @@ proc ::piServer::input {channel} {
     {
         # client closed -> log & close
         if {$debug == 1} {
-            ::piLog::log [clock milliseconds] "debug" "closed $channel"
+            ::piLog::log [clock milliseconds] "debug" "::piServer::input closed $channel"
         }
         
         catch { close $channel }
@@ -60,14 +60,14 @@ proc ::piServer::input {channel} {
         {
             # client closed -> log & close
             if {$debug == 1} { 
-                ::piLog::log [clock milliseconds] "debug" "closed $channel"
+                ::piLog::log [clock milliseconds] "debug" "::piServer::input closed $channel"
             }
             catch { close $channel }
         } \
         else \
         {
             if {$debug == 1} { 
-                ::piLog::log [clock milliseconds] "debug" "message received -${data}- send by $channel"
+                ::piLog::log [clock milliseconds] "debug" "::piServer::input message received -${data}- send by $channel"
             }
             # got data -> do some thing
             ::${callBackMessage} ${data} $::($channel:host)
@@ -92,7 +92,7 @@ proc ::piServer::start {callBackMessageIn portIn} {
     } msg]
     if {$rc == 1} \
     {
-        ::piLog::log [clock milliseconds] "error_critic" "erreur exiting $msg"
+        ::piLog::log [clock milliseconds] "error_critic" "::piServer::start erreur exiting msg: $msg"
         exit
     }
 }
@@ -104,7 +104,7 @@ proc ::piServer::sendToServer {portNumber message {ip localhost}} {
 
     set rc [catch { set channel [socket ${ip} $portNumber] } msg]
     if {$rc == 1} {
-        ::piLog::log [clock milliseconds] "error" "try to open socket to -$portNumber- - erreur :  -$msg-"
+        ::piLog::log [clock milliseconds] "error" "::piServer::sendToServer try to open socket to -$portNumber- - erreur :  -$msg-"
     }
 
     set rc [catch \
@@ -113,10 +113,10 @@ proc ::piServer::sendToServer {portNumber message {ip localhost}} {
         flush $channel
     } msg]
     if {$rc == 1} {
-        ::piLog::log [clock milliseconds] "error" "try to send message to -$portNumber- - erreur :  -$msg-"
+        ::piLog::log [clock milliseconds] "error" "::piServer::sendToServer try to send message to -$portNumber- - erreur :  -$msg-"
     } else {
         if {$debug == 1} { 
-            ::piLog::log [clock milliseconds] "debug" "message send to -$portNumber- message : -$message-"
+            ::piLog::log [clock milliseconds] "debug" "::piServer::sendToServer message send to -$portNumber- message : -$message-"
         }
     }
 
@@ -126,7 +126,7 @@ proc ::piServer::sendToServer {portNumber message {ip localhost}} {
     } msg]
     if {$rc == 1} \
     {
-        ::piLog::log [clock milliseconds] "error" "erreur closing channel -$channel-"
+        ::piLog::log [clock milliseconds] "error" "::piServer::sendToServer erreur closing channel -$channel-"
     }
 }
 
@@ -146,7 +146,6 @@ proc ::piServer::findAvailableSocket {start} {
         
     }
 
-    
     return "No socket found"
 }
 proc ::piServer::testForfindAvailableSocket {test} {

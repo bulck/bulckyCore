@@ -2,10 +2,14 @@
 set rootDir [file dirname [file dirname [info script]]]
 
 # Read argv
-set port(serverSupervision)  [lindex $argv 0]
+set port(serverSupervision) [lindex $argv 0]
 set confXML                 [lindex $argv 1]
 set port(serverLogs)        [lindex $argv 2]
 set port(serverCultiPi)     [lindex $argv 3]
+set port(serverAcqSensor)   6006
+set port(serverPlugUpdate)  6004
+set port(serverHisto)       6009
+set port(serverMail)        6015
 
 # Load lib
 lappend auto_path [file join $rootDir lib tcl]
@@ -17,7 +21,7 @@ package require piXML
 
 # Chargement des fichiers externes
 source [file join $rootDir serverSupervision src serveurMessage.tcl]
-source [file join $rootDir serverSupervision src module_checkGoogle.tcl]
+source [file join $rootDir serverSupervision src module_checkPing.tcl]
 
 # Initialisation d'un compteur pour les commandes externes envoyées
 set TrameIndex 0
@@ -25,9 +29,7 @@ set TrameIndex 0
 # On initialise la conf XML
 array set configXML {
     verbose             debug
-    checkGoogle,start   0
-    checkGoogle,IP      8.8.8.8
-    checkGoogle,timeMax 30
+    nbProcess           0
 }
 
 # Chargement de la conf XML
@@ -71,12 +73,27 @@ proc stopIt {} {
     ::piLog::closeLog
 }
 
-# On démarre la vérification google
-if {$configXML(checkGoogle,start) != 0} {
-    checkGoogle::start $configXML(checkGoogle,IP) $configXML(checkGoogle,timeMax)
+# Pour chaque process, on crée les fonctions associées
+for {set i 0} {$i < $configXML(nbProcess)} {incr i} {
+
+    # On vérifie que le fichier de config existe
+    set confFileName [string map [list "conf.xml" "process_${i}.xml"] $confXML]
+    if {[file exists $confFileName]} {
+    
+        # On charge le fichier de conf
+        array set process_xml [::piXML::convertXMLToArray $confFileName]
+        
+        # En fonction de l'action a réaliser, on initialise le process
+        $process_xml(action)::start [array get process_xml]
+        
+        
+    } else {
+        ::piLog::log [clock milliseconds] "error" "Can not create supervision process $i : file - $confFileName - doesnot exists"
+    }
+
 }
 
 vwait forever
 
-# tclsh "D:\CBX\cultipiCore\serverSupervision\serverSupervision.tcl" 6004 "D:\CBX\cultipiCore\serverSupervision\confExample\conf.xml" 6003 6000
-# tclsh /opt/cultipi/serverSupervision/serverSupervision.tcl 6004 /etc/cultipi/01_defaultConf_RPi/./serverSupervision/conf.xml 6003 6000
+# tclsh "D:\CBX\cultipiCore\serverSupervision\serverSupervision.tcl" 6019 "D:\CBX\cultipiCore\serverSupervision\confExample\conf.xml" 6003 6000
+# tclsh /opt/cultipi/serverSupervision/serverSupervision.tcl 6019 /etc/cultipi/01_defaultConf_RPi/./serverSupervision/conf.xml 6003 6000

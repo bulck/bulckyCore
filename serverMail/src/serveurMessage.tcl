@@ -18,12 +18,13 @@ proc messageGestion {message networkhost} {
         "sendmail" {
             ::piLog::log [clock milliseconds] "info" "Asked to send mail"
             
-            set from    [::piTools::lindexRobust $message 3]
-            set to      [::piTools::lindexRobust $message 4]
-            set subject [::piTools::lindexRobust $message 5]
-            set body    [::piTools::lindexRobust $message 6]
+            set to      [::piTools::lindexRobust $message 3]
+            set subject [lindex $message 4]
+            set body    [lindex $message 5]
             
-            send_email $from $to $subject $body
+            ::piLog::log [clock milliseconds] "debug" "to : $to - subject : $subject - body : $body"
+            
+            send_email $to $subject $body
             
         }
         default {
