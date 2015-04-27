@@ -208,6 +208,9 @@ catch {
 # On demande l'arret
 exec tclsh ${rootDir}/cultiPi/cultiPistop.tcl
 
+# On attend 10 secondes
+after 10000
+
 foreach module $moduleListLogEnd {
     puts "Vérification arrêt $module"
     cleaWatchDog
