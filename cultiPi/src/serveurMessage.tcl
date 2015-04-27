@@ -15,7 +15,7 @@ proc messageGestion {message networkhost} {
             ::piLog::log [clock milliseconds] "info" "Demande Arret de Culti Pi"
             stopCultiPi
         }
-        "pid" {
+        "_pid" {
             set module [::piTools::lindexRobust $message 3]
             set pid [::piTools::lindexRobust $message 4]
             ::piLog::log [clock milliseconds] "info" "Received pid $pid of $module"
@@ -25,7 +25,7 @@ proc messageGestion {message networkhost} {
             set module [::piTools::lindexRobust $message 3]
             ::piLog::log [clock milliseconds] "info" "Asked port of $module"
             # Comme c'est une réponse, le nom du serveur est celui de celui qui a demandé
-            ::piServer::sendToServer $serverForResponse "$serverForResponse $indexForResponse _getPort $module $::confStart($module,port)" $networkhost
+            ::piServer::sendToServer $serverForResponse "$serverForResponse $indexForResponse _getPort $module $::piServer::portNumber($module)" $networkhost
         }
         "getRepere" {
         

@@ -9,12 +9,6 @@ package require piLog
 package require piServer
 package require piTools
 
-set port(serverGet) [::piServer::findAvailableSocket 6022]
-set port(serverCultipi) 6000
-set port(serverAcqSensor) 6006
-set port(serverPlugUpdate) 6004
-set port(serverHisto) 6009
-
 ::piLog::openLogAs "none"
 
 set module   [lindex $argv 0]
@@ -38,16 +32,16 @@ proc messageGestion {message host} {
     
     set ::forever 1
 }
-::piServer::start messageGestion $port(serverGet)
+::piServer::start messageGestion $::piServer::portNumber(serverGet)
 
 # On regarde sur quel serveur il souhaite lancer la commande
 
 # Demande lecture du repere
 # Trame standard : [FROM] [INDEX] [commande] [argument]
-::piServer::sendToServer $port($module) "$port(serverGet) 0 getRepere [lrange $argv 2 [expr $argc - 1]]" $adresseIP
+::piServer::sendToServer $::piServer::portNumber($module) "$::piServer::portNumber(serverGet) 0 getRepere [lrange $argv 2 [expr $argc - 1]]" $adresseIP
 
 # Après 2 secondes, s'il n'a pas répondu on le tue
-set killID [after 2000 {
+set killID [after 4000 {
     set ::forever 1
     puts "TIMEOUT"
 }]

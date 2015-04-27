@@ -9,12 +9,6 @@ package require piLog
 package require piServer
 package require piTools
 
-set port(serverSet) [::piServer::findAvailableSocket 6024]
-set port(serverCultipi) 6000
-set port(serverAcqSensor) 6006
-set port(serverPlugUpdate) 6004
-set port(serverHisto) 6009
-set port(serverMail) 6015
 
 ::piLog::openLogAs "none"
 
@@ -26,7 +20,7 @@ set adresseIP [lindex $argv 1]
 
 # Demande d'écriture du repere
 # Trame standard : [FROM] [INDEX] [commande] [argument]
-::piServer::sendToServer $port($module) "$port(serverSet) 0 setRepere [lrange $argv 2 [expr $argc - 1]]" $adresseIP
+::piServer::sendToServer $::piServer::portNumber($module) "$::piServer::portNumber(serverSet) 0 setRepere [lrange $argv 2 [expr $argc - 1]]" $adresseIP
 
 
 # tclsh /opt/cultipi/cultiPi/set.tcl serverPlugUpdate localhost 1 on 10

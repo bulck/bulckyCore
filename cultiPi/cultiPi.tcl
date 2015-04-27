@@ -3,7 +3,7 @@
 # Init directory
 set rootDir [file dirname [file dirname [info script]]]
 set logDir $rootDir
-set serveurLogFileName [file join $rootDir serverLog serveurLog.tcl]
+set serverLogFileName [file join $rootDir serverLog serverLog.tcl]
 
 puts "[clock format [clock seconds] -format "%b %d %H:%M:%S"] : cultiPi : Starting cultiPi - PID : [pid]"
 set TimeStartcultiPi [clock milliseconds]
@@ -29,8 +29,6 @@ source [file join $rootDir cultiPi src serveurMessage.tcl]
 source [file join $rootDir cultiPi src checkAlive.tcl]
 source [file join $rootDir cultiPi src checkI2C.tcl]
 
-# Port number
-set port(server) [::piServer::findAvailableSocket 6000]
 
 # Initialisation de la variable status
 set ::statusInitialisation "starting"
@@ -49,46 +47,44 @@ set confStart(start) [lindex [::piXML::open_xml [file join $fileName(cultiPi,con
 foreach moduleXML $::confStart(start) {
     set moduleName [::piXML::searchOptionInElement name $moduleXML]
     set ::confStart(${moduleName},pid) ""
-    set ::confStart($moduleName,port) ""
 }
 
 # Load server Culti Pi
 puts "[clock format [clock seconds] -format "%b %d %H:%M:%S"] : CultiPi : start : Load server" ; update
-::piServer::start messageGestion $port(server)
+::piServer::start messageGestion $::piServer::portNumber(serverCultipi)
 
 # Load serverLog
-puts "[clock format [clock seconds] -format "%b %d %H:%M:%S"] : CultiPi : start : Starting serveurLog"
+puts "[clock format [clock seconds] -format "%b %d %H:%M:%S"] : CultiPi : start : Starting serverLog"
 set ::statusInitialisation "loading_serverLog"
 set confStart(serverLog,pid) ""
 set confStart(serverLog) [::piXML::searchItemByName serverLog $confStart(start)]
 set confStart(serverLog,pathexe) [::piXML::searchOptionInElement pathexe $confStart(serverLog)]
-puts "[clock format [clock seconds] -format "%b %d %H:%M:%S"] : CultiPi : start : serveurLog pathexe : $confStart(serverLog,pathexe)"
+puts "[clock format [clock seconds] -format "%b %d %H:%M:%S"] : CultiPi : start : serverLog pathexe : $confStart(serverLog,pathexe)"
 set confStart(serverLog,path) [file join $rootDir [::piXML::searchOptionInElement path $confStart(serverLog)]]
-puts "[clock format [clock seconds] -format "%b %d %H:%M:%S"] : CultiPi : start : serveurLog path : $confStart(serverLog,path)"
+puts "[clock format [clock seconds] -format "%b %d %H:%M:%S"] : CultiPi : start : serverLog path : $confStart(serverLog,path)"
 set confStart(serverLog,xmlconf) [file join $fileName(cultiPi,confDir) [::piXML::searchOptionInElement xmlconf $confStart(serverLog)]]
-puts "[clock format [clock seconds] -format "%b %d %H:%M:%S"] : CultiPi : start : serveurLog xmlconf : $confStart(serverLog,xmlconf) , file exists ? [file exists $confStart(serverLog,xmlconf)]"
+puts "[clock format [clock seconds] -format "%b %d %H:%M:%S"] : CultiPi : start : serverLog xmlconf : $confStart(serverLog,xmlconf) , file exists ? [file exists $confStart(serverLog,xmlconf)]"
 set confStart(serverLog,waitAfterUS) [::piXML::searchOptionInElement waitAfterUS $confStart(serverLog)]
-puts "[clock format [clock seconds] -format "%b %d %H:%M:%S"] : CultiPi : start : serveurLog waitAfterUS : $confStart(serverLog,waitAfterUS)"
-set confStart(serverLog,port) [::piXML::searchOptionInElement port $confStart(serverLog)]
-puts "[clock format [clock seconds] -format "%b %d %H:%M:%S"] : CultiPi : start : serveurLog port : $confStart(serverLog,port)"
+puts "[clock format [clock seconds] -format "%b %d %H:%M:%S"] : CultiPi : start : serverLog waitAfterUS : $confStart(serverLog,waitAfterUS)"
+puts "[clock format [clock seconds] -format "%b %d %H:%M:%S"] : CultiPi : start : serverLog port : $::piServer::portNumber(serverLog)"
 set tempLogPath [::piXML::searchItemByName logPath [lindex [::piXML::open_xml $confStart(serverLog,xmlconf)] 2]]
 set confStart(serverLog,logsRootDir) [::piXML::searchOptionInElement logfile $tempLogPath]
-puts "[clock format [clock seconds] -format "%b %d %H:%M:%S"] : CultiPi : start : serveurLog logsRootDir : $confStart(serverLog,logsRootDir)"
-set TimeStartserveurLog [clock milliseconds]
-#open "| tclsh \"$serveurLogFileName\" $port(serverLogs) \"$logDir\""
-puts "[clock format [clock seconds] -format "%b %d %H:%M:%S"] : CultiPi : start : serveurLog : $confStart(serverLog,pathexe) \"$confStart(serverLog,path)\" $confStart(serverLog,port) \"$confStart(serverLog,logsRootDir)\""
+puts "[clock format [clock seconds] -format "%b %d %H:%M:%S"] : CultiPi : start : serverLog logsRootDir : $confStart(serverLog,logsRootDir)"
+set TimeStartserverLog [clock milliseconds]
+#open "| tclsh \"$serverLogFileName\" $::piServer::portNumber(serverLog) \"$logDir\""
+puts "[clock format [clock seconds] -format "%b %d %H:%M:%S"] : CultiPi : start : serverLog : $confStart(serverLog,pathexe) \"$confStart(serverLog,path)\" $::piServer::portNumber(serverLog) \"$confStart(serverLog,logsRootDir)\""
 
-set confStart(serverLog,pipeID) [open "| $confStart(serverLog,pathexe) \"$confStart(serverLog,path)\" $confStart(serverLog,port) \"$confStart(serverLog,logsRootDir)\""]
+set confStart(serverLog,pipeID) [open "| $confStart(serverLog,pathexe) \"$confStart(serverLog,path)\" $::piServer::portNumber(serverLog) \"$confStart(serverLog,logsRootDir)\""]
 after $confStart(serverLog,waitAfterUS) 
 update
 
 # init log
 puts "[clock format [clock seconds] -format "%b %d %H:%M:%S"] : CultiPi : start : Open log" ; update
 set ::statusInitialisation "init_log"
-::piLog::openLog $confStart(serverLog,port) "culipi"
+::piLog::openLog $::piServer::portNumber(serverLog) "culipi"
 ::piLog::log $TimeStartcultiPi "info" "starting serveur"
-::piLog::log $TimeStartserveurLog "info" "starting serveurLog"
-::piLog::log $TimeStartserveurLog "info" "Port : $port(server)"
+::piLog::log $TimeStartserverLog "info" "starting serverLog"
+::piLog::log $TimeStartserverLog "info" "Port : $::piServer::portNumber(serverCultipi)"
 
 # On démarre les esclaves
 restartSlave puts
@@ -124,12 +120,11 @@ foreach moduleXML $::confStart(start) {
         puts "[clock format [clock seconds] -format "%b %d %H:%M:%S"] : CultiPi : start : $moduleName xmlconf : $::confStart($moduleName,xmlconf) , file exists ? [file exists $::confStart($moduleName,xmlconf)]"
         set ::confStart($moduleName,waitAfterUS) [::piXML::searchOptionInElement waitAfterUS $moduleXML]
         puts "[clock format [clock seconds] -format "%b %d %H:%M:%S"] : CultiPi : start : $moduleName waitAfterUS : $::confStart($moduleName,waitAfterUS)"
-        set ::confStart($moduleName,port) [::piXML::searchOptionInElement port $moduleXML]
-        puts "[clock format [clock seconds] -format "%b %d %H:%M:%S"] : CultiPi : start : $moduleName port : $::confStart($moduleName,port)"
+        puts "[clock format [clock seconds] -format "%b %d %H:%M:%S"] : CultiPi : start : $moduleName port : $::piServer::portNumber($moduleName)"
 
         ::piLog::log [clock milliseconds] "info" "Load $moduleName"
-        puts "[clock format [clock seconds] -format "%b %d %H:%M:%S"] : CultiPi : start : $moduleName exec : $::confStart($moduleName,pathexe) \"$::confStart($moduleName,path)\" $::confStart($moduleName,port) \"$::confStart($moduleName,xmlconf)\" $::confStart(serverLog,port) $::port(server)"
-        set ::confStart($moduleName,pipeID) [open "| $::confStart($moduleName,pathexe) \"$::confStart($moduleName,path)\" $::confStart($moduleName,port) \"$::confStart($moduleName,xmlconf)\" $::confStart(serverLog,port) $::port(server)"]
+        puts "[clock format [clock seconds] -format "%b %d %H:%M:%S"] : CultiPi : start : $moduleName exec : $::confStart($moduleName,pathexe) \"$::confStart($moduleName,path)\" \"$::confStart($moduleName,xmlconf)\""
+        set ::confStart($moduleName,pipeID) [open "| $::confStart($moduleName,pathexe) \"$::confStart($moduleName,path)\" \"$::confStart($moduleName,xmlconf)\""]
         
         set ::statusInitialisation "loading_${moduleName}"
         
@@ -145,7 +140,7 @@ proc askPid {} {
         if {$moduleName != "serverLog"} {
             # on lui demande son PID
             # Trame standard : [FROM] [INDEX] [commande] [argument]
-            ::piServer::sendToServer $::confStart($moduleName,port) "$::port(server) [incr ::TrameIndex] pid"
+            ::piServer::sendToServer $::piServer::portNumber($moduleName) "$::piServer::portNumber(serverCultipi) [incr ::TrameIndex] pid"
         }
     }
 }
