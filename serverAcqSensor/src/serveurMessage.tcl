@@ -13,7 +13,7 @@ proc messageGestion {message networkhost} {
         }
         "pid" {
             ::piLog::log [clock milliseconds] "info" "Asked pid"
-            ::piServer::sendToServer $serverForResponse "$::port(serverAcqSensor) $indexForResponse pid serverAcqSensor [pid]" $networkhost
+            ::piServer::sendToServer $serverForResponse "$::piServer::portNumber(${::moduleLocalName}) $indexForResponse _pid ${::moduleLocalName} [pid]" $networkhost
         }
         "getRepere" {
         
@@ -161,7 +161,7 @@ proc messageGestion {message networkhost} {
         }
         default {
             # Si on reçoit le retour d'une commande, le nom du serveur est le notre
-            if {$serverForResponse == $::port(serverAcqSensor)} {
+            if {$serverForResponse == $::piServer::portNumber(${::moduleLocalName})} {
             
                 if {[array names ::TrameSended -exact $indexForResponse] != ""} {
                     

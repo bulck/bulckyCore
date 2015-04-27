@@ -23,8 +23,8 @@ proc ::network_read::init {nb_maxSensor} {
             set sensorNb $::configXML(network_read,$i,sensor)
             
             # On prend un abonnement
-            ::piServer::sendToServer $::port(serverAcqSensor) "$::port(serverAcqSensor) [incr ::TrameIndex] subscription ${sensorNb},value $periodeAcq $bandeMorteAcq" $ip
-            ::piServer::sendToServer $::port(serverAcqSensor) "$::port(serverAcqSensor) [incr ::TrameIndex] subscription ${sensorNb},type $periodeAcq" $ip
+            ::piServer::sendToServer $::piServer::portNumber(serverAcqSensor) "$::piServer::portNumber(serverAcqSensor) [incr ::TrameIndex] subscription ${sensorNb},value $periodeAcq $bandeMorteAcq" $ip
+            ::piServer::sendToServer $::piServer::portNumber(serverAcqSensor) "$::piServer::portNumber(serverAcqSensor) [incr ::TrameIndex] subscription ${sensorNb},type $periodeAcq" $ip
             
             # On enregistre le lien 
             set hostPlug($ip,${sensorNb}) $i

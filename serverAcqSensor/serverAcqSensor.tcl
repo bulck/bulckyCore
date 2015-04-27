@@ -1,11 +1,10 @@
 # Init directory
 set rootDir [file dirname [file dirname [info script]]]
 
-# Read argv
-set port(serverAcqSensor)   [lindex $argv 0]
-set confXML                 [lindex $argv 1]
-set port(serverLogs)        [lindex $argv 2]
-set port(serverCultiPi)     [lindex $argv 3]
+# Lecture des arguments : seul le path du fichier XML est donné en argument
+set confXML                 [lindex $argv 0]
+
+set moduleLocalName serverAcqSensor
 
 # Global var for regulation
 set regul(alarme) 0
@@ -18,10 +17,10 @@ package require piTools
 package require piXML
 
 # Source extern files
-source [file join $rootDir serverAcqSensor src adress_sensor.tcl]
-source [file join $rootDir serverAcqSensor src serveurMessage.tcl]
-source [file join $rootDir serverAcqSensor src direct_read.tcl]
-source [file join $rootDir serverAcqSensor src network_read.tcl]
+source [file join $rootDir ${::moduleLocalName} src adress_sensor.tcl]
+source [file join $rootDir ${::moduleLocalName} src serveurMessage.tcl]
+source [file join $rootDir ${::moduleLocalName} src direct_read.tcl]
+source [file join $rootDir ${::moduleLocalName} src network_read.tcl]
 
 # Initialisation d'un compteur pour les commandes externes envoyées
 set TrameIndex 0
@@ -46,13 +45,10 @@ if {$RC != 0} {
 }
 
 # On initialise la connexion avec le server de log
-::piLog::openLog $port(serverLogs) "serverAcqSensor" $configXML(verbose)
-::piLog::log [clock milliseconds] "info" "starting serverAcqSensor - PID : [pid]"
-::piLog::log [clock milliseconds] "info" "port serverAcqSensor : $port(serverAcqSensor)"
+::piLog::openLog $::piServer::portNumber(serverLog) ${::moduleLocalName} $configXML(verbose)
+::piLog::log [clock milliseconds] "info" "starting ${::moduleLocalName} - PID : [pid]"
+::piLog::log [clock milliseconds] "info" "port ${::moduleLocalName} : $::piServer::portNumber(${::moduleLocalName})"
 ::piLog::log [clock milliseconds] "info" "confXML : $confXML"
-::piLog::log [clock milliseconds] "info" "port serverLogs : $port(serverLogs)"
-::piLog::log [clock milliseconds] "info" "port serverCultiPi : $port(serverCultiPi)"
-::piLog::log [clock milliseconds] "info" "verbose : $configXML(verbose)"
 # On affiche les infos dans le fichier de debug
 foreach element [array names configXML] {
     ::piLog::log [clock milliseconds] "info" "$element : $configXML($element)"
@@ -64,13 +60,13 @@ proc bgerror {message} {
 
 # Load server
 ::piLog::log [clock millisecond] "info" "starting serveur"
-::piServer::start messageGestion $port(serverAcqSensor)
+::piServer::start messageGestion $::piServer::portNumber(${::moduleLocalName})
 ::piLog::log [clock millisecond] "info" "serveur is started"
 
 proc stopIt {} {
-    ::piLog::log [clock milliseconds] "info" "Start stopping serverAcqSensor"
+    ::piLog::log [clock milliseconds] "info" "Start stopping ${::moduleLocalName}"
     set ::forever 0
-    ::piLog::log [clock milliseconds] "info" "End stopping serverAcqSensor"
+    ::piLog::log [clock milliseconds] "info" "End stopping ${::moduleLocalName}"
     
     # Arrêt du server de log
     ::piLog::closeLog
@@ -78,7 +74,7 @@ proc stopIt {} {
 
 # On charge le simulateur uniquement si c'est définit le fichier XML
 if {$configXML(simulator) != "off"} {
-    source [file join $rootDir serverAcqSensor src simulator.tcl]
+    source [file join $rootDir ${::moduleLocalName} src simulator.tcl]
 }
 
 # Initialisation du direct read 
@@ -193,7 +189,7 @@ proc readSensors {} {
                         
                         # On demande un reboot du logiciel dans ce cas
                         ::piLog::log [clock milliseconds] "error" "Ask software cultipi reboot"
-                        ::piServer::sendToServer $::port(serverCultiPi) "$::port(serverAcqSensor) [incr ::TrameIndex] stop"
+                        ::piServer::sendToServer $::piServer::portNumber(serverCultipi) "$::piServer::portNumber(${::moduleLocalName}) [incr ::TrameIndex] stop"
                         
                     } else {
                         set computedValue [expr ($valueHP * 256 + $valueLP) / 100.0]
@@ -232,7 +228,7 @@ proc readSensors {} {
 
                             # On demande un reboot du logiciel dans ce cas
                             ::piLog::log [clock milliseconds] "error" "Ask software cultipi reboot"
-                            ::piServer::sendToServer $::port(serverCultiPi) "$::port(serverAcqSensor) [incr ::TrameIndex] stop"
+                            ::piServer::sendToServer $::piServer::portNumber(serverCultipi) "$::piServer::portNumber(${::moduleLocalName}) [incr ::TrameIndex] stop"
 
                         } else {
                             set computedValue [expr ($valueHP * 256 + $valueLP) / 100.0]
@@ -267,7 +263,7 @@ proc readSensors {} {
             set value [::direct_read::read_value $pin]
             
             # SI la valeur est valide, on la sauvegarde
-            if {$value != "NA"} {
+            if {[string is integer $value] && $value != ""} {
             
                 # Si l'utilisateur a prédéfinie des valeurs, on les appliques
                 if {$::configXML(direct_read,$sensorDirect,value) != "NA" && $value == 1} {
@@ -293,8 +289,7 @@ proc readSensors {} {
             set value [::direct_read::read_value $pin]
             
             # SI la valeur est valide, on la sauvegarde
-            if {$value != "NA"} {
-            
+            if {[string is integer $value] && $value != ""} {
                 # Si l'utilisateur a prédéfinie des valeurs, on les appliques
                 if {$::configXML(direct_read,$sensorDirect,value2) != "NA" && $value == 1} {
                     set value $::configXML(direct_read,$sensorDirect,value2)
@@ -332,4 +327,4 @@ readSensors
 
 vwait forever
 
-# tclsh "C:\cultibox\04_CultiPi\01_Software\01_cultiPi\serverAcqSensor\serverAcqSensor.tcl" 6005 "C:\cultibox\04_CultiPi\02_conf\00_defaultConf_Win\serverAcqSensor\conf.xml" 6001 
+# tclsh "D:\CBX\cultipiCore\serverAcqSensor\serverAcqSensor.tcl" 6006 "D:\CBX\cultipiCore\serverAcqSensor\conf.xml"
