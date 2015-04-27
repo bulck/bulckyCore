@@ -115,6 +115,8 @@ catch {
 
 # On ferme tous les pipes ouverts
 foreach op $listeOpen {
+    fconfigure $op -blocking 0
+    puts [read $op]
     close $op
 }
 
@@ -125,12 +127,12 @@ foreach op $listeOpen {
 if {$::tcl_platform(os) == "Windows NT"} {
     set logConf(logPath) "D:/CBX/cultipiCore"
 } else {
-    set logConf(logPath) "/var/log/cultipi"
+    set logConf(logPath) "./_verif/02_results"
 }
 set logConf(verbose) debug
 ::piXML::writeXML ${rootDir}/_conf/01_defaultConf_RPi/serverLog/conf.xml [array get logConf]
 
-# On modifie les draeesses
+# On modifie les adresses
 set fid [open ${rootDir}/_conf/01_defaultConf_RPi/serverPlugUpdate/plg/pluga w+]
 puts $fid "03"
 puts $fid "50"
