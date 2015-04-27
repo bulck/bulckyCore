@@ -233,6 +233,10 @@ catch {
     puts [exec ps aux | grep tclsh]
 }
 
+fconfigure $testa -blocking 0
+puts [read $testa]
+close $testa
+    
 #**********************************************
 
 after cancel $::IDAfterWatchdog
