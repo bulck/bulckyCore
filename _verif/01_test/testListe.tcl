@@ -43,6 +43,26 @@ catch {
 set moduleListLogFirst [list serverLog serverAcqSensor serverCultibox serverHisto serverIrrigation serverMail serverPlugUpdate serverSupervision]
 set moduleListLogEnd   [list serverAcqSensor serverCultibox serverHisto serverIrrigation serverMail serverPlugUpdate serverSupervision serverLog]
 
+proc setPluga {filename adressList} {
+
+    set fid [open $filename w+]
+
+    set nbAdress [llength $adressList]
+    if {$nbAdress < 10} {
+        set nbAdress "$0{nbAdress}"
+    }
+
+    puts $fid $nbAdress
+
+    foreach adress $adressList {
+        puts $fid $adress
+    }
+
+    close $fid
+
+}
+
+
 #**********************************************
 # Lancement individuel des modules
 
@@ -54,6 +74,7 @@ if {$::tcl_platform(os) == "Windows NT"} {
 }
 set logConf(verbose) debug
 ::piXML::writeXML ${rootDir}/serverLog/confExample/conf.xml [array get logConf]
+setPluga ${rootDir}/serverPlugUpdate/confExample/plg/pluga [list 50 51 52]
 
 set listeOpen ""
 foreach module $moduleListLogFirst {
