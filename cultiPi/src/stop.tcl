@@ -37,6 +37,11 @@ proc stopCultiPi {} {
                 }
             }
         }
+        
+        if {$::confStart($moduleXML,pipeID) != ""} {
+            close $::confStart($moduleXML,pipeID)
+        }
+        
     }
 
     ::piLog::log [clock milliseconds] "info" "Fin arret Culti Pi"
@@ -44,6 +49,7 @@ proc stopCultiPi {} {
     # Arrêt du serveur de log (forcement en dernier)
     ::piServer::sendToServer $::piServer::portNumber(serverLog) "<[clock milliseconds]><cultipi><debug><stop>"
     ::piLog::closeLog
+    close $::confStart(serverLog,pipeID)
     
     after 500 {
         puts "[clock format [clock seconds] -format "%b %d %H:%M:%S"] : cultiPi : Bye Bye ! "

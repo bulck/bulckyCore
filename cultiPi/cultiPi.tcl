@@ -47,6 +47,7 @@ set confStart(start) [lindex [::piXML::open_xml [file join $fileName(cultiPi,con
 foreach moduleXML $::confStart(start) {
     set moduleName [::piXML::searchOptionInElement name $moduleXML]
     set ::confStart(${moduleName},pid) ""
+    set ::confStart(${moduleName},pipeID) ""
 }
 
 # Load server Culti Pi
