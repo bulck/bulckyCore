@@ -7,6 +7,22 @@ package provide piServer 1.0
 namespace eval ::piServer {
     variable callBackMessage ""
     variable debug 0
+    variable portNumber
+    
+    set portNumber(serverCultipi)     6000
+    set portNumber(serverLog)         6003
+    set portNumber(serverPlugUpdate)  6004
+    set portNumber(serverAcqSensor)   6006
+    set portNumber(serverHisto)       6009
+    set portNumber(serverIrrigation)  6011
+    set portNumber(serverCultibox)    6013
+    set portNumber(serverMail)        6015
+    set portNumber(serverSupervision) 6019
+    
+    set portNumber(serverGet)         6022
+    set portNumber(serverGetCommand)  6023
+    set portNumber(serverSet)         6024
+    set portNumber(serverSetCommand)  6025
 }
 
 # Load Cultipi server
