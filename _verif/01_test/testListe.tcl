@@ -35,16 +35,21 @@ set IDAfterWatchdog [after 1000 watchDog]
 # Premier test : on démarre l'ensemble
 puts "Lancement des test..."
 
+catch {
+    puts "Liste des process avant tout"
+    puts [exec ps aux | grep tclsh]
+}
 
 set moduleListLogFirst [list serverLog serverAcqSensor serverCultibox serverHisto serverIrrigation serverMail serverPlugUpdate serverSupervision]
 set moduleListLogEnd   [list serverAcqSensor serverCultibox serverHisto serverIrrigation serverMail serverPlugUpdate serverSupervision serverLog]
 
 #**********************************************
 # Lancement individuel des modules
+set listeOpen ""
 foreach module $moduleListLogFirst {
     puts "Démarrage de $module"
     puts "Ligne de commande : tclsh ${rootDir}/${module}/${module}.tcl ${rootDir}/${module}/confExample/conf.xml"
-    open "| tclsh ${rootDir}/${module}/${module}.tcl ${rootDir}/${module}/confExample/conf.xml"
+    lappend listeOpen [open "| tclsh ${rootDir}/${module}/${module}.tcl ${rootDir}/${module}/confExample/conf.xml"]
 }
 
 # On attend 5 secondes
@@ -108,6 +113,10 @@ catch {
     puts [exec ps aux | grep tclsh]
 }
 
+# On ferme tous les pipes ouverts
+foreach op $listeOpen {
+    close $op
+}
 
 #**********************************************
 # On test le démarrage de cultipi
