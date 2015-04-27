@@ -121,10 +121,21 @@ if {$::tcl_platform(os) == "Windows NT"} {
 set logConf(verbose) debug
 ::piXML::writeXML ${rootDir}/_conf/01_defaultConf_RPi/serverLog/conf.xml [array get logConf]
 
-open "| tclsh ${rootDir}/cultiPi/cultiPi.tcl ${rootDir}/_conf"
+# On modifie les draeesses
+set fid [open ${rootDir}/_conf/01_defaultConf_RPi/serverPlugUpdate/plg/pluga w+]
+puts $fid "03"
+puts $fid "50"
+puts $fid "51"
+puts $fid "52"
+close $fid
+
+set testa [open "| tclsh ${rootDir}/cultiPi/cultiPi.tcl ${rootDir}/_conf"]
+puts "tclsh ${rootDir}/cultiPi/cultiPi.tcl ${rootDir}/_conf"
+
 
 # On attend un peu que tout soit démarré
-after 5000
+after 15000
+
 
 foreach module $moduleListLogFirst {
     puts "Démarrage Cultipi :lecture PID $module"
