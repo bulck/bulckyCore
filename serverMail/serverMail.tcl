@@ -1,14 +1,10 @@
 # Init directory
 set rootDir [file dirname [file dirname [info script]]]
 
-# Read argv
-set port(serverMail)  [lindex $argv 0]
-set confXML                 [lindex $argv 1]
-set port(serverLogs)        [lindex $argv 2]
-set port(serverCultiPi)     [lindex $argv 3]
-set port(serverAcqSensor)   6006
-set port(serverPlugUpdate)  6004
-set port(serverHisto)       6009
+# Lecture des arguments : seul le path du fichier XML est donné en argument
+set confXML                 [lindex $argv 0]
+
+set moduleLocalName serverMail
 
 # Load lib
 lappend auto_path [file join $rootDir lib tcl]
@@ -19,7 +15,7 @@ package require piTime
 package require piXML
 
 # Chargement des fichiers externes
-source [file join $rootDir serverMail src serveurMessage.tcl]
+source [file join $rootDir ${::moduleLocalName} src serveurMessage.tcl]
 
 package require smtp
 package require mime
@@ -45,13 +41,11 @@ if {$RC != 0} {
 }
 
 # On initialise la connexion avec le server de log
-::piLog::openLog $port(serverLogs) "serverMail" $configXML(verbose)
+::piLog::openLog $::piServer::portNumber(serverLog) ${::moduleLocalName} $configXML(verbose)
 
-::piLog::log [clock milliseconds] "info" "starting serverMail - PID : [pid]"
-::piLog::log [clock milliseconds] "info" "port serverMail : $port(serverMail)"
+::piLog::log [clock milliseconds] "info" "starting ${::moduleLocalName} - PID : [pid]"
+::piLog::log [clock milliseconds] "info" "port ${::moduleLocalName} : $::piServer::portNumber(${::moduleLocalName})"
 ::piLog::log [clock milliseconds] "info" "confXML : $confXML"
-::piLog::log [clock milliseconds] "info" "port serverLogs : $port(serverLogs)"
-::piLog::log [clock milliseconds] "info" "port serverCultiPi : $port(serverCultiPi)"
 # On affiche les infos dans le fichier de debug
 foreach element [array names configXML] {
     if {$element != "password"} {
@@ -66,13 +60,13 @@ proc bgerror {message} {
 
 # Load server
 ::piLog::log [clock millisecond] "info" "starting serveur"
-::piServer::start messageGestion $port(serverMail)
+::piServer::start messageGestion $::piServer::portNumber(${::moduleLocalName})
 ::piLog::log [clock millisecond] "info" "serveur is started"
 
 proc stopIt {} {
-    ::piLog::log [clock milliseconds] "info" "Start stopping serverMail"
+    ::piLog::log [clock milliseconds] "info" "Start stopping ${::moduleLocalName}"
     set ::forever 0
-    ::piLog::log [clock milliseconds] "info" "End stopping serverMail"
+    ::piLog::log [clock milliseconds] "info" "End stopping ${::moduleLocalName}"
     
     # Arrêt du server de log
     ::piLog::closeLog
