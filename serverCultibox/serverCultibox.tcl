@@ -1,15 +1,10 @@
 # Init directory
 set rootDir [file dirname [file dirname [info script]]]
 
-# Read argv
-set port(serverCultibox)    [lindex $argv 0]
-set confXML                 [lindex $argv 1]
-set port(serverLogs)        [lindex $argv 2]
-set port(serverCultiPi)     [lindex $argv 3]
-set port(serverAcqSensor)   6006
-set port(serverPlugUpdate)  6004
-set port(serverHisto)       6009
-set port(serverMail)        6015
+# Lecture des arguments : seul le path du fichier XML est donné en argument
+set confXML                 [lindex $argv 0]
+
+set moduleLocalName serverCultibox
 
 # Load lib
 lappend auto_path [file join $rootDir lib tcl]
@@ -20,8 +15,8 @@ package require piTime
 package require piXML
 
 # Chargement des fichiers externes
-source [file join $rootDir serverCultibox src serveurMessage.tcl]
-source [file join $rootDir serverCultibox src sensorAcq.tcl]
+source [file join $rootDir ${::moduleLocalName} src serveurMessage.tcl]
+source [file join $rootDir ${::moduleLocalName} src sensorAcq.tcl]
 
 # Initialisation d'un compteur pour les commandes externes envoyées
 set TrameIndex 0
@@ -41,13 +36,11 @@ if {$RC != 0} {
 }
 
 # On initialise la connexion avec le server de log
-::piLog::openLog $port(serverLogs) "serverCultibox" $configXML(verbose)
+::piLog::openLog $::piServer::portNumber(serverLog) ${::moduleLocalName} $configXML(verbose)
 
-::piLog::log [clock milliseconds] "info" "starting serverCultibox - PID : [pid]"
-::piLog::log [clock milliseconds] "info" "port serverCultibox : $port(serverCultibox)"
+::piLog::log [clock milliseconds] "info" "starting ${::moduleLocalName} - PID : [pid]"
+::piLog::log [clock milliseconds] "info" "port ${::moduleLocalName} : $::piServer::portNumber(${::moduleLocalName})"
 ::piLog::log [clock milliseconds] "info" "confXML : $confXML"
-::piLog::log [clock milliseconds] "info" "port serverLogs : $port(serverLogs)"
-::piLog::log [clock milliseconds] "info" "port serverCultiPi : $port(serverCultiPi)"
 # On affiche les infos dans le fichier de debug
 foreach element [array names configXML] {
     ::piLog::log [clock milliseconds] "info" "$element : $configXML($element)"
@@ -60,13 +53,13 @@ proc bgerror {message} {
 
 # Load server
 ::piLog::log [clock millisecond] "info" "starting serveur"
-::piServer::start messageGestion $port(serverCultibox)
+::piServer::start messageGestion $::piServer::portNumber(${::moduleLocalName})
 ::piLog::log [clock millisecond] "info" "serveur is started"
 
 proc stopIt {} {
-    ::piLog::log [clock milliseconds] "info" "Start stopping serverCultibox"
+    ::piLog::log [clock milliseconds] "info" "Start stopping ${::moduleLocalName}"
     set ::forever 0
-    ::piLog::log [clock milliseconds] "info" "End stopping serverCultibox"
+    ::piLog::log [clock milliseconds] "info" "End stopping ${::moduleLocalName}"
     
     # Arrêt du server de log
     ::piLog::closeLog

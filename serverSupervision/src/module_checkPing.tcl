@@ -76,6 +76,7 @@ proc checkPing::check {processID} {
             ::piLog::log [clock milliseconds] "info" "checkPing::check Check $IP Fail"
             set errorsFind 1
         }
+        update
 
         if {$nbEchec($processID,$IP) > $timeMax($processID)} {
 
@@ -86,11 +87,11 @@ proc checkPing::check {processID} {
                 switch $actionToDo {
                     "reboot" {
                         ::piLog::log [clock milliseconds] "warning" "checkPing::check Check $IP Fail more than $timeMax($processID) so ask reboot"
-                        exec sudo reboot
+                        exec sudo /sbin/shutdown -r now
                     }
                     "sendmail" {
                         ::piLog::log [clock milliseconds] "warning" "checkPing::check Check $IP Fail more than $timeMax($processID) so sendMail"
-                        ::piServer::sendToServer $::port(serverMail) "$::port(serverSupervision) [incr ::TrameIndex] sendMail [lindex $action($processID) 1] \"Cultibox : Problème de communication\" \"Plus de communication avec $IP depuis plus de $timeMax($processID) secondes.\""
+                        ::piServer::sendToServer $::piServer::portNumber(serverMail) "$::piServer::portNumber(serverSupervision) [incr ::TrameIndex] sendMail [lindex $action($processID) 1] \"Cultibox : Problème de communication\" \"Plus de communication avec $IP depuis plus de $timeMax($processID) secondes.\""
                     }
                     default {
                         ::piLog::log [clock milliseconds] "error" "checkPing::check Not recognize action $actionToDo"
@@ -106,7 +107,7 @@ proc checkPing::check {processID} {
     
     # Le cas d'un retour à la normal
     if {$errorsFind == 0 && $actionStatus($processID) != ""} {
-         ::piServer::sendToServer $::port(serverMail) "$::port(serverSupervision) [incr ::TrameIndex] sendMail [lindex $action($processID) 1] \"Cultibox : Fin Problème de communication\" \"Retour à la normal pour le problème de communication.\""
+         ::piServer::sendToServer $::piServer::portNumber(serverMail) "$::piServer::portNumber(serverSupervision) [incr ::TrameIndex] sendMail [lindex $action($processID) 1] \"Cultibox : Fin Problème de communication\" \"Retour à la normal pour le problème de communication.\""
          set actionStatus($processID) ""
     }
     

@@ -1,15 +1,10 @@
 # Pour lancer l'automatisation : tclsh /home/sdf/Bureau/program/progam.tcl
 # Pour arreter : Ctrl + C
 
-# Read argv
-set port(serverIrrigation)  [lindex $argv 0]
-set confXML                 [lindex $argv 1]
-set port(serverLogs)        [lindex $argv 2]
-set port(serverCultiPi)     [lindex $argv 3]
-set port(serverCultipi) 6000
-set port(serverAcqSensor) 6006
-set port(serverPlugUpdate) 6004
-set port(serverHisto) 6009
+# Lecture des arguments : seul le path du fichier XML est donné en argument
+set confXML                 [lindex $argv 0]
+
+set moduleLocalName serverIrrigation
 
 # Load lib
 set rootDir [file dirname [file dirname [info script]]]
@@ -21,9 +16,9 @@ package require piServer
 package require piTools
 package require piXML
 
-source [file join $rootDir serverIrrigation src updateCuve.tcl]
-source [file join $rootDir serverIrrigation src regulCuve.tcl]
-source [file join $rootDir serverIrrigation src serveurMessage.tcl]
+source [file join $rootDir ${::moduleLocalName} src updateCuve.tcl]
+source [file join $rootDir ${::moduleLocalName} src regulCuve.tcl]
+source [file join $rootDir ${::moduleLocalName} src serveurMessage.tcl]
 
 # Initialisation d'un compteur pour les commandes externes envoyées
 set TrameIndex 0
@@ -34,7 +29,7 @@ array set configXML {
 
 if {[file exists $confXML] != 1} {
     # Le fichier de conf n'exists pas, on meurt tranquillement
-    puts "[clock milliseconds] info serverIrrigation Conf file ($confXML) does not exists. Bye Bye !"
+    puts "[clock milliseconds] info ${::moduleLocalName} Conf file ($confXML) does not exists. Bye Bye !"
     exit
 }
 
@@ -43,17 +38,15 @@ set RC [catch {
     array set configXML [::piXML::convertXMLToArray $confXML]
 } msg]
 if {$RC != 0} {
-    puts "[clock milliseconds] info serverIrrigation [clock milliseconds] error $msg"
+    puts "[clock milliseconds] info ${::moduleLocalName} [clock milliseconds] error $msg"
 }
 
 # On initialise la connexion avec le server de log
-::piLog::openLog $port(serverLogs) "serverIrrigation" $configXML(verbose)
+::piLog::openLog $::piServer::portNumber(serverLog) ${::moduleLocalName} $configXML(verbose)
 
-::piLog::log [clock milliseconds] "info" "starting serverIrrigation - PID : [pid]"
-::piLog::log [clock milliseconds] "info" "port serverIrrigation : $port(serverIrrigation)"
+::piLog::log [clock milliseconds] "info" "starting ${::moduleLocalName} - PID : [pid]"
+::piLog::log [clock milliseconds] "info" "port ${::moduleLocalName} : $::piServer::portNumber(${::moduleLocalName})"
 ::piLog::log [clock milliseconds] "info" "confXML : $confXML"
-::piLog::log [clock milliseconds] "info" "port serverLogs : $port(serverLogs)"
-::piLog::log [clock milliseconds] "info" "port serverCultiPi : $port(serverCultiPi)"
 # On affiche les infos dans le fichier de debug
 foreach element [lsort [array names configXML]] {
     ::piLog::log [clock milliseconds] "info" "$element : $configXML($element)"
@@ -61,9 +54,9 @@ foreach element [lsort [array names configXML]] {
 
 
 proc stopIt {} {
-    ::piLog::log [clock milliseconds] "info" "Start stopping serverIrrigation"
+    ::piLog::log [clock milliseconds] "info" "Start stopping ${::moduleLocalName}"
     set ::forever 0
-    ::piLog::log [clock milliseconds] "info" "End stopping serverIrrigation"
+    ::piLog::log [clock milliseconds] "info" "End stopping ${::moduleLocalName}"
     
     # Arrêt du server de log
     ::piLog::closeLog
@@ -186,11 +179,11 @@ proc irrigationLoop {indexPlateforme indexZone} {
 
     # On allume l'électrovanne 1 pour 2min30 secondes
     ::piLog::log [clock milliseconds] "info" "irrigation : plate-forme $plateformeNom : zone $zoneNom : Mise en route EV pendant [expr $TempsOnEV + 1] s"; update
-    ::piServer::sendToServer $::port(serverPlugUpdate) "$::port(serverIrrigation) 0 setRepere $EVZone on [expr $TempsOnEV + 1]" $IP
+    ::piServer::sendToServer $::piServer::portNumber(serverPlugUpdate) "$::piServer::portNumber(${::moduleLocalName}) 0 setRepere $EVZone on [expr $TempsOnEV + 1]" $IP
 
     # On allume la pompe
     ::piLog::log [clock milliseconds] "info" "irrigation : plate-forme $plateformeNom : zone $zoneNom : Mise en route pompe pendant $TempsOnEV s"; update
-    ::piServer::sendToServer $::port(serverPlugUpdate) "$::port(serverIrrigation) 0 setRepere $Pompe on $TempsOnEV" $IP
+    ::piServer::sendToServer $::piServer::portNumber(serverPlugUpdate) "$::piServer::portNumber(${::moduleLocalName}) 0 setRepere $Pompe on $TempsOnEV" $IP
 
     # Dans X secondes, on indique que la zone n'est plus pilotée
     after [expr $TempsOnEV * 1000] "set ::irrigationActive($indexPlateforme) false"
@@ -216,10 +209,10 @@ proc irrigationLoop {indexPlateforme indexZone} {
 initcuve
 
 # On met en route le serveur de message
-::piServer::start messageGestion $::port(serverIrrigation)
+::piServer::start messageGestion $::piServer::portNumber(${::moduleLocalName})
 
 # Mise en route de la mise à jour des cuves
-updateCuve
+after 100 updateCuve
 
 # *************  Régulation
 initRegulationVariable

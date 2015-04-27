@@ -1,11 +1,10 @@
 # Init directory
 set rootDir [file dirname [file dirname [info script]]]
 
-# Read argv
-set port(serverHisto)       [lindex $argv 0]
-set confXML                 [lindex $argv 1]
-set port(serverLogs)        [lindex $argv 2]
-set port(serverCultiPi)     [lindex $argv 3]
+# Lecture des arguments : seul le path du fichier XML est donné en argument
+set confXML                 [lindex $argv 0]
+
+set moduleLocalName serverHisto
 
 # Load lib
 lappend auto_path [file join $rootDir lib tcl]
@@ -16,10 +15,10 @@ package require piXML
 package require piTime
 
 # Chargement des fichiers externes
-source [file join $rootDir serverHisto src plugAcq.tcl]
-source [file join $rootDir serverHisto src sensorAcq.tcl]
-source [file join $rootDir serverHisto src serveurMessage.tcl]
-source [file join $rootDir serverHisto src sql.tcl]
+source [file join $rootDir ${::moduleLocalName} src plugAcq.tcl]
+source [file join $rootDir ${::moduleLocalName} src sensorAcq.tcl]
+source [file join $rootDir ${::moduleLocalName} src serveurMessage.tcl]
+source [file join $rootDir ${::moduleLocalName} src sql.tcl]
 
 # Initialisation d'un compteur pour les commandes externes envoyées
 set TrameIndex 0
@@ -39,13 +38,9 @@ if {$RC != 0} {
 }
 
 # On initialise la connexion avec le server de log
-::piLog::openLog $port(serverLogs) "serverHisto" $configXML(verbose)
-::piLog::log [clock milliseconds] "info" "starting serverHisto - PID : [pid]"
-::piLog::log [clock milliseconds] "info" "port serverHisto : $port(serverHisto)"
-::piLog::log [clock milliseconds] "info" "confXML : $confXML"
-::piLog::log [clock milliseconds] "info" "port serverLogs : $port(serverLogs)"
-::piLog::log [clock milliseconds] "info" "port serverCultiPi : $port(serverCultiPi)"
-::piLog::log [clock milliseconds] "info" "verbose : $configXML(verbose)"
+::piLog::openLog $::piServer::portNumber(serverLog) ${::moduleLocalName} $configXML(verbose)
+::piLog::log [clock milliseconds] "info" "starting ${::moduleLocalName} - PID : [pid]"
+::piLog::log [clock milliseconds] "info" "port ${::moduleLocalName} : $::piServer::portNumber(${::moduleLocalName})"
 # On affiche les infos dans le fichier de debug
 foreach element [array names configXML] {
     ::piLog::log [clock milliseconds] "info" "$element : $configXML($element)"
@@ -57,13 +52,13 @@ proc bgerror {message} {
 
 # Load server
 ::piLog::log [clock millisecond] "info" "starting serveur"
-::piServer::start messageGestion $port(serverHisto)
+::piServer::start messageGestion $::piServer::portNumber(${::moduleLocalName})
 ::piLog::log [clock millisecond] "info" "serveur is started"
 
 proc stopIt {} {
-    ::piLog::log [clock milliseconds] "info" "Start stopping serverHisto"
+    ::piLog::log [clock milliseconds] "info" "Start stopping ${::moduleLocalName}"
     set ::forever 0
-    ::piLog::log [clock milliseconds] "info" "End stopping serverHisto"
+    ::piLog::log [clock milliseconds] "info" "End stopping ${::moduleLocalName}"
     
     # Arrêt du server de log
     ::piLog::closeLog

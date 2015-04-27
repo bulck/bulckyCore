@@ -120,7 +120,7 @@ proc ::XMAX::setValue {plugNumber value address} {
                 ::piLog::log [clock milliseconds] "error" "::XMAX::setValue Module ${i} with value $newValueForPWM(${i}) does not respond :$msg "
                 
                 # On lui demande de redémarrer
-                ::piServer::sendToServer $::port(serverCultiPi) "$::port(serverAcqSensor) [incr ::TrameIndex] restartSlave"
+                ::piServer::sendToServer $::piServer::portNumber(serverCultipi) "$::piServer::portNumber(serverAcqSensor) [incr ::TrameIndex] restartSlave"
             } else {
                 # On debug !
                 ::piLog::log [clock milliseconds] "info" "::XMAX::setValue Output PWM_${i} to $newValueForPWM(${i}) OK"

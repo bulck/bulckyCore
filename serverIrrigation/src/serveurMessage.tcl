@@ -17,7 +17,7 @@ proc messageGestion {message networkhost} {
         }
         "pid" {
             ::piLog::log [clock milliseconds] "info" "messageGestion : Asked pid"
-            ::piServer::sendToServer $serverForResponse "$::port(serverHisto) $indexForResponse pid serverHisto [pid]"
+            ::piServer::sendToServer $serverForResponse "$::piServer::portNumber(${::moduleLocalName}) $indexForResponse _pid ${::moduleLocalName} [pid]" $networkhost
         }
         "getRepere" {
             # La variable est le nom de la variable à lire

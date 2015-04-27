@@ -13,7 +13,7 @@ proc messageGestion {message networkhost} {
         }
         "pid" {
             ::piLog::log [clock milliseconds] "info" "Asked pid"
-            ::piServer::sendToServer $serverForResponse "$::port(serverHisto) $indexForResponse pid serverHisto [pid]"
+            ::piServer::sendToServer $serverForResponse "$::piServer::portNumber(${::moduleLocalName}) $indexForResponse _pid ${::moduleLocalName} [pid]" $networkhost
         }
         "getRepere" {
             # La variable est le nom de la variable à lire
@@ -99,7 +99,7 @@ proc messageGestion {message networkhost} {
         }
         default {
             # Si on reçoit le retour d'une commande, le nom du serveur est le notre
-            if {$serverForResponse == $::port(serverPlugUpdate)} {
+            if {$serverForResponse == $::piServer::portNumber(${::moduleLocalName})} {
             
                 if {[array names ::TrameSended -exact $indexForResponse] != ""} {
                     

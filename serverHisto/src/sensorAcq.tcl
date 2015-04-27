@@ -13,7 +13,7 @@ proc ::sensorAcq::init {logPeriode} {
 
     # On demande le numéro de port du lecteur de capteur
     ::piLog::log [clock milliseconds] "info" "::sensorAcq::init ask getPort serverAcqSensor"
-    ::piServer::sendToServer $::port(serverCultiPi) "$::port(serverHisto) [incr ::TrameIndex] getPort serverAcqSensor"
+    ::piServer::sendToServer $::piServer::portNumber(serverCultipi) "$::piServer::portNumber(serverHisto) [incr ::TrameIndex] getPort serverAcqSensor"
 
     for {set i 1} {$i < 7} {incr i} {
         set ::sensor(${i},value,1) ""
@@ -34,17 +34,17 @@ proc ::sensorAcq::loop {} {
     variable bandeMorteAcq
     
     # On vérifie si le numéro de port est disponible
-    if {$::port(serverAcqSensor) != ""} {
+    if {$::piServer::portNumber(serverAcqSensor) != ""} {
     
         # Le numéro du port est disponible
         # On lui demande les repères nécessaires (les 6 premiers) par abonnement
         for {set i 1} {$i < 7} {incr i} {
-            ::piServer::sendToServer $::port(serverAcqSensor) "$::port(serverHisto) [incr ::TrameIndex] subscription ${i},value $periodeAcq $bandeMorteAcq"
-            ::piServer::sendToServer $::port(serverAcqSensor) "$::port(serverHisto) [incr ::TrameIndex] subscription ${i},type $periodeAcq"
+            ::piServer::sendToServer $::piServer::portNumber(serverAcqSensor) "$::piServer::portNumber(serverHisto) [incr ::TrameIndex] subscription ${i},value $periodeAcq $bandeMorteAcq"
+            ::piServer::sendToServer $::piServer::portNumber(serverAcqSensor) "$::piServer::portNumber(serverHisto) [incr ::TrameIndex] subscription ${i},type $periodeAcq"
             
             # Les lignes suivantes marchent aussi !
-            #::piServer::sendToServer $::port(serverAcqSensor) "$::port(serverHisto) [incr ::TrameIndex] getRepere ${i},value,1"
-            #::piServer::sendToServer $::port(serverAcqSensor) "$::port(serverHisto) [incr ::TrameIndex] getRepere ${i},value,2"
+            #::piServer::sendToServer $::piServer::portNumber(serverAcqSensor) "$::piServer::portNumber(serverHisto) [incr ::TrameIndex] getRepere ${i},value,1"
+            #::piServer::sendToServer $::piServer::portNumber(serverAcqSensor) "$::piServer::portNumber(serverHisto) [incr ::TrameIndex] getRepere ${i},value,2"
         }
 
         set ::subscriptionRunned(sensorAcq) 1

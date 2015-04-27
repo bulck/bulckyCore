@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <conf>
-    <item name="verbose" level="info" />
+    <item name="verbose" level="debug" />
     <item key="localtechnique,id" value="1" />
     <item key="localtechnique,name" value="localtechnique" />
     <item key="localtechnique,ip" value="192.168.0.53" />

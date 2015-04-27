@@ -51,6 +51,6 @@ proc ::CULTIPI::setValue {plugNumber value address} {
     ::savePlugSendValue $plugNumber $value
 
     # On pilote la prise en sortie
-    ::piServer::sendToServer $::port(serverPlugUpdate) "$::port(serverPlugUpdate) 0 setRepere $cultipi_prise $value 86399" $::configXML(module_CULTIPI,ip,$cultipi_numero)
+    ::piServer::sendToServer $::piServer::portNumber(serverPlugUpdate) "$::piServer::portNumber(serverPlugUpdate) 0 setRepere $cultipi_prise $value 86399" $::configXML(module_CULTIPI,ip,$cultipi_numero)
 
 }

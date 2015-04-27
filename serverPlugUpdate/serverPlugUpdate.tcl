@@ -1,11 +1,10 @@
 # Init directory
 set rootDir [file dirname [file dirname [info script]]]
 
-# Read argv
-set port(serverPlugUpdate)  [lindex $argv 0]
-set confXML                 [lindex $argv 1]
-set port(serverLogs)        [lindex $argv 2]
-set port(serverCultiPi)     [lindex $argv 3]
+# Lecture des arguments : seul le path du fichier XML est donné en argument
+set confXML                 [lindex $argv 0]
+
+set moduleLocalName serverPlugUpdate
 
 # Global var for regulation
 set regul(alarme) 0
@@ -21,22 +20,22 @@ package require piTime
 package require piXML
 
 # Chargement des fichiers externes
-source [file join $rootDir serverPlugUpdate src emeteur.tcl]
-source [file join $rootDir serverPlugUpdate src pluga.tcl]
-source [file join $rootDir serverPlugUpdate src plugXX.tcl]
-source [file join $rootDir serverPlugUpdate src sensor.tcl]
-source [file join $rootDir serverPlugUpdate src serveurMessage.tcl]
-source [file join $rootDir serverPlugUpdate src regulation.tcl]
-source [file join $rootDir serverPlugUpdate src forcePlug.tcl]
-source [file join $rootDir serverPlugUpdate src address_module.tcl]
+source [file join $rootDir ${::moduleLocalName} src emeteur.tcl]
+source [file join $rootDir ${::moduleLocalName} src pluga.tcl]
+source [file join $rootDir ${::moduleLocalName} src plugXX.tcl]
+source [file join $rootDir ${::moduleLocalName} src sensor.tcl]
+source [file join $rootDir ${::moduleLocalName} src serveurMessage.tcl]
+source [file join $rootDir ${::moduleLocalName} src regulation.tcl]
+source [file join $rootDir ${::moduleLocalName} src forcePlug.tcl]
+source [file join $rootDir ${::moduleLocalName} src address_module.tcl]
 
 # Chargement des différents modules de pilotage
-source [file join $rootDir serverPlugUpdate src module_direct.tcl]
-source [file join $rootDir serverPlugUpdate src module_wireless.tcl]
-source [file join $rootDir serverPlugUpdate src module_CULTIPI.tcl]
-source [file join $rootDir serverPlugUpdate src module_DIMMER.tcl]
-source [file join $rootDir serverPlugUpdate src module_MCP230XX.tcl]
-source [file join $rootDir serverPlugUpdate src module_XMAX.tcl]
+source [file join $rootDir ${::moduleLocalName} src module_direct.tcl]
+source [file join $rootDir ${::moduleLocalName} src module_wireless.tcl]
+source [file join $rootDir ${::moduleLocalName} src module_CULTIPI.tcl]
+source [file join $rootDir ${::moduleLocalName} src module_DIMMER.tcl]
+source [file join $rootDir ${::moduleLocalName} src module_MCP230XX.tcl]
+source [file join $rootDir ${::moduleLocalName} src module_XMAX.tcl]
 
 
 # Initialisation d'un compteur pour les commandes externes envoyées
@@ -52,17 +51,15 @@ set RC [catch {
     array set configXML [::piXML::convertXMLToArray $confXML]
 } msg]
 if {$RC != 0} {
-    puts "ServerPlugUpdate [clock milliseconds] error $msg"
+    puts "${::moduleLocalName} [clock milliseconds] error $msg"
 }
 
 # On initialise la connexion avec le server de log
-::piLog::openLog $port(serverLogs) "serverPlugUpdate" $configXML(verbose)
+::piLog::openLog $::piServer::portNumber(serverLog) ${::moduleLocalName} $configXML(verbose)
 
-::piLog::log [clock milliseconds] "info" "starting serverPlugUpdate - PID : [pid]"
-::piLog::log [clock milliseconds] "info" "port serverPlugUpdate : $port(serverPlugUpdate)"
+::piLog::log [clock milliseconds] "info" "starting ${::moduleLocalName} - PID : [pid]"
+::piLog::log [clock milliseconds] "info" "port ${::moduleLocalName} : $::piServer::portNumber(${::moduleLocalName})"
 ::piLog::log [clock milliseconds] "info" "confXML : $confXML"
-::piLog::log [clock milliseconds] "info" "port serverLogs : $port(serverLogs)"
-::piLog::log [clock milliseconds] "info" "port serverCultiPi : $port(serverCultiPi)"
 # On affiche les infos dans le fichier de debug
 foreach element [array names configXML] {
     ::piLog::log [clock milliseconds] "info" "$element : $configXML($element)"
@@ -75,13 +72,13 @@ proc bgerror {message} {
 
 # Load server
 ::piLog::log [clock millisecond] "info" "starting serveur"
-::piServer::start messageGestion $port(serverPlugUpdate)
+::piServer::start messageGestion $::piServer::portNumber(${::moduleLocalName})
 ::piLog::log [clock millisecond] "info" "serveur is started"
 
 proc stopIt {} {
-    ::piLog::log [clock milliseconds] "info" "Start stopping serverPlugUpdate"
+    ::piLog::log [clock milliseconds] "info" "Start stopping ${::moduleLocalName}"
     set ::forever 0
-    ::piLog::log [clock milliseconds] "info" "End stopping serverPlugUpdate"
+    ::piLog::log [clock milliseconds] "info" "End stopping ${::moduleLocalName}"
     
     # Arrêt du server de log
     ::piLog::closeLog

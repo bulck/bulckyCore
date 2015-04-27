@@ -164,7 +164,7 @@ proc ::wireless::init {plugList} {
         set status [::wireless::outFromBootloader]
         
         if {$status == "restart_needed"} {
-            ::piServer::sendToServer $::port(serverCultiPi) "$::port(serverCultiPi) [incr ::TrameIndex] stop"
+            ::piServer::sendToServer $::piServer::portNumber(serverCultipi) "$::piServer::portNumber(serverCultipi) [incr ::TrameIndex] stop"
         }
         
         after 100
