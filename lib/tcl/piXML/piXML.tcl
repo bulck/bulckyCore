@@ -138,3 +138,20 @@ proc ::piXML::convertXMLToArray {XMLFile} {
     return [array get XMLarray]
     
 }
+
+proc ::piXML::writeXML {filename arrayVal} {
+
+    array set xmlArray $arrayVal
+    
+    set fid [open $filename w+]
+    puts $fid {<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>}
+    puts $fid {<conf>}
+    foreach name [array names xmlArray] {
+        puts $fid "<item name=\"${name}\" value=\"$xmlArray(${name})\" />"
+    }
+    puts $fid {</conf>}
+    
+    close $fid
+
+    
+}
