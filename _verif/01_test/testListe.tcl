@@ -45,6 +45,16 @@ set moduleListLogEnd   [list serverAcqSensor serverCultibox serverHisto serverIr
 
 #**********************************************
 # Lancement individuel des modules
+
+#On modifie la conf en fonction de l'OS
+if {$::tcl_platform(os) == "Windows NT"} {
+    set logConf(logPath) "D:/CBX/cultipiCore"
+} else {
+    set logConf(logPath) "./_verif/02_results"
+}
+set logConf(verbose) debug
+::piXML::writeXML ${rootDir}/serverLog/confExample/conf.xml [array get logConf]
+
 set listeOpen ""
 foreach module $moduleListLogFirst {
     puts "Démarrage de $module"
