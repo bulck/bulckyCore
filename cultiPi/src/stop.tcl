@@ -38,8 +38,8 @@ proc stopCultiPi {} {
             }
         }
         
-        if {$::confStart($moduleXML,pipeID) != ""} {
-            close $::confStart($moduleXML,pipeID)
+        if {$::confStart($moduleName,pipeID) != ""} {
+            close $::confStart($moduleName,pipeID)
         }
         
     }
