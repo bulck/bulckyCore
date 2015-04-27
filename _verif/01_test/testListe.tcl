@@ -49,7 +49,7 @@ proc setPluga {filename adressList} {
 
     set nbAdress [llength $adressList]
     if {$nbAdress < 10} {
-        set nbAdress "$0{nbAdress}"
+        set nbAdress "0${nbAdress}"
     }
 
     puts $fid $nbAdress
