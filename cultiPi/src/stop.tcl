@@ -16,10 +16,10 @@ proc stopCultiPi {} {
         set moduleName [::piXML::searchOptionInElement name $moduleXML]
         
         # SI le numéro du port est vide ,c'est qu'on a pas encore lancé le module
-        if {$moduleName != "serverLog" && $::confStart($moduleName,port) != ""} {
+        if {$moduleName != "serverLog" && $::piServer::portNumber($moduleName) != ""} {
             ::piLog::log [clock milliseconds] "info" "Demande arret $moduleName"
             # Arret du module
-            ::piServer::sendToServer $::confStart($moduleName,port) "[clock milliseconds] 000 stop"
+            ::piServer::sendToServer $::piServer::portNumber($moduleName) "[clock milliseconds] 000 stop"
             
             #on attend 200 ms
             after 200
@@ -42,7 +42,7 @@ proc stopCultiPi {} {
     ::piLog::log [clock milliseconds] "info" "Fin arret Culti Pi"
     
     # Arrêt du serveur de log (forcement en dernier)
-    ::piServer::sendToServer $::confStart(serverLog,port) "<[clock milliseconds]><cultipi><debug><stop>"
+    ::piServer::sendToServer $::piServer::portNumber(serverLog) "<[clock milliseconds]><cultipi><debug><stop>"
     ::piLog::closeLog
     
     after 500 {

@@ -67,14 +67,11 @@ puts "[clock format [clock seconds] -format "%b %d %H:%M:%S"] : CultiPi : start 
 set confStart(serverLog,waitAfterUS) [::piXML::searchOptionInElement waitAfterUS $confStart(serverLog)]
 puts "[clock format [clock seconds] -format "%b %d %H:%M:%S"] : CultiPi : start : serverLog waitAfterUS : $confStart(serverLog,waitAfterUS)"
 puts "[clock format [clock seconds] -format "%b %d %H:%M:%S"] : CultiPi : start : serverLog port : $::piServer::portNumber(serverLog)"
-set tempLogPath [::piXML::searchItemByName logPath [lindex [::piXML::open_xml $confStart(serverLog,xmlconf)] 2]]
-set confStart(serverLog,logsRootDir) [::piXML::searchOptionInElement logfile $tempLogPath]
-puts "[clock format [clock seconds] -format "%b %d %H:%M:%S"] : CultiPi : start : serverLog logsRootDir : $confStart(serverLog,logsRootDir)"
 set TimeStartserverLog [clock milliseconds]
 #open "| tclsh \"$serverLogFileName\" $::piServer::portNumber(serverLog) \"$logDir\""
-puts "[clock format [clock seconds] -format "%b %d %H:%M:%S"] : CultiPi : start : serverLog : $confStart(serverLog,pathexe) \"$confStart(serverLog,path)\" $::piServer::portNumber(serverLog) \"$confStart(serverLog,logsRootDir)\""
+puts "[clock format [clock seconds] -format "%b %d %H:%M:%S"] : CultiPi : start : serverLog : $confStart(serverLog,pathexe) \"$confStart(serverLog,path)\" \"$confStart(serverLog,xmlconf)\""
 
-set confStart(serverLog,pipeID) [open "| $confStart(serverLog,pathexe) \"$confStart(serverLog,path)\" $::piServer::portNumber(serverLog) \"$confStart(serverLog,logsRootDir)\""]
+set confStart(serverLog,pipeID) [open "| $confStart(serverLog,pathexe) \"$confStart(serverLog,path)\" \"$confStart(serverLog,xmlconf)\""]
 after $confStart(serverLog,waitAfterUS) 
 update
 
@@ -163,7 +160,7 @@ puts "[clock format [clock seconds] -format "%b %d %H:%M:%S"] : CultiPi : starte
 
 vwait ::forever
 
-# tclsh "D:\CBX\cultipiCore\cultiPi\cultiPi.tcl" "D:\CBX\cultipiCore_conf"
+# tclsh "D:\CBX\cultipiCore\cultiPi\cultiPi.tcl" "D:\CBX\cultipiCore\_conf"
 
 # Linux start
 # tclsh /home/pi/cultipi/01_Software/01_cultiPi/cultiPi/cultiPi.tcl /home/pi/cultipi/02_conf
