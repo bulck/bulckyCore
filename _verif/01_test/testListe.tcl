@@ -14,6 +14,7 @@ package require piTools
 
 # On charge les scripts
 source [file join $rootDirLib _verif 01_test src file_func.tcl]
+source [file join $rootDirLib _verif 01_test tst 03_serverIrrigation.tcl]
 
 set errorList ""
 
@@ -48,12 +49,23 @@ set moduleListLogEnd   [list serverAcqSensor serverCultibox serverHisto serverIr
 
 #**********************************************
 # On test le démarrage individuel des modules
-source [file join $rootDirLib _verif 01_test tst 01_demarrage_individuel.tcl]
+# source [file join $rootDirLib _verif 01_test tst 01_demarrage_individuel.tcl]
+cleaWatchDog
 
 # On test le démarrage du cultipi
-source [file join $rootDirLib _verif 01_test tst 02_demarrage_cultipi.tcl]
+# source [file join $rootDirLib _verif 01_test tst 02_demarrage_cultipi.tcl]
+cleaWatchDog
 
-
+# On lance la suite des tests
+::03_serverIrrigation::init
+::03_serverIrrigation::test $rootDir
+set errorTempList [::03_serverIrrigation::end]
+if {$errorTempList != ""} {
+    foreach errorTemp $errorTempList {
+        lappend errorList $errorTemp
+    }
+}
+cleaWatchDog
     
 #**********************************************
 
