@@ -12,9 +12,14 @@ package require piServer
 package require piXML
 package require piTools
 
+set testList [list 01_demarrage_individuel 02_demarrage_cultipi 03_serverIrrigation]
+
 # On charge les scripts
 source [file join $rootDirLib _verif 01_test src file_func.tcl]
-source [file join $rootDirLib _verif 01_test tst 03_serverIrrigation.tcl]
+source [file join $rootDirLib _verif 01_test src util_func.tcl]
+foreach test $testList {
+    source [file join $rootDirLib _verif 01_test tst ${test}.tcl]
+}
 
 set errorList ""
 
@@ -37,44 +42,36 @@ proc cleaWatchDog {} {
 set IDAfterWatchdog [after 1000 watchDog]
 
 # Premier test : on démarre l'ensemble
-puts "Lancement des test..."
+puts "* Lancement des test..."
 
-catch {
-    puts "Liste des process avant tout"
-    puts [exec ps aux | grep tclsh]
-}
-
-set moduleListLogFirst [list serverLog serverAcqSensor serverCultibox serverHisto serverIrrigation serverMail serverPlugUpdate serverSupervision]
-set moduleListLogEnd   [list serverAcqSensor serverCultibox serverHisto serverIrrigation serverMail serverPlugUpdate serverSupervision serverLog]
-
-#**********************************************
-# On test le démarrage individuel des modules
-# source [file join $rootDirLib _verif 01_test tst 01_demarrage_individuel.tcl]
 cleaWatchDog
+displayProcess
 
-# On test le démarrage du cultipi
-# source [file join $rootDirLib _verif 01_test tst 02_demarrage_cultipi.tcl]
-cleaWatchDog
-
-# On lance la suite des tests
-::03_serverIrrigation::init
-::03_serverIrrigation::test $rootDir
-set errorTempList [::03_serverIrrigation::end]
-if {$errorTempList != ""} {
-    foreach errorTemp $errorTempList {
-        lappend errorList $errorTemp
+# On lance tous les tests
+foreach test $testList {
+    ::${test}::init
+    ::${test}::test $rootDir
+    set errorTempList [::${test}::end]
+    if {$errorTempList != ""} {
+        foreach errorTemp $errorTempList {
+            lappend errorList $errorTemp
+        }
     }
+
+    cleaWatchDog
+    displayProcess
 }
-cleaWatchDog
-    
+
+
 #**********************************************
 
 after cancel $::IDAfterWatchdog
 
 if {$errorList == ""} {
+    puts "* Ensemble des test : OK"
     exit 0
 } else {
-    puts "Liste des erreurs :"
+    puts "* Liste des erreurs :"
     foreach err $errorList {
         puts $err
     }
