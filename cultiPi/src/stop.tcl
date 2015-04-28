@@ -40,6 +40,7 @@ proc stopCultiPi {} {
         
         if {$::confStart($moduleName,pipeID) != ""} {
             fconfigure $::confStart($moduleName,pipeID) -blocking 0
+            puts [read $::confStart($moduleName,pipeID)]
             close $::confStart($moduleName,pipeID)
         }
         
@@ -50,9 +51,11 @@ proc stopCultiPi {} {
     # Arrêt du serveur de log (forcement en dernier)
     ::piServer::sendToServer $::piServer::portNumber(serverLog) "<[clock milliseconds]><cultipi><debug><stop>"
     ::piLog::closeLog
-    fconfigure $::confStart(serverLog,pipeID) -blocking 0
-    close $::confStart(serverLog,pipeID)
-    
+    catch {
+        fconfigure $::confStart(serverLog,pipeID) -blocking 0
+        puts [read $::confStart(serverLog,pipeID)]
+        close $::confStart(serverLog,pipeID)
+    }
     after 500 {
         puts "[clock format [clock seconds] -format "%b %d %H:%M:%S"] : cultiPi : Bye Bye ! "
         set ::forever 1
