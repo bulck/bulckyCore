@@ -51,8 +51,11 @@ proc ::piLog::openLogAs {type} {
 
 proc ::piLog::closeLog {} {
     variable channel
-    close $channel
-
+    
+    catch {
+        close $channel
+    }
+    
     return 0
 }
 
