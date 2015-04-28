@@ -41,6 +41,7 @@ set fileName(cultiPi,confDir) [file join $fileName(cultiPi,confRootDir) [lindex 
 puts "[clock format [clock seconds] -format "%b %d %H:%M:%S"] : CultiPi : conf : conf to start is $fileName(cultiPi,confDir) - File exists ? [file exists $fileName(cultiPi,confDir)]"
 
 # Load cultiPi configuration
+puts "[clock format [clock seconds] -format "%b %d %H:%M:%S"] : CultiPi : start : start.xml file : [file join $fileName(cultiPi,confDir) cultiPi start.xml]"
 set confStart(start) [lindex [::piXML::open_xml [file join $fileName(cultiPi,confDir) cultiPi start.xml]] 2]
 
 # On initialise les variables
@@ -48,6 +49,7 @@ foreach moduleXML $::confStart(start) {
     set moduleName [::piXML::searchOptionInElement name $moduleXML]
     set ::confStart(${moduleName},pid) ""
     set ::confStart(${moduleName},pipeID) ""
+    puts "[clock format [clock seconds] -format "%b %d %H:%M:%S"] : CultiPi : start : Slave to start : $moduleName"
 }
 
 # Load server Culti Pi
