@@ -35,7 +35,7 @@ proc ::piServer::server {channel host port} \
     set ::($channel:port) $port
     # log
     if {$debug == 1} {
-        ::piLog::log [clock milliseconds] "debug" "::piServer::server Ouverture connexion par $host - socket $channel"
+        ::piLog::log [clock milliseconds] "debug" "::piServer::server Ouverture connexion par $host : $port - socket $channel"
     }
     set rc [catch \
     {
@@ -120,7 +120,7 @@ proc ::piServer::sendToServer {portNumber message {ip localhost}} {
 
     set rc [catch { set channel [socket ${ip} $portNumber] } msg]
     if {$rc == 1} {
-        ::piLog::log [clock milliseconds] "error" "::piServer::sendToServer try to open socket to -$portNumber- - erreur :  -$msg-"
+        ::piLog::log [clock milliseconds] "error" "::piServer::sendToServer try to open socket to -$ip : $portNumber- - erreur :  -$msg-"
     }
 
     set rc [catch \
@@ -129,10 +129,10 @@ proc ::piServer::sendToServer {portNumber message {ip localhost}} {
         flush $channel
     } msg]
     if {$rc == 1} {
-        ::piLog::log [clock milliseconds] "error" "::piServer::sendToServer try to send message to -$portNumber- - erreur :  -$msg-"
+        ::piLog::log [clock milliseconds] "error" "::piServer::sendToServer try to send message to -$ip : $portNumber- - erreur :  -$msg-"
     } else {
         if {$debug == 1} { 
-            ::piLog::log [clock milliseconds] "debug" "::piServer::sendToServer message send to -$portNumber- message : -$message-"
+            ::piLog::log [clock milliseconds] "debug" "::piServer::sendToServer message send to -$ip : $portNumber- message : -$message-"
         }
     }
 
