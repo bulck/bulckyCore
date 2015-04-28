@@ -112,9 +112,22 @@ proc irrigationLoop {indexPlateforme indexZone} {
     set EVZone  $::configXML(plateforme,${indexPlateforme},zone,${indexZone},prise)
     set Pompe   $::configXML(plateforme,${indexPlateforme},pompePrise)
     
-    set TempsOnEV   $::configXML(plateforme,${indexPlateforme},zone,${indexZone},tempsOn)
-    set TempsOffEV  $::configXML(plateforme,${indexPlateforme},zone,${indexZone},tempsOff)
-    set TempsPerco  $::configXML(plateforme,${indexPlateforme},tempsPerco)
+    
+    # Si on est entre 6h et 22h -> utilisation des temps de jour
+    set hour [string trimleft [clock format [clock seconds] -format %H] "0"]
+    if {$hour == ""} {set hour 0}
+    if {$hour >= 6 && $hour <= 22} {
+        set JourOuNuit jour
+        set TempsOnEV   $::configXML(plateforme,${indexPlateforme},zone,${indexZone},tempsOn)
+        set TempsOffEV  $::configXML(plateforme,${indexPlateforme},zone,${indexZone},tempsOff)
+        set TempsPerco  $::configXML(plateforme,${indexPlateforme},tempsPerco)
+    } else {
+        set JourOuNuit nuit
+        set TempsOnEV   $::configXML(plateforme,${indexPlateforme},zone,${indexZone},tempsOnNuit)
+        set TempsOffEV  $::configXML(plateforme,${indexPlateforme},zone,${indexZone},tempsOffNuit)
+        set TempsPerco  $::configXML(plateforme,${indexPlateforme},tempsPercoNuit)
+    }
+
     
     # Si la plate-forme est désactivée on arrête de vérifier
     if {$plateformeActive == 0 || $plateformeActive == "false"} {
@@ -178,11 +191,11 @@ proc irrigationLoop {indexPlateforme indexZone} {
     set ::irrigationActive($indexPlateforme) true
 
     # On allume l'électrovanne 1 pour 2min30 secondes
-    ::piLog::log [clock milliseconds] "info" "irrigation : plate-forme $plateformeNom : zone $zoneNom : Mise en route EV pendant [expr $TempsOnEV + 1] s"; update
+    ::piLog::log [clock milliseconds] "info" "irrigation : plate-forme $plateformeNom : zone $zoneNom : Mise en route EV pendant [expr $TempsOnEV + 1] s (temps définit pour $JourOuNuit)"; update
     ::piServer::sendToServer $::piServer::portNumber(serverPlugUpdate) "$::piServer::portNumber(${::moduleLocalName}) 0 setRepere $EVZone on [expr $TempsOnEV + 1]" $IP
 
     # On allume la pompe
-    ::piLog::log [clock milliseconds] "info" "irrigation : plate-forme $plateformeNom : zone $zoneNom : Mise en route pompe pendant $TempsOnEV s"; update
+    ::piLog::log [clock milliseconds] "info" "irrigation : plate-forme $plateformeNom : zone $zoneNom : Mise en route pompe pendant $TempsOnEV s (temps définit pour $JourOuNuit)"; update
     ::piServer::sendToServer $::piServer::portNumber(serverPlugUpdate) "$::piServer::portNumber(${::moduleLocalName}) 0 setRepere $Pompe on $TempsOnEV" $IP
 
     # Dans X secondes, on indique que la zone n'est plus pilotée
@@ -193,10 +206,10 @@ proc irrigationLoop {indexPlateforme indexZone} {
     if {$indexZone >= $plateformeNbZone} {
         set indexZone 0
         
-        ::piLog::log [clock milliseconds] "info" "irrigation : plate-forme $plateformeNom : zone $zoneNom : Attente $TempsOffEV secondes + Temps Perco ($TempsPerco) avant zone suivante ($indexZone)";update
+        ::piLog::log [clock milliseconds] "info" "irrigation : plate-forme $plateformeNom : zone $zoneNom : Attente $TempsOffEV secondes + Temps Perco ($TempsPerco) avant zone suivante ($indexZone) (temps définit pour $JourOuNuit)";update
         set ::idAfter [after [expr 1000 * ($TempsOffEV + $TempsPerco)] irrigationLoop $indexPlateforme $indexZone]
     } else {
-        ::piLog::log [clock milliseconds] "info" "irrigation : plate-forme $plateformeNom : zone $zoneNom : Attente $TempsOffEV secondes avant zone suivante ($indexZone)";update
+        ::piLog::log [clock milliseconds] "info" "irrigation : plate-forme $plateformeNom : zone $zoneNom : Attente $TempsOffEV secondes avant zone suivante ($indexZone) (temps définit pour $JourOuNuit)";update
         set ::idAfter [after [expr 1000 * $TempsOffEV] irrigationLoop $indexPlateforme $indexZone]
     }
     
