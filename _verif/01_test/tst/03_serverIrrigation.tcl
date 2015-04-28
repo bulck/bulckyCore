@@ -20,10 +20,10 @@ proc ::03_serverIrrigation::test {rootDir} {
     puts -nonewline [read $iDOpen]
     
     # Il faut 35 seconde au module pour démarrer
-    for {set i 0} {$i < 35} {incr i} {
+    for {set i 0} {$i < 6} {incr i} {
         after 1000
         update
-        puts "* Attente avant démarrage [expr 35 - $i]s"
+        puts "* Attente avant démarrage [expr 6 - $i]s"
         puts -nonewline [read $iDOpen]
         ::cleaWatchDog
     }
