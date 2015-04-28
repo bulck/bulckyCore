@@ -12,6 +12,11 @@ if {$::tcl_platform(os) == "Windows NT"} {
 set logConf(verbose) debug
 ::piXML::writeXML ${rootDir}/_conf/01_defaultConf_RPi/serverLog/conf.xml [array get logConf]
 
+# On modifie les acquisitions qui doivent être réalisées par le serverSUpervision
+set supervisionConf(verbose) debug
+set supervisionConf(nbProcess) 0
+::piXML::writeXML ${rootDir}/_conf/01_defaultConf_RPi/serverSupervision/conf.xml [array get supervisionConf]
+
 # On modifie les adresses
 set fid [open ${rootDir}/_conf/01_defaultConf_RPi/serverPlugUpdate/plg/pluga w+]
 puts $fid "03"
