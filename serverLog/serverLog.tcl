@@ -30,13 +30,6 @@ if {$RC != 0} {
     puts "[clock milliseconds] info ${::moduleLocalName} [clock milliseconds] error $msg"
 }
 
-puts "[clock milliseconds] info starting ${::moduleLocalName} - PID : [pid]"
-puts "[clock milliseconds] info port ${::moduleLocalName} : $::piServer::portNumber(${::moduleLocalName})"
-puts "[clock milliseconds] info confXML : $confXML"
-# On affiche les infos dans le fichier de debug
-foreach element [lsort [array names configXML]] {
-    puts "[clock milliseconds] info $element : $configXML($element)"
-}
 
 # ###############
 #
@@ -189,11 +182,17 @@ if {$rc == 1} \
 set (server:host) server
 set (server:port) $::piServer::portNumber(${::moduleLocalName})
 
-log "<[clock milliseconds]><serverLog><info><server log started - PID : [pid]>"
-log "<[clock milliseconds]><serverLog><info><server log socket - $::piServer::portNumber(${::moduleLocalName})>"
+log "<[clock milliseconds]><serverLog><info><starting ${::moduleLocalName} - PID : [pid]>"
+log "<[clock milliseconds]><serverLog><info><port ${::moduleLocalName} : $::piServer::portNumber(${::moduleLocalName})>"
+log "<[clock milliseconds]><serverLog><info><confXML : $confXML>"
+# On affiche les infos dans le fichier de debug
+foreach element [lsort [array names configXML]] {
+    log "<[clock milliseconds]><serverLog><info><$element : $configXML($element)>"
+}
 
 # enter event loop
 
 vwait forever
 
 # tclsh "C:\cultibox\04_CultiPi\01_Software\01_cultiPi\serverLog\serverLog.tcl" 6000 "C:\cultibox\04_CultiPi"
+# tclsh D:\CBX\cultipiCore\serverLog\serverLog.tcl
