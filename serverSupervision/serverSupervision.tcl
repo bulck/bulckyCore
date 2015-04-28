@@ -46,11 +46,6 @@ foreach element [array names configXML] {
     ::piLog::log [clock milliseconds] "info" "$element : $configXML($element)"
 }
 
-
-proc bgerror {message} {
-    ::piLog::log [clock milliseconds] error_critic "bgerror in $::argv - pid [pid] -$message-"
-}
-
 # Load server
 ::piLog::log [clock millisecond] "info" "starting serveur"
 ::piServer::start messageGestion $::piServer::portNumber(${::moduleLocalName})
@@ -66,6 +61,8 @@ proc stopIt {} {
     
     # Arrêt du server de log
     ::piLog::closeLog
+    
+    exit
 }
 
 # Pour chaque process, on crée les fonctions associées
