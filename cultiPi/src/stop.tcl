@@ -40,7 +40,7 @@ proc stopCultiPi {} {
         
         if {$::confStart($moduleName,pipeID) != ""} {
             fconfigure $::confStart($moduleName,pipeID) -blocking 0
-            puts [read $::confStart($moduleName,pipeID)]
+            puts -nonewline  [read $::confStart($moduleName,pipeID)]
             close $::confStart($moduleName,pipeID)
         }
         
@@ -53,7 +53,7 @@ proc stopCultiPi {} {
     ::piLog::closeLog
     catch {
         fconfigure $::confStart(serverLog,pipeID) -blocking 0
-        puts [read $::confStart(serverLog,pipeID)]
+        puts -nonewline [read $::confStart(serverLog,pipeID)]
         close $::confStart(serverLog,pipeID)
     }
     after 500 {
