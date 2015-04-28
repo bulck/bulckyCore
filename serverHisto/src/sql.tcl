@@ -21,7 +21,7 @@ proc ::sql::query {query} {
         if {[string first "\t" $line] != -1} {
             lappend out $line
         } else {
-            puts "error : $line"
+            ::piLog::log [clock milliseconds] "error" "::sql::query error : $line"
         }
     }
     
