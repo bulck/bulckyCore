@@ -74,21 +74,28 @@ proc stopIt {} {
 
 proc send_email {to subject body} { 
 
-    set token [mime::initialize -canonical "text/plain" -encoding "7bit" -string $body]
-      mime::setheader $token Subject $subject
-      smtp::sendmessage $token \
-                    -servers [list $::configXML(serverSMTP)] -ports [list $::configXML(port)]\
-                    -usetls true\
-                    -debug true\
-                    -username $::configXML(username) \
-                    -password $::configXML(password) \
-                    -queue false\
-                    -atleastone true\
-                    -header [list From $::configXML(username)] \
-                    -header [list To $to] \
-                    -header [list Subject $subject]\
-                    -header [list Date "[clock format [clock seconds]]"]
-      mime::finalize $token
+    set err [catch {
+        set token [mime::initialize -canonical "text/plain" -encoding "7bit" -string $body]
+        mime::setheader $token Subject $subject
+        smtp::sendmessage $token \
+            -servers [list $::configXML(serverSMTP)] -ports [list $::configXML(port)]\
+            -usetls true\
+            -debug true\
+            -username $::configXML(username) \
+            -password $::configXML(password) \
+            -queue false\
+            -atleastone true\
+            -header [list From $::configXML(username)] \
+            -header [list To $to] \
+            -header [list Subject $subject]\
+            -header [list Date "[clock format [clock seconds]]"]
+        mime::finalize $token
+    } msg]
+    
+    if {$err != 0 } {
+        ::piLog::log [clock milliseconds] "error" "send_email : error msg : $msg"
+    }
+    
 } 
 
 vwait forever
