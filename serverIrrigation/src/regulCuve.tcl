@@ -113,7 +113,7 @@ proc regulCuve {} {
 
     # Si la zone est en régulation, on passe à la suivante
     if {$::irrigationActive($::regulCuvePlateformeIndex) == "true"} {
-        ::piLog::log [clock milliseconds] "info" "Regul Cuve : plateforme $plateformeNom : La plateforme est en régulation, on attend 15 secondes et on retente"
+        ::piLog::log [clock milliseconds] "info" "Regul Cuve : plateforme $plateformeNom : La plateforme est en irrigation, on attend 15 secondes et on retente"
         set ::idAfterRegul [after 15000 regulCuve]
         return
     }
