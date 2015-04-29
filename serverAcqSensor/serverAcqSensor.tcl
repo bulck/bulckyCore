@@ -98,6 +98,7 @@ foreach sensorType $sensorTypeList {
             set ::sensor($sensorType,$index,majorVersion) ""
             set ::sensor($sensorType,$index,minorVersion) ""
             set ::sensor($sensorType,$index,connected) 0
+            set ::sensor($sensorType,$index,nbProblemRead) 0
         }
         
         # On ajoute un repère pour factoriser par numéro de capteur
@@ -187,9 +188,9 @@ proc readSensors {} {
                         set ::sensor($index,value,1) ""
                         ::piLog::log [clock milliseconds] "error" "default when reading valueHP of sensor $sensorType index $index (adress module : $moduleAdress - register $register) message:-$msg-"
                         
-                        # On demande un reboot du logiciel dans ce cas
-                        ::piLog::log [clock milliseconds] "error" "Ask software cultipi reboot"
-                        ::piServer::sendToServer $::piServer::portNumber(serverCultipi) "$::piServer::portNumber(${::moduleLocalName}) [incr ::TrameIndex] stop"
+                        # On demande un reboot du logiciel dans ce cas au bout du cinquieme probleme
+                        incr ::sensor($sensorType,$index,nbProblemRead)
+
                         
                     } else {
                         set computedValue [expr ($valueHP * 256 + $valueLP) / 100.0]
@@ -199,6 +200,7 @@ proc readSensors {} {
                         ::piLog::log [clock milliseconds] "debug" "sensor $sensorType,$index (@ $moduleAdress - reg $register) value 1 : $computedValue (raw $valueHP $valueLP)"
                         
                         # On sauvegarde dans le repère global
+                        set ::sensor($sensorType,$index,nbProblemRead) 0
                         set ::sensor($index,value,1)    $computedValue
                         set ::sensor($index,value)      $computedValue
                         set ::sensor($index,type)       $sensorType
@@ -225,11 +227,6 @@ proc readSensors {} {
                             set ::sensor($sensorType,$index,updateStatusComment) ${msg}
                             set ::sensor($index,value,2) ""
                             ::piLog::log [clock milliseconds] "error" "default when reading valueHP of sensor $sensorType index $index (@ $moduleAdress - reg $register) message:-$msg-"
-
-                            # On demande un reboot du logiciel dans ce cas
-                            ::piLog::log [clock milliseconds] "error" "Ask software cultipi reboot"
-                            ::piServer::sendToServer $::piServer::portNumber(serverCultipi) "$::piServer::portNumber(${::moduleLocalName}) [incr ::TrameIndex] stop"
-
                         } else {
                             set computedValue [expr ($valueHP * 256 + $valueLP) / 100.0]
                             set ::sensor($sensorType,$index,value,2) $computedValue
@@ -244,6 +241,14 @@ proc readSensors {} {
                         }
                     
                     }
+                    
+                    # On demande un reboot du logiciel dans ce cas au bout du cinquieme probleme
+                    if {$::sensor($sensorType,$index,nbProblemRead) > 5} {
+                        ::piLog::log [clock milliseconds] "error" "Ask software cultipi reboot"
+                        ::piServer::sendToServer $::piServer::portNumber(serverCultipi) "$::piServer::portNumber(${::moduleLocalName}) [incr ::TrameIndex] stop"
+                        set ::sensor($sensorType,$index,nbProblemRead) 0
+                    }
+                    
                 }            
             }
         
