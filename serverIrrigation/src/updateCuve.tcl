@@ -18,18 +18,24 @@ set valeurResponse ""
 proc updateCuve {} {
 
     update
-
-    set plateformeNom     $::configXML(plateforme,$::cuveIndex,name)
-    set adresseIP         $::configXML(plateforme,$::cuveIndex,ip)
     
-    ::piLog::log [clock milliseconds] "debug" "Demande hauteur cuve $plateformeNom"
-    ::piServer::sendToServer $::piServer::portNumber(serverAcqSensor) "$::piServer::portNumber(serverIrrigation) 0 getRepere ::sensor(1,value)" $adresseIP
-
     incr ::cuveIndex
     if {$::cuveIndex >= $::configXML(nbPlateforme)} {
         set ::cuveIndex 0
     }
 
+    set plateformeNom     $::configXML(plateforme,$::cuveIndex,name)
+    set adresseIP         $::configXML(plateforme,$::cuveIndex,ip)
+    
+    set plateformeActive    $::configXML(plateforme,$::cuveIndex,active)
+    
+    if {$plateformeActive != 0 && $plateformeActive != "false"} {
+        ::piLog::log [clock milliseconds] "debug" "Demande hauteur cuve $plateformeNom"
+        ::piServer::sendToServer $::piServer::portNumber(serverAcqSensor) "$::piServer::portNumber(serverIrrigation) 0 getRepere ::sensor(1,value)" $adresseIP
+    }
+
     after 5000 updateCuve
+    
+    return
 }
 
