@@ -239,5 +239,5 @@ startIrrigation
 vwait forever
 
 # Lancement 
-# tclsh "D:\CBX\cultipiCore\serverIrrigation\serverIrrigation.tcl" 6005 "D:\CBX\cultipiCore\serverIrrigation\confExample\conf.xml" 6001 
-# tclsh /home/sdf/Bureau/cultipiCore/serverIrrigation/serverIrrigation.tcl 6005 "/home/sdf/Bureau/cultipiCore/serverIrrigation/confExample/conf.xml" 6001 
+# tclsh "D:\CBX\cultipiCore\serverIrrigation\serverIrrigation.tcl" "D:\CBX\cultipiCore\serverIrrigation\confExample\conf.xml" 
+# tclsh /home/sdf/Bureau/cultipiCore/serverIrrigation/serverIrrigation.tcl "/home/sdf/Bureau/cultipiCore/serverIrrigation/confExample/conf.xml" 

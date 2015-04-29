@@ -40,6 +40,7 @@
     <item key="plateforme,0,tempsPerco" value="300" />
     <item key="plateforme,0,tempsPercoNuit" value="300" />
     <item key="plateforme,0,tempsMaxRemp" value="300" />
+    <item key="plateforme,0,tempsMaxRempNuit" value="300" />
     <item key="plateforme,0,priseDansLT" value="7" />
     <item key="plateforme,0,nbZone" value="3" />
     <item key="plateforme,0,zone,0,id" value="1" />
@@ -86,6 +87,7 @@
     <item key="plateforme,1,tempsPerco" value="300" />
     <item key="plateforme,1,tempsPercoNuit" value="300" />
     <item key="plateforme,1,tempsMaxRemp" value="300" />
+    <item key="plateforme,1,tempsMaxRempNuit" value="300" />
     <item key="plateforme,1,priseDansLT" value="8" />
     <item key="plateforme,1,nbZone" value="2" />
     <item key="plateforme,1,zone,0,id" value="4" />
@@ -121,6 +123,7 @@
     <item key="plateforme,2,tempsPerco" value="300" />
     <item key="plateforme,2,tempsPercoNuit" value="300" />
     <item key="plateforme,2,tempsMaxRemp" value="300" />
+    <item key="plateforme,2,tempsMaxRempNuit" value="300" />
     <item key="plateforme,2,priseDansLT" value="9" />
     <item key="plateforme,2,nbZone" value="1" />
     <item key="plateforme,2,zone,0,id" value="6" />
@@ -145,6 +148,7 @@
     <item key="plateforme,3,tempsPerco" value="300" />
     <item key="plateforme,3,tempsPercoNuit" value="300" />
     <item key="plateforme,3,tempsMaxRemp" value="300" />
+    <item key="plateforme,3,tempsMaxRempNuit" value="300" />
     <item key="plateforme,3,priseDansLT" value="15" />
     <item key="plateforme,3,nbZone" value="2" />
     <item key="plateforme,3,zone,0,id" value="7" />
@@ -180,6 +184,7 @@
     <item key="plateforme,4,tempsPerco" value="300" />
     <item key="plateforme,4,tempsPercoNuit" value="300" />
     <item key="plateforme,4,tempsMaxRemp" value="300" />
+    <item key="plateforme,4,tempsMaxRempNuit" value="300" />
     <item key="plateforme,4,priseDansLT" value="11" />
     <item key="plateforme,4,nbZone" value="3" />
     <item key="plateforme,4,zone,0,id" value="9" />

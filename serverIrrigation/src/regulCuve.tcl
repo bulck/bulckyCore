@@ -33,6 +33,15 @@ proc regulCuve {} {
     set EVZone            $::configXML(plateforme,$::regulCuvePlateformeIndex,zone,$::regulCuveZoneIndex,prise)
     set EVPFLT            $::configXML(plateforme,$::regulCuvePlateformeIndex,priseDansLT)
     set Surpresseur       $::configXML(localtechnique,pompePrise)
+    
+    # Si on est entre 6h et 22h -> utilisation des temps de jour
+    set hour [string trimleft [clock format [clock seconds] -format %H] "0"]
+    if {$hour == ""} {set hour 0}
+    if {$hour >= 6 && $hour <= 22} {
+        set tempsMaxRemplissage $::configXML(plateforme,$::regulCuvePlateformeIndex,tempsMaxRemp)
+    } else {
+        set tempsMaxRemplissage $::configXML(plateforme,$::regulCuvePlateformeIndex,tempsMaxRempNuit)
+    }
 
     # Si la plateforme est désactivée, on passe à la suivante
     if {$plateformeActive == 0 || $plateformeActive == "false"} {
@@ -99,8 +108,8 @@ proc regulCuve {} {
     }
     
     # Si l'arrosage a été réalisé plus 10 minute durant l'heure, on passe à la suivante
-    if {$::tempsIrrigation($::regulCuvePlateformeIndex) > $::configXML(plateforme,$::regulCuvePlateformeIndex,tempsMaxRemp)} {
-        ::piLog::log [clock milliseconds] "info" "Regul Cuve : plateforme $plateformeNom : Cuve trop remplie pour cette heure, on passe à la suivante dans 27s"
+    if {$::tempsIrrigation($::regulCuvePlateformeIndex) > $tempsMaxRemplissage} {
+        ::piLog::log [clock milliseconds] "info" "Regul Cuve : plateforme $plateformeNom : Cuve trop remplie pour cette heure (actuel : $::tempsIrrigation($::regulCuvePlateformeIndex) - max : $tempsMaxRemplissage), on passe à la suivante dans 27s"
         incr ::regulCuvePlateformeIndex
         if {$::regulCuvePlateformeIndex >= $nbPlateforme} {
             set ::regulCuvePlateformeIndex 0
