@@ -207,7 +207,7 @@ proc readSensors {} {
                         set ::sensor($index,value,time) [clock milliseconds]
                     }
                     
-                    if {$sensorType == "SHT"} {
+                    if {$sensorType == "SHT" && $::sensor($sensorType,$index,nbProblemRead) == 0} {
                     
                         set moduleAdress $::sensor($sensorType,$index,adress)
                         set register     $::SENSOR_GENERIC_HP2_ADR
