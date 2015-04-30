@@ -11,23 +11,23 @@ proc exec {args} {
             set module  [lindex $args 3]
             set reg     [lindex $args 4]
             
-            if {[expr $module *1.0] > 4 && $module != 0x27} {
+            if {[expr $module *1.0] > $::configXML(simulator,nbSensor) && $module != 0x27} {
                 error "Not available in simulator (modul $module [expr $module *1.0])"
             }
             
             if {[array names ::simulator -exact $module] == ""} {
                 set ::simulator($module) ""
-                set ::simulator($module,val1) [expr 20 + $module * 10]
+                set ::simulator($module,val1) [expr $::configXML(simulator,$module,min)]
                 set ::simulator($module,val1,sens) "plus"
-                set ::simulator($module,val2) [expr 20 + $module * 10]
-                set ::simulator($module,val2,sens) "plus"
+                set ::simulator($module,val2) [expr $::configXML(simulator,$module,max)]
+                set ::simulator($module,val2,sens) "moins"
             } else {
             
                 # Pour les capteur 1 2 et 3
-                if {$::simulator($module,val1) >= 80} {
+                if {$::simulator($module,val1) >= $::configXML(simulator,$module,max)} {
                     set ::simulator($module,val1,sens) "moins"
                 }
-                if {$::simulator($module,val1) < 30} {
+                if {$::simulator($module,val1) < $::configXML(simulator,$module,min)} {
                     set ::simulator($module,val1,sens) "plus"
                 }
                 if {$::simulator($module,val1,sens) == "plus"} {

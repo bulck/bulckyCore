@@ -79,7 +79,11 @@ proc messageGestion {message networkhost} {
                     # Dans le cas d'un double, on vérifie la bande morte
                     if {[string is double $reponse] == 1} {
                         # Reponse doit être > à l'ancienne valeur + BMA ou < à l'ancienne valeur - BMA
-                        if {$reponse > [expr $::subscriptionVariable($SubscriptionIndex) + $BandeMorteAcquisition] || $reponse < [expr $::subscriptionVariable($SubscriptionIndex) - $BandeMorteAcquisition]} {
+                        set oldValue $::subscriptionVariable($SubscriptionIndex)
+                        if {[string is double $oldValue] != 1} {
+                            set oldValue -100
+                        }
+                        if {$reponse > [expr $oldValue + $BandeMorteAcquisition] || $reponse < [expr $oldValue - $BandeMorteAcquisition]} {
                             
                             ::piServer::sendToServer $serverForResponse "$serverForResponse [incr ::TrameIndex] _subscription ::sensor($repere) $reponse $time" $networkhost
                             set ::subscriptionVariable($SubscriptionIndex) $reponse
