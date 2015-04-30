@@ -6,6 +6,5 @@
     <item name="serverHisto" waitAfterUS="100" pathexe="tclsh" path="./serverHisto/serverHisto.tcl" xmlconf="./serverHisto/conf.xml" />
     <item name="serverCultibox" waitAfterUS="100" pathexe="tclsh" path="./serverCultibox/serverCultibox.tcl" xmlconf="./serverCultibox/conf.xml" />
     <item name="serverMail" waitAfterUS="100" pathexe="tclsh" path="./serverMail/serverMail.tcl" xmlconf="./serverMail/conf.xml" />
-    <item name="serverIrrigation" waitAfterUS="100" pathexe="tclsh" path="./serverIrrigation/serverIrrigation.tcl" xmlconf="./serverIrrigation/conf.xml" />
     <item name="serverSupervision" waitAfterUS="100" pathexe="tclsh" path="./serverSupervision/serverSupervision.tcl" xmlconf="./serverSupervision/conf.xml" />
 </starts>
