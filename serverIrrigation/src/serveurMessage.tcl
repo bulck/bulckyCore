@@ -40,26 +40,28 @@ proc messageGestion {message networkhost} {
         
             set plateformeNom     $::configXML(plateforme,$::cuveIndex,name)
         
-            if {$::cuveIndex != "" && [lindex $message 3] != ""} {
-                ::piLog::log [clock milliseconds] "debug" "messageGestion : Reception hauteur cuve $plateformeNom , message $message "
-                set ::cuve($::cuveIndex) [lindex $message 3]
+            set value [lindex $message 3 0]
+            
+            if {$::cuveIndex != "" && $value != ""} {
+                ::piLog::log [clock milliseconds] "debug" "messageGestion : Reception hauteur cuve $plateformeNom , [lindex $message 3 0] cm "
+                set ::cuve($::cuveIndex) $value
                 
                 # On met à jour l'interface graphique
                 #cuves.$::cuveAsked.cuve configure -value [expr [lindex $message 3] * 4]
                 
                 # Si on a jamais eu d'info et que la cuve n'est pas pleine
-                if {[lindex $message 3] != "" &&
-                    [lindex $message 3] != "DEFCOM" &&
-                    [lindex $message 3] != "NA" &&
-                    [lindex $message 3] < 10} {
+                if {$value != "" &&
+                    $value != "DEFCOM" &&
+                    $value != "NA" &&
+                    $value < 10} {
                     set ::cuve($::cuveIndex,heureDernierPlein) 0
                 }
                 
                 # Si la cuve est pleine on enregistre l'heure
-                if {[lindex $message 3] != "" &&
-                    [lindex $message 3] != "DEFCOM" &&
-                    [lindex $message 3] != "NA" &&
-                    [lindex $message 3] >= 10} {
+                if {$value != "" &&
+                    $value != "DEFCOM" &&
+                    $value != "NA" &&
+                    $value >= 10} {
                     set ::cuve($::cuveIndex,heureDernierPlein) [clock seconds]
                 }
                 

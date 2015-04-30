@@ -19,6 +19,8 @@ set ::regulCuveZoneIndex 0
 
 proc regulCuve {} {
 
+    set ::idAfterRegul ""
+    
     set plateformeNom     $::configXML(plateforme,$::regulCuvePlateformeIndex,name)
     set plateformeActive  $::configXML(plateforme,$::regulCuvePlateformeIndex,active)
     set plateformeNbZone  $::configXML(plateforme,$::regulCuvePlateformeIndex,nbZone)
@@ -60,8 +62,8 @@ proc regulCuve {} {
         $::cuve($::regulCuvePlateformeIndex) == "" || 
         $::cuve($::regulCuvePlateformeIndex) == "DEFCOM" || 
         $::cuve($::regulCuvePlateformeIndex) == "TIMEOUT" ||
-        [string is integer $::cuve($::regulCuvePlateformeIndex)] != 1} {
-        ::piLog::log [clock milliseconds] "info" "Regul Cuve : plateforme $plateformeNom : Pas d'information sur la hauteur de cuve, on passe à la suivante"
+        [string is double $::cuve($::regulCuvePlateformeIndex)] != 1} {
+        ::piLog::log [clock milliseconds] "info" "Regul Cuve : plateforme $plateformeNom : Pas d'information sur la hauteur de cuve ( $::cuve($::regulCuvePlateformeIndex) ) , on passe à la suivante"
         incr ::regulCuvePlateformeIndex
         if {$::regulCuvePlateformeIndex >= $nbPlateforme} {
             set ::regulCuvePlateformeIndex 0
@@ -76,12 +78,14 @@ proc regulCuve {} {
         $::cuve($::regulCuvePlateformeIndex,heureDernierPlein) == "" || 
         $::cuve($::regulCuvePlateformeIndex,heureDernierPlein) == "DEFCOM" || 
         $::cuve($::regulCuvePlateformeIndex,heureDernierPlein) == "TIMEOUT" ||
-        [string is integer $::cuve($::regulCuvePlateformeIndex,heureDernierPlein)] != 1} {
+        [string is double $::cuve($::regulCuvePlateformeIndex,heureDernierPlein)] != 1} {
         ::piLog::log [clock milliseconds] "info" "Regul Cuve : plateforme $plateformeNom : Pas d'information sur le dernier remplissage, on passe à la suivante"
-        incr ::regulCuvePlateformeIndex
-        if {$::regulCuvePlateformeIndex >= $nbPlateforme} {
-            set ::regulCuvePlateformeIndex 0
-            set ::regulCuveZoneIndex 0
+        if {0} {
+            incr ::regulCuvePlateformeIndex
+            if {$::regulCuvePlateformeIndex >= $nbPlateforme} {
+                set ::regulCuvePlateformeIndex 0
+                set ::regulCuveZoneIndex 0
+            }
         }
         set ::idAfterRegul [after 1000 regulCuve]
         return
@@ -91,12 +95,12 @@ proc regulCuve {} {
     # Si la cuve de la plateforme a été pleine lors des 3 dernières minutes, on passe à la suivante
     set TimeBeforeLastPlein   [expr [clock seconds] - $::cuve($::regulCuvePlateformeIndex,heureDernierPlein)]
     if {$TimeBeforeLastPlein <  [expr  3 * 60]} {
-        ::piLog::log [clock milliseconds] "info" "Regul Cuve : plateforme $plateformeNom : Cuve pleine depuis moins de trois minutes (${TimeBeforeLastPlein}s Vs 180s), on passe à la suivante dans 27s"
         incr ::regulCuvePlateformeIndex
         if {$::regulCuvePlateformeIndex >= $nbPlateforme} {
             set ::regulCuvePlateformeIndex 0
             set ::regulCuveZoneIndex 0
         }
+        ::piLog::log [clock milliseconds] "info" "Regul Cuve : plateforme $plateformeNom : Cuve pleine depuis moins de trois minutes (${TimeBeforeLastPlein}s Vs 180s), on passe à la suivante ( $::regulCuvePlateformeIndex ) dans 27s"
         set ::idAfterRegul [after 27000 regulCuve]
         return
     }
@@ -109,13 +113,18 @@ proc regulCuve {} {
     
     # Si l'arrosage a été réalisé plus 10 minute durant l'heure, on passe à la suivante
     if {$::tempsIrrigation($::regulCuvePlateformeIndex) > $tempsMaxRemplissage} {
-        ::piLog::log [clock milliseconds] "info" "Regul Cuve : plateforme $plateformeNom : Cuve trop remplie pour cette heure (actuel : $::tempsIrrigation($::regulCuvePlateformeIndex) - max : $tempsMaxRemplissage), on passe à la suivante dans 27s"
-        incr ::regulCuvePlateformeIndex
-        if {$::regulCuvePlateformeIndex >= $nbPlateforme} {
-            set ::regulCuvePlateformeIndex 0
-            set ::regulCuveZoneIndex 0
+        set oldTmpsIrrig $::tempsIrrigation($::regulCuvePlateformeIndex)
+        if {0} {
+            incr ::regulCuvePlateformeIndex
+            if {$::regulCuvePlateformeIndex >= $nbPlateforme} {
+                set ::regulCuvePlateformeIndex 0
+                set ::regulCuveZoneIndex 0
+            }
         }
+        ::piLog::log [clock milliseconds] "info" "Regul Cuve : plateforme $plateformeNom : Cuve trop remplie pour cette heure (actuel : $oldTmpsIrrig - max : $tempsMaxRemplissage ), on passe à la suivante ( $::regulCuvePlateformeIndex ) dans 27s"
+
         set ::idAfterRegul [after 27000 regulCuve]
+
         return
     }
     
@@ -193,7 +202,7 @@ proc regulCuve {} {
         }
     }
     
-    
+    ::piLog::log [clock milliseconds] "info" "Regul Cuve : plateforme $plateformeNom : zone $zoneNom :Attente 60 secondes avant plateforme $::regulCuvePlateformeIndex zone $::regulCuveZoneIndex";update
     set ::idAfterRegul [after 60000 regulCuve]
     
 }

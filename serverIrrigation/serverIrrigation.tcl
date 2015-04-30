@@ -69,13 +69,14 @@ proc startIrrigation {} {
 
     # Pour chaque plateforme on démarre l'irrigation
     for {set i 0} {$i < $::configXML(nbPlateforme)} {incr i} {
-    
+
         # On initialise les variables
         set ::irrigationActive($i) "false"
         set ::regulationActive($i) "false"
 
-        irrigationLoop $i 0
-    
+        # On démarre avec un numéro de zone aléatoire
+        irrigationLoop $i [expr int(rand() * $::configXML(plateforme,$i,nbZone))]
+
     }
 
 }

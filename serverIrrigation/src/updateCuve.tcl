@@ -30,7 +30,7 @@ proc updateCuve {} {
     set plateformeActive    $::configXML(plateforme,$::cuveIndex,active)
     
     if {$plateformeActive != 0 && $plateformeActive != "false"} {
-        ::piLog::log [clock milliseconds] "debug" "Demande hauteur cuve $plateformeNom"
+        ::piLog::log [clock milliseconds] "debug" "Demande hauteur cuve $plateformeNom ($adresseIP : $::piServer::portNumber(serverAcqSensor))"
         ::piServer::sendToServer $::piServer::portNumber(serverAcqSensor) "$::piServer::portNumber(serverIrrigation) 0 getRepere ::sensor(1,value)" $adresseIP
     }
 
