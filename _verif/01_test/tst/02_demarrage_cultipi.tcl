@@ -32,6 +32,21 @@ proc ::02_demarrage_cultipi::test {rootDir} {
     set supervisionConf(nbProcess) 0
     ::piXML::writeXML ${rootDir}/_conf/01_defaultConf_RPi/serverSupervision/conf.xml [array get supervisionConf]
 
+    # On cré le XML de démarrage
+    set fid [open ${rootDir}/_conf/01_defaultConf_RPi/cultiPi/start.xml w+]
+    puts $fid {<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>}    
+    puts $fid {<starts>}
+    puts $fid {    <item name="serverLog" waitAfterUS="1000" pathexe="tclsh" path="./serverLog/serverLog.tcl" xmlconf="./serverLog/conf.xml" />}
+    puts $fid {    <item name="serverAcqSensor" waitAfterUS="100" pathexe="tclsh" path="./serverAcqSensor/serverAcqSensor.tcl" xmlconf="./serverAcqSensor/conf.xml" />}
+    puts $fid {    <item name="serverPlugUpdate" waitAfterUS="100" pathexe="tclsh" path="./serverPlugUpdate/serverPlugUpdate.tcl" xmlconf="./serverPlugUpdate/conf.xml" />}
+    puts $fid {    <item name="serverHisto" waitAfterUS="100" pathexe="tclsh" path="./serverHisto/serverHisto.tcl" xmlconf="./serverHisto/conf.xml" />}
+    puts $fid {    <item name="serverCultibox" waitAfterUS="100" pathexe="tclsh" path="./serverCultibox/serverCultibox.tcl" xmlconf="./serverCultibox/conf.xml" />}
+    puts $fid {    <item name="serverMail" waitAfterUS="100" pathexe="tclsh" path="./serverMail/serverMail.tcl" xmlconf="./serverMail/conf.xml" />}
+    puts $fid {    <item name="serverIrrigation" waitAfterUS="100" pathexe="tclsh" path="./serverIrrigation/serverIrrigation.tcl" xmlconf="./serverIrrigation/conf.xml" />}
+    puts $fid {    <item name="serverSupervision" waitAfterUS="100" pathexe="tclsh" path="./serverSupervision/serverSupervision.tcl" xmlconf="./serverSupervision/conf.xml" />}
+    puts $fid {</starts>}
+    close $fid
+
     # On modifie les adresses
     set fid [open ${rootDir}/_conf/01_defaultConf_RPi/serverPlugUpdate/plg/pluga w+]
     puts $fid "03"
@@ -67,6 +82,7 @@ proc ::02_demarrage_cultipi::test {rootDir} {
                 set i 5
             }
         }
+        puts -nonewline [read $testa]
         
         # Si ça n'a pas marché, on enregistre
         if {$errorTemp != ""} {
