@@ -37,11 +37,11 @@ proc ::01_demarrage_individuel::test {rootDir} {
     set supervisionConf(nbProcess) 0
     ::piXML::writeXML ${rootDir}/serverSupervision/confExample/conf.xml [array get supervisionConf]
 
-    set listeOpen ""
     foreach module $moduleListLogFirst {
         puts "* 01_demarage_individuel Démarrage de $module"
         puts "* 01_demarage_individuel Ligne de commande : tclsh ${rootDir}/${module}/${module}.tcl ${rootDir}/${module}/confExample/conf.xml"
-        lappend listeOpen [open "| tclsh ${rootDir}/${module}/${module}.tcl ${rootDir}/${module}/confExample/conf.xml"]
+        set listeOpen($module) [open "| tclsh ${rootDir}/${module}/${module}.tcl ${rootDir}/${module}/confExample/conf.xml"]
+        fconfigure $listeOpen($module) -blocking 0
     }
 
     # On attend 5 secondes
@@ -51,17 +51,8 @@ proc ::01_demarrage_individuel::test {rootDir} {
     foreach module $moduleListLogFirst {
         puts "* 01_demarage_individuel lecture PID $module"
         cleaWatchDog
-        for {set i 0} {$i < 5} {incr i} {
-            set results [exec tclsh ${rootDir}/cultiPi/getCommand.tcl ${module} localhost pid]
-            if {$results == "TIMEOUT" || $results == "DEFCOM"} {
-                puts "* 01_demarage_individuel Réponse au démarrage : $results"
-                set errorTemp "Le server $module ne se lance pas correctement"
-                after 1000
-            } else {
-                set errorTemp ""
-                set i 5
-            }
-        }
+        
+        set errorTemp [checkStarted 01_demarage_individuel ${module} $listeOpen($module) ${rootDir}]
         
         # Si ça n'a pas marché, on enregistre
         if {$errorTemp != ""} {
@@ -84,17 +75,8 @@ proc ::01_demarrage_individuel::test {rootDir} {
     foreach module $moduleListLogEnd {
         puts "* 01_demarage_individuel Vérification arrêt $module"
         cleaWatchDog
-        for {set i 0} {$i < 5} {incr i} {
-            set results [exec tclsh ${rootDir}/cultiPi/getCommand.tcl ${module} localhost pid]
-            if {$results != "TIMEOUT"} {
-                puts "* 01_demarage_individuel Réponse à l'arrêt (module $module ): $results"
-                set errorTemp "Le server $module ne s'arrete pas"
-                after 1000
-            } else {
-                set errorTemp ""
-                set i 5
-            }
-        }
+        
+        set errorTemp [checkStoped 01_demarage_individuel ${module} $listeOpen($module) ${rootDir}]
         
         # Si ça n'a pas marché, on enregistre
         if {$errorTemp != ""} {
@@ -108,12 +90,10 @@ proc ::01_demarrage_individuel::test {rootDir} {
     }
 
     # On ferme tous les pipes ouverts
-    foreach op $listeOpen {
-        fconfigure $op -blocking 0
-        puts -nonewline [read $op]
-        close $op
+    foreach module $moduleListLogFirst {
+        puts -nonewline [read $listeOpen($module)]
+        close $listeOpen($module)
     }
-
 
 }
 

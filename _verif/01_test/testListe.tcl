@@ -49,17 +49,24 @@ displayProcess
 
 # On lance tous les tests
 foreach test $testList {
-    ::${test}::init
-    ::${test}::test $rootDir
-    set errorTempList [::${test}::end]
-    if {$errorTempList != ""} {
-        foreach errorTemp $errorTempList {
-            lappend errorList $errorTemp
+
+    # On le lance que si demandé
+    if {$::argc == 0 || [lsearch $argv ${test}] != -1} {
+
+        ::${test}::init
+        ::${test}::test $rootDir
+        set errorTempList [::${test}::end]
+        if {$errorTempList != ""} {
+            foreach errorTemp $errorTempList {
+                lappend errorList $errorTemp
+            }
         }
+
+        cleaWatchDog
+        displayProcess
+        
     }
 
-    cleaWatchDog
-    displayProcess
 }
 
 
@@ -79,3 +86,4 @@ if {$errorList == ""} {
 }
 
 # tclsh D:\CBX\cultipiCore\_verif\01_test\testListe.tcl
+# tclsh D:\CBX\cultipiCore\_verif\01_test\testListe.tcl 03_serverIrrigation
