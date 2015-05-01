@@ -186,12 +186,12 @@ proc readSensors {} {
                         set ::sensor($sensorType,$index,updateStatus) "DEFCOM"
                         set ::sensor($sensorType,$index,updateStatusComment) ${msg}
                         set ::sensor($index,value,1) ""
-                        ::piLog::log [clock milliseconds] "error" "default when reading valueHP of sensor $sensorType index $index (adress module : $moduleAdress - register $register) message:-$msg-"
                         
                         # On demande un reboot du logiciel dans ce cas au bout du cinquieme probleme
                         incr ::sensor($sensorType,$index,nbProblemRead)
-
                         
+                        ::piLog::log [clock milliseconds] "warning" "default when reading valueHP of sensor $sensorType index $index (adress module : $moduleAdress - register $register) (try $::sensor($sensorType,$index,nbProblemRead) / 5) message:-$msg-"
+
                     } else {
                         set computedValue [expr ($valueHP * 256 + $valueLP) / 100.0]
                         set ::sensor($sensorType,$index,value,1) $computedValue
@@ -226,7 +226,7 @@ proc readSensors {} {
                             set ::sensor($sensorType,$index,updateStatus) "DEFCOM"
                             set ::sensor($sensorType,$index,updateStatusComment) ${msg}
                             set ::sensor($index,value,2) ""
-                            ::piLog::log [clock milliseconds] "error" "default when reading valueHP of sensor $sensorType index $index (@ $moduleAdress - reg $register) message:-$msg-"
+                            ::piLog::log [clock milliseconds] "warning" "default when reading valueHP of sensor $sensorType index $index (@ $moduleAdress - reg $register) message:-$msg-"
                         } else {
                             set computedValue [expr ($valueHP * 256 + $valueLP) / 100.0]
                             set ::sensor($sensorType,$index,value,2) $computedValue
