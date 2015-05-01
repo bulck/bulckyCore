@@ -197,17 +197,31 @@ proc ::wireless::setValue {plugNumber value address} {
         set value 0
     }    
     
-    set RC [catch {
-        exec /usr/local/sbin/i2cset -y 1 $moduleAdress $register $value
-    } msg]
+    # On essaye au maximum trois fois
+    set errorDuringSend 0
+    for {set i 0} {$i < 3} {incr i} {
+        set RC [catch {
+            exec /usr/local/sbin/i2cset -y 1 $moduleAdress $register $value
+        } msg]
 
-    if {$RC != 0} {
-        set ::plug($plugNumber,updateStatus) "DEFCOM"
-        set ::plug($plugNumber,updateStatusComment) ${msg}
-        ::piLog::log [clock milliseconds] "error" "::wireless::setValue default when updating value of plug $plugNumber (adress module : $moduleAdress - register $register) message:-$msg-"
-    } else {
-        set ::plug($plugNumber,updateStatus) "OK"
-        set ::plug($plugNumber,updateStatusComment) [clock milliseconds]
-        ::piLog::log [clock milliseconds] "debug" "::wireless::setValue plug $plugNumber (adress module : $moduleAdress - register $register)  is updated with value $value"
+        if {$RC != 0} {
+            set ::plug($plugNumber,updateStatus) "DEFCOM"
+            set ::plug($plugNumber,updateStatusComment) ${msg}
+            ::piLog::log [clock milliseconds] "error" "::wireless::setValue default when updating value of plug $plugNumber - try $i / 3 (adress module : $moduleAdress - register $register) message:-$msg-"
+            set errorDuringSend 1
+        } else {
+            set ::plug($plugNumber,updateStatus) "OK"
+            set ::plug($plugNumber,updateStatusComment) [clock milliseconds]
+            ::piLog::log [clock milliseconds] "debug" "::wireless::setValue plug $plugNumber (adress module : $moduleAdress - register $register)  is updated with value $value"
+            set i 4
+            set errorDuringSend 0
+        }
     }
+    
+    # Si on y arrive pas, on demande le reboot des esclaves
+    if {$errorDuringSend == 1} {
+        ::piLog::log [clock milliseconds] "error" "::wireless::setValue So ask reboot"
+        ::piServer::sendToServer $::piServer::portNumber(serverCultipi) "$::piServer::portNumber(serverCultipi) [incr ::TrameIndex] stop"
+    }
+
 }
