@@ -70,7 +70,13 @@ proc ::piLog::log {time traceType trace} {
     }
     
     if {$outputType == "puts"} {
-        set StringToWrite "$time $traceType $trace"
+    
+        set TimeComputed ""
+        set rc [catch {
+            set TimeComputed "[clock format [expr $time / 1000] -format "%d/%m/%Y %H:%M:%S."][expr $time % 1000]"
+        } msgErr]
+    
+        set StringToWrite "$time $module $traceType $trace"
     } else {
         set StringToWrite "<${time}><${module}><${traceType}><${trace}>"
     }
