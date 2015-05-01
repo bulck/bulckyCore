@@ -63,7 +63,8 @@ set confStart(serverLog,pid) ""
 set confStart(serverLog) [::piXML::searchItemByName serverLog $confStart(start)]
 set confStart(serverLog,pathexe) [::piXML::searchOptionInElement pathexe $confStart(serverLog)]
 puts "[clock format [clock seconds] -format "%b %d %H:%M:%S"] : CultiPi : start : serverLog pathexe : $confStart(serverLog,pathexe)"
-set confStart(serverLog,path) [file join $rootDir [::piXML::searchOptionInElement path $confStart(serverLog)]]
+# Le string map permet de prendre en compte le changement de path
+set confStart(serverLog,path) [string map {"serveur" "server"} [file join $rootDir [::piXML::searchOptionInElement path $confStart(serverLog)]]]
 puts "[clock format [clock seconds] -format "%b %d %H:%M:%S"] : CultiPi : start : serverLog path : $confStart(serverLog,path)"
 set confStart(serverLog,xmlconf) [file join $fileName(cultiPi,confDir) [::piXML::searchOptionInElement xmlconf $confStart(serverLog)]]
 puts "[clock format [clock seconds] -format "%b %d %H:%M:%S"] : CultiPi : start : serverLog xmlconf : $confStart(serverLog,xmlconf) , file exists ? [file exists $confStart(serverLog,xmlconf)]"
