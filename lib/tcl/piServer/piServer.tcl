@@ -8,6 +8,7 @@ namespace eval ::piServer {
     variable callBackMessage ""
     variable debug 0
     variable portNumber
+    variable portNumberReverse
     
     set portNumber(serverCultipi)     6000
     set portNumber(serverLog)         6003
@@ -18,17 +19,23 @@ namespace eval ::piServer {
     set portNumber(serverCultibox)    6013
     set portNumber(serverMail)        6015
     set portNumber(serverSupervision) 6019
-    
+
     set portNumber(serverGet)         6022
     set portNumber(serverGetCommand)  6023
     set portNumber(serverSet)         6024
     set portNumber(serverSetCommand)  6025
+    
+    foreach name [array names portNumber] {
+        set portNumberReverse($portNumber($name)) $name
+    }
+    
 }
 
 # Load Cultipi server
 proc ::piServer::server {channel host port} \
 {
     variable debug
+    variable portNumberReverse
 
     # save client info
     set ::($channel:host) $host
@@ -115,12 +122,13 @@ proc ::piServer::start {callBackMessageIn portIn} {
 
 proc ::piServer::sendToServer {portNumber message {ip localhost}} {
     variable debug
-
+    variable portNumberReverse
+    
     set channel ""
 
     set rc [catch { set channel [socket ${ip} $portNumber] } msg]
     if {$rc == 1} {
-        ::piLog::log [clock milliseconds] "error" "::piServer::sendToServer try to open socket to -$ip : $portNumber- - erreur :  -$msg-"
+        ::piLog::log [clock milliseconds] "error" "::piServer::sendToServer try to open socket to -$ip : $portNumber - $portNumberReverse($portNumber)- - erreur :  -$msg-"
     }
 
     set rc [catch \
@@ -129,10 +137,10 @@ proc ::piServer::sendToServer {portNumber message {ip localhost}} {
         flush $channel
     } msg]
     if {$rc == 1} {
-        ::piLog::log [clock milliseconds] "error" "::piServer::sendToServer try to send message to -$ip : $portNumber- - erreur :  -$msg-"
+        ::piLog::log [clock milliseconds] "error" "::piServer::sendToServer try to send message to -$ip : $portNumber - $portNumberReverse($portNumber)- - erreur :  -$msg-"
     } else {
         if {$debug == 1} { 
-            ::piLog::log [clock milliseconds] "debug" "::piServer::sendToServer message send to -$ip : $portNumber- message : -$message-"
+            ::piLog::log [clock milliseconds] "debug" "::piServer::sendToServer message send to -$ip : $portNumber - $portNumberReverse($portNumber) - message : -$message-"
         }
     }
 
