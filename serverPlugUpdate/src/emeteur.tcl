@@ -13,6 +13,10 @@ proc emeteur_init {} {
 
 }
 
+proc formatSeconds {seconds} {
+    return [clock format [expr $seconds - 3600] -format %H:%M:%S]
+}
+
 proc load_plugXX {{plugVFileName ""}} {
 
     # On efface l'ancien vecteur s'il existe
@@ -159,7 +163,7 @@ proc emeteur_update_loop {} {
             updatePlug $i
         }
 
-        ::piLog::log [clock milliseconds] "info" "init emetor next change $::nextTimeToChange"
+        ::piLog::log [clock milliseconds] "info" "init emetor next change $::nextTimeToChange - [formatSeconds $::nextTimeToChange]"
         
         # register day
         set ::emeteur_actualDay [::piTime::readDay]
@@ -173,7 +177,7 @@ proc emeteur_update_loop {} {
             updatePlug $i
         }
         
-        ::piLog::log [clock milliseconds] "info" "next change $::nextTimeToChange"
+        ::piLog::log [clock milliseconds] "info" "next change $::nextTimeToChange - [formatSeconds $::nextTimeToChange]"
         
     } elseif {[expr $uc24_seconds % 5] == 0} { 
     
