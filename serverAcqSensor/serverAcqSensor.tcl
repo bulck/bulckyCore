@@ -194,17 +194,24 @@ proc readSensors {} {
                         
                     } else {
                         set computedValue [expr ($valueHP * 256 + $valueLP) / 100.0]
-                        set ::sensor($sensorType,$index,value,1) $computedValue
-                        set ::sensor($sensorType,$index,updateStatus) "OK"
-                        set ::sensor($sensorType,$index,updateStatusComment) [clock milliseconds]
-                        ::piLog::log [clock milliseconds] "debug" "sensor $sensorType,$index (@ $moduleAdress - reg $register) value 1 : $computedValue (raw $valueHP $valueLP)"
                         
-                        # On sauvegarde dans le repère global
-                        set ::sensor($sensorType,$index,nbProblemRead) 0
-                        set ::sensor($index,value,1)    $computedValue
-                        set ::sensor($index,value)      $computedValue
-                        set ::sensor($index,type)       $sensorType
-                        set ::sensor($index,value,time) [clock milliseconds]
+                        # Seulement si la valeur est cohérente
+                        if {$computedValue < 100 && $computedValue > -30} {
+                            set ::sensor($sensorType,$index,value,1) $computedValue
+                            set ::sensor($sensorType,$index,updateStatus) "OK"
+                            set ::sensor($sensorType,$index,updateStatusComment) [clock milliseconds]
+                            ::piLog::log [clock milliseconds] "debug" "sensor $sensorType,$index (@ $moduleAdress - reg $register) value 1 : $computedValue (raw $valueHP $valueLP)"
+                            
+                            # On sauvegarde dans le repère global
+                            set ::sensor($sensorType,$index,nbProblemRead) 0
+                            set ::sensor($index,value,1)    $computedValue
+                            set ::sensor($index,value)      $computedValue
+                            set ::sensor($index,type)       $sensorType
+                            set ::sensor($index,value,time) [clock milliseconds]
+                        } else {
+                            ::piLog::log [clock milliseconds] "warning" "Value 1 is not coherente : expr ($valueHP * 256 + $valueLP) / 100.0 : $computedValue"
+                        }
+                        
                     }
                     
                     if {$sensorType == "SHT" && $::sensor($sensorType,$index,nbProblemRead) == 0} {
@@ -228,16 +235,22 @@ proc readSensors {} {
                             set ::sensor($index,value,2) ""
                             ::piLog::log [clock milliseconds] "error" "default when reading valueHP of sensor $sensorType index $index (@ $moduleAdress - reg $register) message:-$msg-"
                         } else {
+                       
                             set computedValue [expr ($valueHP * 256 + $valueLP) / 100.0]
-                            set ::sensor($sensorType,$index,value,2) $computedValue
-                            set ::sensor($sensorType,$index,updateStatus) "OK"
-                            set ::sensor($sensorType,$index,updateStatusComment) [clock milliseconds]
-                            ::piLog::log [clock milliseconds] "debug" "sensor $sensorType,$index (@ $moduleAdress - reg $register) value 2 : $computedValue (raw $valueHP $valueLP)"
-                            
-                            # On sauvegarde dans le repère global
-                            set ::sensor($index,value,2) $computedValue
-                            set ::sensor($index,value) "$::sensor($index,value,1) $::sensor($index,value,2)"
-                            
+
+                            # Seulement si la valeur est cohérente
+                            if {$computedValue < 100 && $computedValue > -30} {
+                                set ::sensor($sensorType,$index,value,2) $computedValue
+                                set ::sensor($sensorType,$index,updateStatus) "OK"
+                                set ::sensor($sensorType,$index,updateStatusComment) [clock milliseconds]
+                                ::piLog::log [clock milliseconds] "debug" "sensor $sensorType,$index (@ $moduleAdress - reg $register) value 2 : $computedValue (raw $valueHP $valueLP)"
+                                
+                                # On sauvegarde dans le repère global
+                                set ::sensor($index,value,2) $computedValue
+                                set ::sensor($index,value) "$::sensor($index,value,1) $::sensor($index,value,2)"
+                            } else {
+                                ::piLog::log [clock milliseconds] "warning" "Value 2 is not coherente : expr ($valueHP * 256 + $valueLP) / 100.0 : $computedValue"
+                            }
                         }
                     
                     }
