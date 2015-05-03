@@ -130,5 +130,5 @@ emeteur_subscriptionEvenement
 
 vwait forever
 
-# tclsh "C:\cultibox\04_CultiPi\01_Software\01_cultiPi\serverPlugUpdate\serverPlugUpdate.tcl" 6004 "C:\cultibox\04_CultiPi\02_conf\00_defaultConf_Win\serverPlugUpdate\conf.xml" 6003 6000
+# tclsh "D:\CBX\cultipiCore\serverPlugUpdate\serverPlugUpdate.tcl" "D:\CBX\cultipiCore\serverPlugUpdate\confExample\conf.xml"
 # tclsh /opt/cultipi/serverPlugUpdate/serverPlugUpdate.tcl 6004 /etc/cultipi/01_defaultConf_RPi/./serverPlugUpdate/conf.xml 6003 6000
