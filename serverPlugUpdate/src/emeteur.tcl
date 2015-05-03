@@ -160,6 +160,7 @@ proc emeteur_update_loop {} {
         set ::actualProgramm $programmeToSend
 
         for {set i 1} {$i <= $::EMETEUR_NB_PLUG_MAX} {incr i} {
+            ::piLog::log [clock milliseconds] "info" "Programm of $plugNumber is [lindex $programmeToSend [expr $i - 1]]"
             updatePlug $i
         }
 
@@ -174,6 +175,7 @@ proc emeteur_update_loop {} {
         set ::actualProgramm $programmeToSend
 
         for {set i 1} {$i <= $::EMETEUR_NB_PLUG_MAX} {incr i} {
+            ::piLog::log [clock milliseconds] "info" "Programm of $plugNumber is [lindex $programmeToSend [expr $i - 1]]"
             updatePlug $i
         }
         
