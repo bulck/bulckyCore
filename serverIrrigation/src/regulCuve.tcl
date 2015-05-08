@@ -39,8 +39,10 @@ proc regulCuve {} {
     # Si on est entre 6h et 22h -> utilisation des temps de jour
     set hour [string trimleft [clock format [clock seconds] -format %H] "0"]
     if {$hour == ""} {set hour 0}
-    if {$hour >= 6 && $hour <= 22} {
+    if {$hour >= 6 && $hour <= 14} {
         set tempsMaxRemplissage $::configXML(plateforme,$::regulCuvePlateformeIndex,tempsMaxRemp)
+    } elseif {$hour > 14 && $hour <= 22} {
+        set tempsMaxRemplissage $::configXML(plateforme,$::regulCuvePlateformeIndex,tempsMaxRempApresMidi)
     } else {
         set tempsMaxRemplissage $::configXML(plateforme,$::regulCuvePlateformeIndex,tempsMaxRempNuit)
     }

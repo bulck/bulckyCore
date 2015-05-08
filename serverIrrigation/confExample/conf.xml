@@ -39,8 +39,10 @@
     <item key="plateforme,0,limitDesamorcagePompe" value="false" />
     <item key="plateforme,0,tempsPerco" value="300" />
     <item key="plateforme,0,tempsPercoNuit" value="300" />
+    <item key="plateforme,0,tempsPercoApresMidi" value="300" />
     <item key="plateforme,0,tempsMaxRemp" value="300" />
     <item key="plateforme,0,tempsMaxRempNuit" value="300" />
+    <item key="plateforme,0,tempsMaxRempApresMidi" value="300" />
     <item key="plateforme,0,priseDansLT" value="7" />
     <item key="plateforme,0,nbZone" value="3" />
     <item key="plateforme,0,zone,0,id" value="1" />
@@ -52,6 +54,8 @@
     <item key="plateforme,0,zone,0,tempsOff" value="15" />
     <item key="plateforme,0,zone,0,tempsOnNuit" value="10" />
     <item key="plateforme,0,zone,0,tempsOffNuit" value="15" />
+    <item key="plateforme,0,zone,0,tempsOnApresMidi" value="10" />
+    <item key="plateforme,0,zone,0,tempsOffApresMidi" value="15" />
     <item key="plateforme,0,zone,0,active" value="true" />
     <item key="plateforme,0,zone,0,coef" value="1.00" />
     <item key="plateforme,0,zone,1,id" value="2" />
@@ -63,6 +67,8 @@
     <item key="plateforme,0,zone,1,tempsOff" value="15" />
     <item key="plateforme,0,zone,1,tempsOnNuit" value="10" />
     <item key="plateforme,0,zone,1,tempsOffNuit" value="15" />
+    <item key="plateforme,0,zone,1,tempsOnApresMidi" value="10" />
+    <item key="plateforme,0,zone,1,tempsOffApresMidi" value="15" />
     <item key="plateforme,0,zone,1,active" value="true" />
     <item key="plateforme,0,zone,1,coef" value="1.00" />
     <item key="plateforme,0,zone,2,id" value="3" />
@@ -74,6 +80,8 @@
     <item key="plateforme,0,zone,2,tempsOff" value="15" />
     <item key="plateforme,0,zone,2,tempsOnNuit" value="10" />
     <item key="plateforme,0,zone,2,tempsOffNuit" value="15" />
+    <item key="plateforme,0,zone,2,tempsOnApresMidi" value="10" />
+    <item key="plateforme,0,zone,2,tempsOffApresMidi" value="15" />
     <item key="plateforme,0,zone,2,active" value="true" />
     <item key="plateforme,0,zone,2,coef" value="1.00" />
     <item key="plateforme,1,id" value="2" />
@@ -86,8 +94,10 @@
     <item key="plateforme,1,limitDesamorcagePompe" value="true" />
     <item key="plateforme,1,tempsPerco" value="300" />
     <item key="plateforme,1,tempsPercoNuit" value="300" />
+    <item key="plateforme,1,tempsPercoApresMidi" value="300" />
     <item key="plateforme,1,tempsMaxRemp" value="300" />
     <item key="plateforme,1,tempsMaxRempNuit" value="300" />
+    <item key="plateforme,1,tempsMaxRempApresMidi" value="300" />
     <item key="plateforme,1,priseDansLT" value="8" />
     <item key="plateforme,1,nbZone" value="2" />
     <item key="plateforme,1,zone,0,id" value="4" />
@@ -99,6 +109,8 @@
     <item key="plateforme,1,zone,0,tempsOff" value="15" />
     <item key="plateforme,1,zone,0,tempsOnNuit" value="10" />
     <item key="plateforme,1,zone,0,tempsOffNuit" value="15" />
+    <item key="plateforme,1,zone,0,tempsOnApresMidi" value="10" />
+    <item key="plateforme,1,zone,0,tempsOffApresMidi" value="15" />
     <item key="plateforme,1,zone,0,active" value="true" />
     <item key="plateforme,1,zone,0,coef" value="1.00" />
     <item key="plateforme,1,zone,1,id" value="5" />
@@ -110,6 +122,8 @@
     <item key="plateforme,1,zone,1,tempsOff" value="15" />
     <item key="plateforme,1,zone,1,tempsOnNuit" value="10" />
     <item key="plateforme,1,zone,1,tempsOffNuit" value="15" />
+    <item key="plateforme,1,zone,1,tempsOnApresMidi" value="10" />
+    <item key="plateforme,1,zone,1,tempsOffApresMidi" value="15" />
     <item key="plateforme,1,zone,1,active" value="true" />
     <item key="plateforme,1,zone,1,coef" value="1.00" />
     <item key="plateforme,2,id" value="3" />
@@ -122,8 +136,10 @@
     <item key="plateforme,2,limitDesamorcagePompe" value="true" />
     <item key="plateforme,2,tempsPerco" value="300" />
     <item key="plateforme,2,tempsPercoNuit" value="300" />
+    <item key="plateforme,2,tempsPercoApresMidi" value="300" />
     <item key="plateforme,2,tempsMaxRemp" value="300" />
     <item key="plateforme,2,tempsMaxRempNuit" value="300" />
+    <item key="plateforme,2,tempsMaxRempApresMidi" value="300" />
     <item key="plateforme,2,priseDansLT" value="9" />
     <item key="plateforme,2,nbZone" value="1" />
     <item key="plateforme,2,zone,0,id" value="6" />
@@ -135,6 +151,8 @@
     <item key="plateforme,2,zone,0,tempsOff" value="15" />
     <item key="plateforme,2,zone,0,tempsOnNuit" value="10" />
     <item key="plateforme,2,zone,0,tempsOffNuit" value="15" />
+    <item key="plateforme,2,zone,0,tempsOnApresMidi" value="10" />
+    <item key="plateforme,2,zone,0,tempsOffApresMidi" value="15" />
     <item key="plateforme,2,zone,0,active" value="true" />
     <item key="plateforme,2,zone,0,coef" value="1.00" />
     <item key="plateforme,3,id" value="4" />
@@ -147,8 +165,10 @@
     <item key="plateforme,3,limitDesamorcagePompe" value="true" />
     <item key="plateforme,3,tempsPerco" value="300" />
     <item key="plateforme,3,tempsPercoNuit" value="300" />
+    <item key="plateforme,3,tempsPercoApresMidi" value="300" />
     <item key="plateforme,3,tempsMaxRemp" value="300" />
     <item key="plateforme,3,tempsMaxRempNuit" value="300" />
+    <item key="plateforme,3,tempsMaxRempApresMidi" value="300" />
     <item key="plateforme,3,priseDansLT" value="15" />
     <item key="plateforme,3,nbZone" value="2" />
     <item key="plateforme,3,zone,0,id" value="7" />
@@ -158,8 +178,10 @@
     <item key="plateforme,3,zone,0,prise" value="2" />
     <item key="plateforme,3,zone,0,tempsOn" value="10" />
     <item key="plateforme,3,zone,0,tempsOff" value="15" />
-    <item key="plateforme,3,zone,0,tempsOn" value="10" />
-    <item key="plateforme,3,zone,0,tempsOff" value="15" />
+    <item key="plateforme,3,zone,0,tempsOnNuit" value="10" />
+    <item key="plateforme,3,zone,0,tempsOffNuit" value="15" />
+    <item key="plateforme,3,zone,0,tempsOnApresMidi" value="10" />
+    <item key="plateforme,3,zone,0,tempsOffApresMidi" value="15" />
     <item key="plateforme,3,zone,0,active" value="true" />
     <item key="plateforme,3,zone,0,coef" value="1.00" />
     <item key="plateforme,3,zone,1,id" value="8" />
@@ -169,8 +191,10 @@
     <item key="plateforme,3,zone,1,prise" value="3" />
     <item key="plateforme,3,zone,1,tempsOn" value="10" />
     <item key="plateforme,3,zone,1,tempsOff" value="15" />
-    <item key="plateforme,3,zone,1,tempsOn" value="10" />
-    <item key="plateforme,3,zone,1,tempsOff" value="15" />
+    <item key="plateforme,3,zone,1,tempsOnNuit" value="10" />
+    <item key="plateforme,3,zone,1,tempsOffNuit" value="15" />
+    <item key="plateforme,3,zone,1,tempsOnApresMidi" value="10" />
+    <item key="plateforme,3,zone,1,tempsOffApresMidi" value="15" />
     <item key="plateforme,3,zone,1,active" value="true" />
     <item key="plateforme,3,zone,1,coef" value="1.00" />
     <item key="plateforme,4,id" value="5" />
@@ -183,8 +207,10 @@
     <item key="plateforme,4,limitDesamorcagePompe" value="true" />
     <item key="plateforme,4,tempsPerco" value="300" />
     <item key="plateforme,4,tempsPercoNuit" value="300" />
+    <item key="plateforme,4,tempsPercoApresMidi" value="300" />
     <item key="plateforme,4,tempsMaxRemp" value="300" />
     <item key="plateforme,4,tempsMaxRempNuit" value="300" />
+    <item key="plateforme,4,tempsMaxRempApresMidi" value="300" />
     <item key="plateforme,4,priseDansLT" value="11" />
     <item key="plateforme,4,nbZone" value="3" />
     <item key="plateforme,4,zone,0,id" value="9" />
@@ -194,8 +220,10 @@
     <item key="plateforme,4,zone,0,prise" value="2" />
     <item key="plateforme,4,zone,0,tempsOn" value="10" />
     <item key="plateforme,4,zone,0,tempsOff" value="15" />
-    <item key="plateforme,4,zone,0,tempsOn" value="10" />
-    <item key="plateforme,4,zone,0,tempsOff" value="15" />
+    <item key="plateforme,4,zone,0,tempsOnNuit" value="10" />
+    <item key="plateforme,4,zone,0,tempsOffNuit" value="15" />
+    <item key="plateforme,4,zone,0,tempsOnApresMidi" value="10" />
+    <item key="plateforme,4,zone,0,tempsOffApresMidi" value="15" />
     <item key="plateforme,4,zone,0,active" value="true" />
     <item key="plateforme,4,zone,0,coef" value="1.00" />
     <item key="plateforme,4,zone,1,id" value="15" />
@@ -205,8 +233,10 @@
     <item key="plateforme,4,zone,1,prise" value="3" />
     <item key="plateforme,4,zone,1,tempsOn" value="10" />
     <item key="plateforme,4,zone,1,tempsOff" value="15" />
-    <item key="plateforme,4,zone,1,tempsOn" value="10" />
-    <item key="plateforme,4,zone,1,tempsOff" value="15" />
+    <item key="plateforme,4,zone,1,tempsOnNuit" value="10" />
+    <item key="plateforme,4,zone,1,tempsOffNuit" value="15" />
+    <item key="plateforme,4,zone,1,tempsOnApresMidi" value="10" />
+    <item key="plateforme,4,zone,1,tempsOffApresMidi" value="15" />
     <item key="plateforme,4,zone,1,active" value="true" />
     <item key="plateforme,4,zone,1,coef" value="1.00" />
     <item key="plateforme,4,zone,2,id" value="11" />
@@ -216,8 +246,10 @@
     <item key="plateforme,4,zone,2,prise" value="4" />
     <item key="plateforme,4,zone,2,tempsOn" value="10" />
     <item key="plateforme,4,zone,2,tempsOff" value="15" />
-    <item key="plateforme,4,zone,2,tempsOn" value="10" />
-    <item key="plateforme,4,zone,2,tempsOff" value="15" />
+    <item key="plateforme,4,zone,2,tempsOnNuit" value="10" />
+    <item key="plateforme,4,zone,2,tempsOffNuit" value="15" />
+    <item key="plateforme,4,zone,2,tempsOnApresMidi" value="10" />
+    <item key="plateforme,4,zone,2,tempsOffApresMidi" value="15" />
     <item key="plateforme,4,zone,2,active" value="true" />
     <item key="plateforme,4,zone,2,coef" value="1.00" />
 </conf>

@@ -117,11 +117,16 @@ proc irrigationLoop {indexPlateforme indexZone} {
     # Si on est entre 6h et 22h -> utilisation des temps de jour
     set hour [string trimleft [clock format [clock seconds] -format %H] "0"]
     if {$hour == ""} {set hour 0}
-    if {$hour >= 6 && $hour <= 22} {
-        set JourOuNuit jour
+    if {$hour >= 6 && $hour <= 14} {
+        set JourOuNuit matin
         set TempsOnEV   $::configXML(plateforme,${indexPlateforme},zone,${indexZone},tempsOn)
         set TempsOffEV  $::configXML(plateforme,${indexPlateforme},zone,${indexZone},tempsOff)
         set TempsPerco  $::configXML(plateforme,${indexPlateforme},tempsPerco)
+    } elseif {$hour > 14 && $hour <= 22} {
+        set JourOuNuit apres_midi
+        set TempsOnEV   $::configXML(plateforme,${indexPlateforme},zone,${indexZone},tempsOnApresMidi)
+        set TempsOffEV  $::configXML(plateforme,${indexPlateforme},zone,${indexZone},tempsOffApresMidi)
+        set TempsPerco  $::configXML(plateforme,${indexPlateforme},tempsPercoApresMidi)
     } else {
         set JourOuNuit nuit
         set TempsOnEV   $::configXML(plateforme,${indexPlateforme},zone,${indexZone},tempsOnNuit)

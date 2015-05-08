@@ -113,23 +113,25 @@ proc ::XMAX::setValue {plugNumber value address} {
             # 4 Bleu
             
             # On pilote le registre de sortie
-            set RC [catch {
-                exec /usr/local/sbin/i2cset -y 1 $I2Cadress $register(PWM_${i}) $newValueForPWM(${i})
-            } msg]
-            if {$RC != 0} {
-                ::piLog::log [clock milliseconds] "error" "::XMAX::setValue Module ${i} with value $newValueForPWM(${i}) does not respond :$msg "
-                
-                # On lui demande de redémarrer
-                ::piServer::sendToServer $::piServer::portNumber(serverCultipi) "$::piServer::portNumber(serverAcqSensor) [incr ::TrameIndex] restartSlave"
-            } else {
-                # On debug !
-                ::piLog::log [clock milliseconds] "info" "::XMAX::setValue Output PWM_${i} to $newValueForPWM(${i}) OK"
+            for {set j 0} {$j < 3} {incr j} {
+                set RC [catch {
+                    exec /usr/local/sbin/i2cset -y 1 $I2Cadress $register(PWM_${i}) $newValueForPWM(${i})
+                } msg]
+                if {$RC != 0} {
+                    ::piLog::log [clock milliseconds] "error" "::XMAX::setValue Module ${i} with value $newValueForPWM(${i}) does not respond :$msg "
 
-                # on enregistre
-                set register(PWM_${i}_LAST) $newValueForPWM(${i})
+                } else {
+                    # On debug !
+                    ::piLog::log [clock milliseconds] "info" "::XMAX::setValue Output PWM_${i} to $newValueForPWM(${i}) OK"
+
+                    # on enregistre
+                    set register(PWM_${i}_LAST) $newValueForPWM(${i})
+                    
+                    set j 5
+                }
             }
         #}
-        after 10
+        after 100
     }
 
 }
