@@ -30,6 +30,7 @@ array set configXML {
     port        25
     username    NA
     password    NA
+    useSSL      true
 }
 
 # Chargement de la conf XML
@@ -79,7 +80,7 @@ proc send_email {to subject body} {
         mime::setheader $token Subject $subject
         smtp::sendmessage $token \
             -servers [list $::configXML(serverSMTP)] -ports [list $::configXML(port)]\
-            -usetls true\
+            -usetls $::configXML(useSSL) \
             -debug true\
             -username $::configXML(username) \
             -password $::configXML(password) \
@@ -100,5 +101,6 @@ proc send_email {to subject body} {
 
 vwait forever
 
-# tclsh "D:\CBX\cultipiCore\serverMail\serverMail.tcl" 6015 "D:\CBX\cultipiCore\serverMail\confExample\conf.xml" 6003 6000
-# tclsh /opt/cultipi/serverMail/serverMail.tcl 6015 /etc/cultipi/01_defaultConf_RPi/./serverMail/conf.xml 6003 6000
+# tclsh "D:\CBX\cultipiCore\serverMail\serverMail.tcl" "D:\CBX\cultipiCore\serverMail\confExample\conf.xml"
+# tclsh "D:\CBX\cultipiCore\serverMail\serverMail.tcl" "D:\CBX\cultipiCore\serverMail\confExample\conf_gl.xml"
+# tclsh /opt/cultipi/serverMail/serverMail.tcl /etc/cultipi/01_defaultConf_RPi/./serverMail/conf.xml
