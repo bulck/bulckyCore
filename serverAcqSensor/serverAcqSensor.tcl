@@ -54,8 +54,13 @@ foreach element [array names configXML] {
     ::piLog::log [clock milliseconds] "info" "$element : $configXML($element)"
 }
 
+
+# Cette procédure permet d'afficher dans le fichier de log les erreurs qui sont apparues
 proc bgerror {message} {
-    ::piLog::log [clock milliseconds] error_critic "bgerror in $::argv - pid [pid] -$message-"
+    ::piLog::log [clock milliseconds] error_critic "bgerror in [info script] $::argv -$message- "
+    foreach elem [split $::errorInfo "\n"] {
+        ::piLog::log [clock milliseconds] error_critic " * $elem"
+    }
 }
 
 # Load server

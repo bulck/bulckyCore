@@ -54,9 +54,12 @@ foreach element [array names configXML] {
     }
 }
 
-
+# Cette procédure permet d'afficher dans le fichier de log les erreurs qui sont apparues
 proc bgerror {message} {
-    ::piLog::log [clock milliseconds] error_critic "bgerror in $::argv - pid [pid] -$message-"
+    ::piLog::log [clock milliseconds] error_critic "bgerror in [info script] $::argv -$message- "
+    foreach elem [split $::errorInfo "\n"] {
+        ::piLog::log [clock milliseconds] error_critic " * $elem"
+    }
 }
 
 # Load server
@@ -102,5 +105,5 @@ proc send_email {to subject body} {
 vwait forever
 
 # tclsh "D:\CBX\cultipiCore\serverMail\serverMail.tcl" "D:\CBX\cultipiCore\serverMail\confExample\conf.xml"
-# tclsh "D:\CBX\cultipiCore\serverMail\serverMail.tcl" "D:\CBX\cultipiCore\serverMail\confExample\conf_gl.xml"
+# tclsh "D:\CBX\cultipiCore\serverMail\serverMail.tcl" "D:\CBX\cultipiCore\serverMail\confExample\conf_gl_26.xml"
 # tclsh /opt/cultipi/serverMail/serverMail.tcl /etc/cultipi/01_defaultConf_RPi/./serverMail/conf.xml

@@ -1,11 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <conf>
-    <item name="action"     level="checkPing" />
-    <item name="nbIP"       value="4" />
-    <item name="IP,0"       value="8.8.8.8" />
-    <item name="IP,1"       value="192.168.1.5" />
-    <item name="IP,2"       value="192.168.1.11" />
-    <item name="IP,3"       value="192.168.1.110" />
-    <item name="timeMax"    value="2" />
-    <item name="error,action"     value="sendMail alliaume.rico@gmail.com" />
+    <item name="action"     value="report" />
+    <item name="frequency"  value="now" />
+    <item name="hour"       value="16" />
+    <item name="eMail"      value="alliaume.rico@gmail.com" />
 </conf>

@@ -152,8 +152,13 @@ proc log {msg} {
     close $fid
 }
 
+
+# Cette procédure permet d'afficher dans le fichier de log les erreurs qui sont apparues
 proc bgerror {message} {
-    log "<[clock milliseconds]><serverLog><error_critic><bgerror in $::argv - pid [pid] - $message>"
+    log "<[clock milliseconds]><serverLog><error_critic><bgerror in [info script] $::argv - $message - >"
+    foreach elem [split $::errorInfo "\n"] {
+         log "<[clock milliseconds]><serverLog><error_critic><bgerror * $elem >"
+    }
 }
 
 # ===================
