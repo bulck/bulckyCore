@@ -180,7 +180,11 @@ proc report::check {processID} {
    
     set title {[Cultibox : rapport]}
     
-    set message "Rapport du [clock format [clock seconds] -format "%Y/%m/%d"] : \n"
+    set message "Rapport du [clock format [clock seconds] -format "%Y/%m/%d %H:%M:%S"] : "
+    
+    set message "${message}\\nAucun texte a envoyer ...."
+
+    set message "${message}Message envoyé automatiquement par ma Cultibox"
     
     # On envoi le message
     ::piServer::sendToServer $::piServer::portNumber(serverMail) "$::piServer::portNumber(serverSupervision) [incr ::TrameIndex] sendMail $XMLprocess($processID,eMail) \"${title}\" \"${message}\""
