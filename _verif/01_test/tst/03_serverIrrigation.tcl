@@ -168,9 +168,9 @@ proc ::03_serverIrrigation::test {rootDir} {
     set irriConf(plateforme,1,zone,1,active)        "true"
     set irriConf(plateforme,1,zone,1,coef)          "1.00"
     
-    ::piXML::writeXML ${rootDir}/serverIrrigation/confExample/conf.xml [array get irriConf]
+    ::piXML::writeXML ${rootDir}/serverIrrigation/confExample/conf_tst.xml [array get irriConf]
     
-    set iDOpen [open "| tclsh ${rootDir}/serverIrrigation/serverIrrigation.tcl ${rootDir}/serverIrrigation/confExample/conf.xml"]
+    set iDOpen [open "| tclsh ${rootDir}/serverIrrigation/serverIrrigation.tcl ${rootDir}/serverIrrigation/confExample/conf_tst.xml"]
     fconfigure $iDOpen -blocking 0
     puts -nonewline [read $iDOpen]
     
@@ -198,9 +198,9 @@ proc ::03_serverIrrigation::test {rootDir} {
     set acqConf(simulator,nbSensor)  "1"
     set acqConf(simulator,0x01,max)  "5"
     set acqConf(simulator,0x01,min)  "0"
-    ::piXML::writeXML ${rootDir}/serverAcqSensor/confExample/conf.xml [array get acqConf]
+    ::piXML::writeXML ${rootDir}/serverAcqSensor/confExample/conf_tst.xml [array get acqConf]
     
-    set iDAcqSensor [open "| tclsh ${rootDir}/serverAcqSensor/serverAcqSensor.tcl ${rootDir}/serverAcqSensor/confExample/conf.xml"]
+    set iDAcqSensor [open "| tclsh ${rootDir}/serverAcqSensor/serverAcqSensor.tcl ${rootDir}/serverAcqSensor/confExample/conf_tst.xml"]
     fconfigure $iDAcqSensor -blocking 0
     # On vérifie qu'il s'est bien lancé
     after 1000
@@ -211,6 +211,7 @@ proc ::03_serverIrrigation::test {rootDir} {
     for {set i 0} {$i < 120} {incr i} {
         puts -nonewline [read $iDOpen]
         puts -nonewline [read $iDAcqSensor]
+        puts "* serverIrrigation : Il reste [expr 120 - $i] s"
         after 1000
     }
     
