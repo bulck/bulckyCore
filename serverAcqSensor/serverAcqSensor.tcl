@@ -350,4 +350,5 @@ readSensors
 
 vwait forever
 
-# tclsh "D:\CBX\cultipiCore\serverAcqSensor\serverAcqSensor.tcl" 6006 "D:\CBX\cultipiCore\serverAcqSensor\conf.xml"
+# tclsh "D:\CBX\cultipiCore\serverAcqSensor\serverAcqSensor.tcl" "D:\CBX\cultipiCore\serverAcqSensor\confExample\conf.xml"
+# tclsh "D:\CBX\cultipiCore\serverAcqSensor\serverAcqSensor.tcl" "D:\CBX\cultipiCore\serverAcqSensor\confExample\conf_irrigation.xml"

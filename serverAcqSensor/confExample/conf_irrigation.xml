@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<conf>
+    <item name="verbose" actif="info" />
+    <item name="simulator" actif="on" />
+    <item name="simulator,nbSensor" actif="1" />
+    <item name="simulator,0x01,max" actif="5" />
+    <item name="simulator,0x01,min" actif="0" />
+</conf>
