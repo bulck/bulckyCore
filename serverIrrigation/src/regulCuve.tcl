@@ -5,7 +5,12 @@ proc initRegulationVariable {} {
         set name $::configXML(plateforme,${i},name)
         
         # Ces variables permettent de savoir combien de temps d'irrigation ont été réalisé
-        set ::tempsIrrigation($i)    0
+        set ::tempsIrrigation($i)           0
+        
+        # Les temps de starter réalisés
+        set ::tempsIrrigationStarter($i,Matin)   0
+        set ::tempsIrrigationStarter($i,Apres)   0
+        set ::tempsIrrigationStarter($i,Nuit)    0
         
         set ::regulationActivePlateforme($i)    "false"
 
@@ -39,12 +44,30 @@ proc regulCuve {} {
     # Si on est entre 6h et 22h -> utilisation des temps de jour
     set hour [string trimleft [clock format [clock seconds] -format %H] "0"]
     if {$hour == ""} {set hour 0}
+
     if {$hour >= 6 && $hour < 14} {
+        set JourOuNuit Matin
         set tempsMaxRemplissage $::configXML(plateforme,$::regulCuvePlateformeIndex,tempsMaxRemp)
+        
+        # On vide les deux autres buffers
+        set ::tempsIrrigationStarter($::regulCuvePlateformeIndex,Apres) 0
+        set ::tempsIrrigationStarter($::regulCuvePlateformeIndex,Nuit) 0
+        
     } elseif {$hour >= 14 && $hour <= 22} {
+        set JourOuNuit Apres
         set tempsMaxRemplissage $::configXML(plateforme,$::regulCuvePlateformeIndex,tempsMaxRempApresMidi)
+        
+        # On vide les deux autres buffers
+        set ::tempsIrrigationStarter($::regulCuvePlateformeIndex,Matin) 0
+        set ::tempsIrrigationStarter($::regulCuvePlateformeIndex,Nuit) 0
+        
     } else {
+        set JourOuNuit Nuit
         set tempsMaxRemplissage $::configXML(plateforme,$::regulCuvePlateformeIndex,tempsMaxRempNuit)
+        
+        # On vide les deux autres buffers
+        set ::tempsIrrigationStarter($::regulCuvePlateformeIndex,Matin) 0
+        set ::tempsIrrigationStarter($::regulCuvePlateformeIndex,Apres) 0
     }
 
     # Si la plateforme est désactivée, on passe à la suivante
@@ -89,7 +112,7 @@ proc regulCuve {} {
                 set ::regulCuveZoneIndex 0
             }
         }
-        set ::idAfterRegul [after 1000 regulCuve]
+        set ::idAfterRegul [after 1000  [after idle regulCuve]]
         return
     }
     
@@ -107,10 +130,14 @@ proc regulCuve {} {
         return
     }
     
-    # Si l'heure change, on réinitialise tous les compteurs
+    # Si l'heure change, on efface le compteur de temps
     if {$::tempsIrrigation(actualHour) != [clock format [clock seconds] -format "%H"]} {
         set ::tempsIrrigation(actualHour)  [clock format [clock seconds] -format "%H"]
-        initRegulationVariable
+        
+        for {set i 0} {$i < $::configXML(nbPlateforme)} {incr i} {
+            # On réinitialise le temps du compteur
+            set ::tempsIrrigation($i)           0
+        }
     }
     
     # Si l'arrosage a été réalisé plus 10 minute durant l'heure, on passe à la suivante
@@ -125,7 +152,7 @@ proc regulCuve {} {
         }
         ::piLog::log [clock milliseconds] "info" "Regul Cuve : plateforme $plateformeNom : Cuve trop remplie pour cette heure (actuel : $oldTmpsIrrig - max : $tempsMaxRemplissage ), on passe à la suivante ( $::regulCuvePlateformeIndex ) dans 27s"
 
-        set ::idAfterRegul [after 27000 regulCuve]
+        set ::idAfterRegul [after 27000  [after idle regulCuve]]
 
         return
     }
@@ -153,7 +180,16 @@ proc regulCuve {} {
         return 
     }
 
-    # On sauvegarde le nom de la plateforme en réégulation
+    # On regarde si on est en starter ou non
+    # Si le temps réalisé est inférieur au temps starter, on est en starter
+    set starter "Normal"
+    if {$::tempsIrrigationStarter($::regulCuvePlateformeIndex,$JourOuNuit) < $::configXML(localtechnique,time${JourOuNuit}Starter)} {
+        set starter "Starter"
+    }
+    ::piLog::log [clock milliseconds] "debug" "Regul Cuve : plateforme $plateformeNom : on est en $starter car $::tempsIrrigationStarter($::regulCuvePlateformeIndex,$JourOuNuit) < $::configXML(localtechnique,time${JourOuNuit}Starter)"
+
+    
+    # On sauvegarde le nom de la plateforme en régulation
     set ::regulationActivePlateforme($::regulCuvePlateformeIndex) "true"
     
     # Le principe est le suivant : 30s de remplissage par zone
@@ -172,11 +208,11 @@ proc regulCuve {} {
     
     # On ouvre toutes les électrovannes des engrais associés
     for {set i 0} {$i < $::configXML(nbEngrais)} {incr i} {
-        if {$::configXML(engrais,${i},active) == "true"} {
-        
+        if {$::configXML(engrais,${i},use${JourOuNuit}${starter}) == "true"} {
+
             set name $::configXML(engrais,${i},name)
             set priseEVEngrais $::configXML(engrais,${i},prise)
-        
+
             ::piLog::log [clock milliseconds] "info" "Regul Cuve : plateforme $plateformeNom : zone $zoneNom : Mise en route localtechnique ev $name pendant 30 s";update
             ::piServer::sendToServer $::piServer::portNumber(serverPlugUpdate) "$::piServer::portNumber(serverIrrigation) 0 setRepere $priseEVEngrais on 30" $IPlocalTechnique
         }
@@ -189,7 +225,8 @@ proc regulCuve {} {
     ::piServer::sendToServer $::piServer::portNumber(serverPlugUpdate) "$::piServer::portNumber(serverIrrigation) 0 setRepere $Surpresseur on 29" $IPlocalTechnique
     
     # On sauvegarde le temps d'irrigation pour vérifier qu'on ne remplie pas trop
-    set ::tempsIrrigation($::regulCuvePlateformeIndex) [expr $::tempsIrrigation($::regulCuvePlateformeIndex) + 30]
+    set ::tempsIrrigation($::regulCuvePlateformeIndex)                    [expr $::tempsIrrigation($::regulCuvePlateformeIndex) + 30]
+    set ::tempsIrrigationStarter($::regulCuvePlateformeIndex,$JourOuNuit) [expr $::tempsIrrigationStarter($::regulCuvePlateformeIndex,$JourOuNuit) + 30]
     
     # DAns 30 secondes on indique que la régulation est terminée
     after 30000 "set ::regulationActivePlateforme($::regulCuvePlateformeIndex) false"
@@ -205,7 +242,7 @@ proc regulCuve {} {
     }
     
     ::piLog::log [clock milliseconds] "info" "Regul Cuve : plateforme $plateformeNom : zone $zoneNom :Attente 60 secondes avant plateforme $::regulCuvePlateformeIndex zone $::regulCuveZoneIndex";update
-    set ::idAfterRegul [after 60000 regulCuve]
+    set ::idAfterRegul [after 60000  [after idle regulCuve]]
     
 }
 
