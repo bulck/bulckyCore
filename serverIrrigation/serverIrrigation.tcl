@@ -137,19 +137,19 @@ proc irrigationLoop {indexPlateforme indexZone} {
     
     # Si la plate-forme est désactivée on arrête de vérifier
     if {$plateformeActive == 0 || $plateformeActive == "false"} {
-        ::piLog::log [clock milliseconds] "info" "irrigation : plate-forme $plateformeNom : désactivée, on n'essaye pas de l'irriguer"
+        ::piLog::log [clock milliseconds] "info" "irrigation : plate-forme $plateformeNom : désactivée, on n'essaye pas de l'irriguer";update
         set ::idAfter ""
         return
     }
 
     # Si la zone est désactivée
     if {$zoneActive == 0 || $zoneActive == "false"} {
-        ::piLog::log [clock milliseconds] "info" "irrigation : plate-forme $plateformeNom : zone $zoneNom : La zone est désactivée, on passe à la suivante"
+        ::piLog::log [clock milliseconds] "info" "irrigation : plate-forme $plateformeNom : zone $zoneNom : La zone est désactivée, on passe à la suivante";update
         incr indexZone
         if {$indexZone >= $plateformeNbZone} {
             set indexZone 0
         }
-        set ::idAfter [after 100 irrigationLoop $indexPlateforme $indexZone]
+        set ::idAfter [after 100 [list after idle irrigationLoop $indexPlateforme $indexZone]]
         return 
     }
     
@@ -161,35 +161,35 @@ proc irrigationLoop {indexPlateforme indexZone} {
         [string is integer $::cuve($indexPlateforme)] != 1 ||
         $::cuve($indexPlateforme) < 5} {
             if {$plateformeActiveLimiteDesamorcagePompe == "true"} {
-                ::piLog::log [clock milliseconds] "info" "irrigation : plate-forme $plateformeNom : La cuve n'est pas assez pleine pour irriguer"
+                ::piLog::log [clock milliseconds] "info" "irrigation : plate-forme $plateformeNom : La cuve n'est pas assez pleine pour irriguer";update
                 incr indexZone
                 if {$indexZone >= $plateformeNbZone} {
                     set indexZone 0
                 }
-                set ::idAfter [after 100 irrigationLoop $indexPlateforme $indexZone]
+                set ::idAfter [after 100 irrigationLoop [list after idle $indexPlateforme $indexZone]]
                 return 
             } else {
-                 ::piLog::log [clock milliseconds] "info" "irrigation : plate-forme $plateformeNom : La cuve n'est pas assez pleine pour irriguer - Fonctionnalité désactivée"
+                 ::piLog::log [clock milliseconds] "info" "irrigation : plate-forme $plateformeNom : La cuve n'est pas assez pleine pour irriguer - Fonctionnalité désactivée";update
             }
     }
 
     # Si le temps On est de 1 ou inférieur, on ne réalise que le temps d'attente
     if {$TempsOnEV <= 1} {
-        ::piLog::log [clock milliseconds] "info" "irrigation : plate-forme $plateformeNom : zone $zoneNom : Le temps On est trop petit"
+        ::piLog::log [clock milliseconds] "info" "irrigation : plate-forme $plateformeNom : zone $zoneNom : Le temps On est trop petit";update
         incr indexZone
         if {$indexZone >= $plateformeNbZone} {
             set indexZone 0
         }
         ::piLog::log [clock milliseconds] "info" "irrigation : plate-forme $plateformeNom : zone $zoneNom : Attente $TempsOffEV secondes avant zone suivante";update
-        set ::idAfter [after [expr 1000 * $TempsOffEV] irrigationLoop $indexPlateforme $indexZone]
+        set ::idAfter [after [expr 1000 * $TempsOffEV] [list after idle irrigationLoop $indexPlateforme $indexZone]]
         return 
     }
     
     # Si la zone est en régulation, on rettente dans 10 secondes
-    if {$::regulationActive($indexPlateforme) == "true"} {
-        ::piLog::log [clock milliseconds] "info" "irrigation : plate-forme $plateformeNom : zone $zoneNom : La zone est actuellement en régulation, on attend 10 secondes"
+    if {$::regulationActivePlateforme($indexPlateforme) == "true"} {
+        ::piLog::log [clock milliseconds] "info" "irrigation : plate-forme $plateformeNom : zone $zoneNom : La zone est actuellement en régulation, on attend 10 secondes";update
 
-        set ::idAfter [after 10000 irrigationLoop $indexPlateforme $indexZone]
+        set ::idAfter [after 10000 [list after idle irrigationLoop $indexPlateforme $indexZone]]
         return 
     }    
     
@@ -205,18 +205,20 @@ proc irrigationLoop {indexPlateforme indexZone} {
     ::piServer::sendToServer $::piServer::portNumber(serverPlugUpdate) "$::piServer::portNumber(${::moduleLocalName}) 0 setRepere $Pompe on $TempsOnEV" $IP
 
     # Dans X secondes, on indique que la zone n'est plus pilotée
-    after [expr $TempsOnEV * 1000] "set ::irrigationActive($indexPlateforme) false"
-
+    after [expr $TempsOnEV * 1000] [list set ::irrigationActive($indexPlateforme) false]
+    after [expr $TempsOnEV * 1000] [list ::piLog::log [expr [clock milliseconds] + $TempsOnEV * 1000] "info" "irrigation: plateforme $plateformeNom : zone $zoneNom : Fin Irrigation"]
+    
+    
     incr indexZone
     # Si on a terminé toute les zones, on laisse le temps de perco
     if {$indexZone >= $plateformeNbZone} {
         set indexZone 0
         
         ::piLog::log [clock milliseconds] "info" "irrigation : plate-forme $plateformeNom : zone $zoneNom : Attente $TempsOffEV secondes + Temps Perco ($TempsPerco) avant zone suivante ($indexZone) (temps définit pour $JourOuNuit)";update
-        set ::idAfter [after [expr 1000 * ($TempsOffEV + $TempsPerco)] irrigationLoop $indexPlateforme $indexZone]
+        set ::idAfter [after [expr 1000 * ($TempsOffEV + $TempsPerco)] [list after idle irrigationLoop $indexPlateforme $indexZone]]
     } else {
         ::piLog::log [clock milliseconds] "info" "irrigation : plate-forme $plateformeNom : zone $zoneNom : Attente $TempsOffEV secondes avant zone suivante ($indexZone) (temps définit pour $JourOuNuit)";update
-        set ::idAfter [after [expr 1000 * $TempsOffEV] irrigationLoop $indexPlateforme $indexZone]
+        set ::idAfter [after [expr 1000 * $TempsOffEV] [list after idle irrigationLoop $indexPlateforme $indexZone]]
     }
     
 
