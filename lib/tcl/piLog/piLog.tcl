@@ -76,7 +76,7 @@ proc ::piLog::log {time traceType trace} {
             set TimeComputed "[clock format [expr $time / 1000] -format "%d/%m/%Y %H:%M:%S."][expr $time % 1000]"
         } msgErr]
     
-        set StringToWrite "$time $module $traceType $trace"
+        set StringToWrite "$TimeComputed\t$module\t$traceType\t$trace"
     } else {
         set StringToWrite "<${time}><${module}><${traceType}><${trace}>"
     }
