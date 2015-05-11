@@ -7,27 +7,54 @@
     <item key="localtechnique,pompeName" value="Surpresseur" />
     <item key="localtechnique,pompePrise" value="2" />
     <item key="localtechnique,irriActive" value="true" />
+    <item key="localtechnique,timeMatinStarter" value="30" />
+    <item key="localtechnique,timeApresStarter" value="50" />
+    <item key="localtechnique,timeNuitStarter" value="0" />
     <item key="nbEngrais" value="4" />
     <item key="engrais,0,id" value="1" />
-    <item key="engrais,0,name" value="engrais1" />
+    <item key="engrais,0,name" value="engrais 1" />
     <item key="engrais,0,prise" value="3" />
     <item key="engrais,0,active" value="true" />
     <item key="engrais,0,engraisId" value="0" />
+    <item key="engrais,0,useMatinNormal" value="true" />
+    <item key="engrais,0,useApresNormal" value="false" />
+    <item key="engrais,0,useNuitNormal" value="false" />
+    <item key="engrais,0,useMatinStarter" value="false" />
+    <item key="engrais,0,useApresStarter" value="false" />
+    <item key="engrais,0,useNuitStarter" value="true" />
     <item key="engrais,1,id" value="2" />
-    <item key="engrais,1,name" value="engrais2" />
+    <item key="engrais,1,name" value="engrais2 w" />
     <item key="engrais,1,prise" value="4" />
     <item key="engrais,1,active" value="true" />
     <item key="engrais,1,engraisId" value="1" />
+    <item key="engrais,1,useMatinNormal" value="false" />
+    <item key="engrais,1,useApresNormal" value="true" />
+    <item key="engrais,1,useNuitNormal" value="false" />
+    <item key="engrais,1,useMatinStarter" value="false" />
+    <item key="engrais,1,useApresStarter" value="false" />
+    <item key="engrais,1,useNuitStarter" value="true" />
     <item key="engrais,2,id" value="3" />
-    <item key="engrais,2,name" value="engrais3" />
+    <item key="engrais,2,name" value="engrais3 " />
     <item key="engrais,2,prise" value="5" />
     <item key="engrais,2,active" value="true" />
     <item key="engrais,2,engraisId" value="2" />
+    <item key="engrais,2,useMatinNormal" value="false" />
+    <item key="engrais,2,useApresNormal" value="true" />
+    <item key="engrais,2,useNuitNormal" value="false" />
+    <item key="engrais,2,useMatinStarter" value="false" />
+    <item key="engrais,2,useApresStarter" value="true" />
+    <item key="engrais,2,useNuitStarter" value="false" />
     <item key="engrais,3,id" value="4" />
     <item key="engrais,3,name" value="eau" />
     <item key="engrais,3,prise" value="6" />
     <item key="engrais,3,active" value="false" />
     <item key="engrais,3,engraisId" value="3" />
+    <item key="engrais,3,useMatinNormal" value="true" />
+    <item key="engrais,3,useApresNormal" value="false" />
+    <item key="engrais,3,useNuitNormal" value="false" />
+    <item key="engrais,3,useMatinStarter" value="false" />
+    <item key="engrais,3,useApresStarter" value="false" />
+    <item key="engrais,3,useNuitStarter" value="false" />
     <item key="nbPlateforme" value="5" />
     <item key="plateforme,0,id" value="1" />
     <item key="plateforme,0,idPlateforme" value="0" />
@@ -40,34 +67,50 @@
     <item key="plateforme,0,tempsPerco" value="300" />
     <item key="plateforme,0,tempsMaxRemp" value="300" />
     <item key="plateforme,0,priseDansLT" value="7" />
+    <item key="plateforme,0,tempsPercoNuit" value="300" />
+    <item key="plateforme,0,tempsMaxRempNuit" value="200" />
+    <item key="plateforme,0,tempsPercoApresMidi" value="0" />
+    <item key="plateforme,0,tempsMaxRempApresMidi" value="300" />
     <item key="plateforme,0,nbZone" value="3" />
     <item key="plateforme,0,zone,0,id" value="1" />
     <item key="plateforme,0,zone,0,motherPlatef" value="0" />
     <item key="plateforme,0,zone,0,zoneId" value="0" />
     <item key="plateforme,0,zone,0,name" value="EV_sud" />
     <item key="plateforme,0,zone,0,prise" value="2" />
-    <item key="plateforme,0,zone,0,tempsOn" value="10" />
-    <item key="plateforme,0,zone,0,tempsOff" value="15" />
+    <item key="plateforme,0,zone,0,tempsOn" value="100" />
+    <item key="plateforme,0,zone,0,tempsOff" value="150" />
     <item key="plateforme,0,zone,0,active" value="true" />
     <item key="plateforme,0,zone,0,coef" value="1.00" />
+    <item key="plateforme,0,zone,0,tempsOnNuit" value="100" />
+    <item key="plateforme,0,zone,0,tempsOffNuit" value="150" />
+    <item key="plateforme,0,zone,0,tempsOnApresMidi" value="100" />
+    <item key="plateforme,0,zone,0,tempsOffApresMidi" value="50" />
     <item key="plateforme,0,zone,1,id" value="2" />
     <item key="plateforme,0,zone,1,motherPlatef" value="0" />
     <item key="plateforme,0,zone,1,zoneId" value="1" />
     <item key="plateforme,0,zone,1,name" value="EV_milieu" />
     <item key="plateforme,0,zone,1,prise" value="3" />
-    <item key="plateforme,0,zone,1,tempsOn" value="10" />
-    <item key="plateforme,0,zone,1,tempsOff" value="15" />
+    <item key="plateforme,0,zone,1,tempsOn" value="100" />
+    <item key="plateforme,0,zone,1,tempsOff" value="150" />
     <item key="plateforme,0,zone,1,active" value="true" />
     <item key="plateforme,0,zone,1,coef" value="1.00" />
+    <item key="plateforme,0,zone,1,tempsOnNuit" value="0" />
+    <item key="plateforme,0,zone,1,tempsOffNuit" value="0" />
+    <item key="plateforme,0,zone,1,tempsOnApresMidi" value="0" />
+    <item key="plateforme,0,zone,1,tempsOffApresMidi" value="0" />
     <item key="plateforme,0,zone,2,id" value="3" />
     <item key="plateforme,0,zone,2,motherPlatef" value="0" />
     <item key="plateforme,0,zone,2,zoneId" value="2" />
     <item key="plateforme,0,zone,2,name" value="EV_nord" />
     <item key="plateforme,0,zone,2,prise" value="4" />
-    <item key="plateforme,0,zone,2,tempsOn" value="10" />
-    <item key="plateforme,0,zone,2,tempsOff" value="15" />
+    <item key="plateforme,0,zone,2,tempsOn" value="100" />
+    <item key="plateforme,0,zone,2,tempsOff" value="150" />
     <item key="plateforme,0,zone,2,active" value="true" />
     <item key="plateforme,0,zone,2,coef" value="1.00" />
+    <item key="plateforme,0,zone,2,tempsOnNuit" value="0" />
+    <item key="plateforme,0,zone,2,tempsOffNuit" value="0" />
+    <item key="plateforme,0,zone,2,tempsOnApresMidi" value="0" />
+    <item key="plateforme,0,zone,2,tempsOffApresMidi" value="0" />
     <item key="plateforme,1,id" value="2" />
     <item key="plateforme,1,idPlateforme" value="1" />
     <item key="plateforme,1,name" value="dantin" />
@@ -79,25 +122,37 @@
     <item key="plateforme,1,tempsPerco" value="300" />
     <item key="plateforme,1,tempsMaxRemp" value="300" />
     <item key="plateforme,1,priseDansLT" value="8" />
+    <item key="plateforme,1,tempsPercoNuit" value="0" />
+    <item key="plateforme,1,tempsMaxRempNuit" value="300" />
+    <item key="plateforme,1,tempsPercoApresMidi" value="0" />
+    <item key="plateforme,1,tempsMaxRempApresMidi" value="300" />
     <item key="plateforme,1,nbZone" value="2" />
     <item key="plateforme,1,zone,0,id" value="4" />
     <item key="plateforme,1,zone,0,motherPlatef" value="1" />
     <item key="plateforme,1,zone,0,zoneId" value="0" />
     <item key="plateforme,1,zone,0,name" value="EV_nord" />
     <item key="plateforme,1,zone,0,prise" value="2" />
-    <item key="plateforme,1,zone,0,tempsOn" value="10" />
-    <item key="plateforme,1,zone,0,tempsOff" value="15" />
+    <item key="plateforme,1,zone,0,tempsOn" value="100" />
+    <item key="plateforme,1,zone,0,tempsOff" value="150" />
     <item key="plateforme,1,zone,0,active" value="true" />
     <item key="plateforme,1,zone,0,coef" value="1.00" />
+    <item key="plateforme,1,zone,0,tempsOnNuit" value="0" />
+    <item key="plateforme,1,zone,0,tempsOffNuit" value="0" />
+    <item key="plateforme,1,zone,0,tempsOnApresMidi" value="0" />
+    <item key="plateforme,1,zone,0,tempsOffApresMidi" value="0" />
     <item key="plateforme,1,zone,1,id" value="5" />
     <item key="plateforme,1,zone,1,motherPlatef" value="1" />
     <item key="plateforme,1,zone,1,zoneId" value="1" />
     <item key="plateforme,1,zone,1,name" value="EV_sud" />
     <item key="plateforme,1,zone,1,prise" value="3" />
-    <item key="plateforme,1,zone,1,tempsOn" value="10" />
-    <item key="plateforme,1,zone,1,tempsOff" value="15" />
+    <item key="plateforme,1,zone,1,tempsOn" value="100" />
+    <item key="plateforme,1,zone,1,tempsOff" value="150" />
     <item key="plateforme,1,zone,1,active" value="true" />
     <item key="plateforme,1,zone,1,coef" value="1.00" />
+    <item key="plateforme,1,zone,1,tempsOnNuit" value="0" />
+    <item key="plateforme,1,zone,1,tempsOffNuit" value="0" />
+    <item key="plateforme,1,zone,1,tempsOnApresMidi" value="0" />
+    <item key="plateforme,1,zone,1,tempsOffApresMidi" value="0" />
     <item key="plateforme,2,id" value="3" />
     <item key="plateforme,2,idPlateforme" value="2" />
     <item key="plateforme,2,name" value="centrale" />
@@ -109,16 +164,24 @@
     <item key="plateforme,2,tempsPerco" value="300" />
     <item key="plateforme,2,tempsMaxRemp" value="300" />
     <item key="plateforme,2,priseDansLT" value="9" />
+    <item key="plateforme,2,tempsPercoNuit" value="0" />
+    <item key="plateforme,2,tempsMaxRempNuit" value="300" />
+    <item key="plateforme,2,tempsPercoApresMidi" value="0" />
+    <item key="plateforme,2,tempsMaxRempApresMidi" value="300" />
     <item key="plateforme,2,nbZone" value="1" />
     <item key="plateforme,2,zone,0,id" value="6" />
     <item key="plateforme,2,zone,0,motherPlatef" value="2" />
     <item key="plateforme,2,zone,0,zoneId" value="0" />
     <item key="plateforme,2,zone,0,name" value="EV" />
     <item key="plateforme,2,zone,0,prise" value="2" />
-    <item key="plateforme,2,zone,0,tempsOn" value="10" />
-    <item key="plateforme,2,zone,0,tempsOff" value="15" />
+    <item key="plateforme,2,zone,0,tempsOn" value="100" />
+    <item key="plateforme,2,zone,0,tempsOff" value="150" />
     <item key="plateforme,2,zone,0,active" value="true" />
     <item key="plateforme,2,zone,0,coef" value="1.00" />
+    <item key="plateforme,2,zone,0,tempsOnNuit" value="0" />
+    <item key="plateforme,2,zone,0,tempsOffNuit" value="0" />
+    <item key="plateforme,2,zone,0,tempsOnApresMidi" value="0" />
+    <item key="plateforme,2,zone,0,tempsOffApresMidi" value="0" />
     <item key="plateforme,3,id" value="4" />
     <item key="plateforme,3,idPlateforme" value="3" />
     <item key="plateforme,3,name" value="mogador" />
@@ -129,26 +192,38 @@
     <item key="plateforme,3,limitDesamorcagePompe" value="true" />
     <item key="plateforme,3,tempsPerco" value="300" />
     <item key="plateforme,3,tempsMaxRemp" value="300" />
-    <item key="plateforme,3,priseDansLT" value="15" />
+    <item key="plateforme,3,priseDansLT" value="10" />
+    <item key="plateforme,3,tempsPercoNuit" value="0" />
+    <item key="plateforme,3,tempsMaxRempNuit" value="300" />
+    <item key="plateforme,3,tempsPercoApresMidi" value="0" />
+    <item key="plateforme,3,tempsMaxRempApresMidi" value="300" />
     <item key="plateforme,3,nbZone" value="2" />
     <item key="plateforme,3,zone,0,id" value="7" />
     <item key="plateforme,3,zone,0,motherPlatef" value="3" />
     <item key="plateforme,3,zone,0,zoneId" value="0" />
     <item key="plateforme,3,zone,0,name" value="EV_nord" />
     <item key="plateforme,3,zone,0,prise" value="2" />
-    <item key="plateforme,3,zone,0,tempsOn" value="10" />
-    <item key="plateforme,3,zone,0,tempsOff" value="15" />
+    <item key="plateforme,3,zone,0,tempsOn" value="100" />
+    <item key="plateforme,3,zone,0,tempsOff" value="150" />
     <item key="plateforme,3,zone,0,active" value="true" />
     <item key="plateforme,3,zone,0,coef" value="1.00" />
+    <item key="plateforme,3,zone,0,tempsOnNuit" value="0" />
+    <item key="plateforme,3,zone,0,tempsOffNuit" value="0" />
+    <item key="plateforme,3,zone,0,tempsOnApresMidi" value="0" />
+    <item key="plateforme,3,zone,0,tempsOffApresMidi" value="0" />
     <item key="plateforme,3,zone,1,id" value="8" />
     <item key="plateforme,3,zone,1,motherPlatef" value="3" />
     <item key="plateforme,3,zone,1,zoneId" value="1" />
     <item key="plateforme,3,zone,1,name" value="EV_sud" />
     <item key="plateforme,3,zone,1,prise" value="3" />
-    <item key="plateforme,3,zone,1,tempsOn" value="10" />
-    <item key="plateforme,3,zone,1,tempsOff" value="15" />
+    <item key="plateforme,3,zone,1,tempsOn" value="100" />
+    <item key="plateforme,3,zone,1,tempsOff" value="150" />
     <item key="plateforme,3,zone,1,active" value="true" />
     <item key="plateforme,3,zone,1,coef" value="1.00" />
+    <item key="plateforme,3,zone,1,tempsOnNuit" value="0" />
+    <item key="plateforme,3,zone,1,tempsOffNuit" value="0" />
+    <item key="plateforme,3,zone,1,tempsOnApresMidi" value="0" />
+    <item key="plateforme,3,zone,1,tempsOffApresMidi" value="0" />
     <item key="plateforme,4,id" value="5" />
     <item key="plateforme,4,idPlateforme" value="4" />
     <item key="plateforme,4,name" value="opera" />
@@ -160,32 +235,48 @@
     <item key="plateforme,4,tempsPerco" value="300" />
     <item key="plateforme,4,tempsMaxRemp" value="300" />
     <item key="plateforme,4,priseDansLT" value="11" />
+    <item key="plateforme,4,tempsPercoNuit" value="0" />
+    <item key="plateforme,4,tempsMaxRempNuit" value="300" />
+    <item key="plateforme,4,tempsPercoApresMidi" value="0" />
+    <item key="plateforme,4,tempsMaxRempApresMidi" value="300" />
     <item key="plateforme,4,nbZone" value="3" />
     <item key="plateforme,4,zone,0,id" value="9" />
     <item key="plateforme,4,zone,0,motherPlatef" value="4" />
     <item key="plateforme,4,zone,0,zoneId" value="0" />
     <item key="plateforme,4,zone,0,name" value="EV_1" />
     <item key="plateforme,4,zone,0,prise" value="2" />
-    <item key="plateforme,4,zone,0,tempsOn" value="10" />
-    <item key="plateforme,4,zone,0,tempsOff" value="15" />
+    <item key="plateforme,4,zone,0,tempsOn" value="100" />
+    <item key="plateforme,4,zone,0,tempsOff" value="150" />
     <item key="plateforme,4,zone,0,active" value="true" />
     <item key="plateforme,4,zone,0,coef" value="1.00" />
-    <item key="plateforme,4,zone,1,id" value="15" />
+    <item key="plateforme,4,zone,0,tempsOnNuit" value="0" />
+    <item key="plateforme,4,zone,0,tempsOffNuit" value="0" />
+    <item key="plateforme,4,zone,0,tempsOnApresMidi" value="0" />
+    <item key="plateforme,4,zone,0,tempsOffApresMidi" value="0" />
+    <item key="plateforme,4,zone,1,id" value="10" />
     <item key="plateforme,4,zone,1,motherPlatef" value="4" />
     <item key="plateforme,4,zone,1,zoneId" value="1" />
     <item key="plateforme,4,zone,1,name" value="EV_2" />
     <item key="plateforme,4,zone,1,prise" value="3" />
-    <item key="plateforme,4,zone,1,tempsOn" value="10" />
-    <item key="plateforme,4,zone,1,tempsOff" value="15" />
+    <item key="plateforme,4,zone,1,tempsOn" value="100" />
+    <item key="plateforme,4,zone,1,tempsOff" value="150" />
     <item key="plateforme,4,zone,1,active" value="true" />
     <item key="plateforme,4,zone,1,coef" value="1.00" />
+    <item key="plateforme,4,zone,1,tempsOnNuit" value="0" />
+    <item key="plateforme,4,zone,1,tempsOffNuit" value="0" />
+    <item key="plateforme,4,zone,1,tempsOnApresMidi" value="0" />
+    <item key="plateforme,4,zone,1,tempsOffApresMidi" value="0" />
     <item key="plateforme,4,zone,2,id" value="11" />
     <item key="plateforme,4,zone,2,motherPlatef" value="4" />
     <item key="plateforme,4,zone,2,zoneId" value="2" />
     <item key="plateforme,4,zone,2,name" value="EV_3" />
     <item key="plateforme,4,zone,2,prise" value="4" />
-    <item key="plateforme,4,zone,2,tempsOn" value="10" />
-    <item key="plateforme,4,zone,2,tempsOff" value="15" />
+    <item key="plateforme,4,zone,2,tempsOn" value="100" />
+    <item key="plateforme,4,zone,2,tempsOff" value="150" />
     <item key="plateforme,4,zone,2,active" value="true" />
     <item key="plateforme,4,zone,2,coef" value="1.00" />
+    <item key="plateforme,4,zone,2,tempsOnNuit" value="0" />
+    <item key="plateforme,4,zone,2,tempsOffNuit" value="0" />
+    <item key="plateforme,4,zone,2,tempsOnApresMidi" value="0" />
+    <item key="plateforme,4,zone,2,tempsOffApresMidi" value="0" />
 </conf>
