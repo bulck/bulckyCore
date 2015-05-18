@@ -5,4 +5,5 @@
     <item name="port" level="587" />
     <item name="username" level="hercule.poirot@gmail.com" />
     <item name="password" level="motdepasse" />
+    <item name="useSSL" level="false" />
 </conf>
