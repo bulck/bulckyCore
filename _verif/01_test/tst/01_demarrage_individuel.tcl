@@ -16,8 +16,8 @@ proc ::01_demarrage_individuel::init {} {
 proc ::01_demarrage_individuel::test {rootDir} {
     variable errorList
     
-    set moduleListLogFirst [list serverLog serverAcqSensor serverCultibox serverHisto serverIrrigation serverMail serverPlugUpdate serverSupervision]
-    set moduleListLogEnd   [list serverAcqSensor serverCultibox serverHisto serverIrrigation serverMail serverPlugUpdate serverSupervision serverLog]
+    set moduleListLogFirst [list serverLog serverAcqSensor serverCultibox serverHisto serverMail serverPlugUpdate serverSupervision]
+    set moduleListLogEnd   [list serverAcqSensor serverCultibox serverHisto serverMail serverPlugUpdate serverSupervision serverLog]
 
     #**********************************************
     # Lancement individuel des modules

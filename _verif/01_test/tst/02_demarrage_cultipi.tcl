@@ -14,8 +14,8 @@ proc ::02_demarrage_cultipi::init {} {
 proc ::02_demarrage_cultipi::test {rootDir} {
     variable errorList
     
-    set moduleListLogFirst [list serverLog serverAcqSensor serverCultibox serverHisto serverIrrigation serverMail serverPlugUpdate serverSupervision]
-    set moduleListLogEnd   [list serverAcqSensor serverCultibox serverHisto serverIrrigation serverMail serverPlugUpdate serverSupervision serverLog]
+    set moduleListLogFirst [list serverLog serverAcqSensor serverCultibox serverHisto serverMail serverPlugUpdate serverSupervision]
+    set moduleListLogEnd   [list serverAcqSensor serverCultibox serverHisto serverMail serverPlugUpdate serverSupervision serverLog]
 
 
     #On modifie la conf en fonction de l'OS
@@ -42,7 +42,6 @@ proc ::02_demarrage_cultipi::test {rootDir} {
     puts $fid {    <item name="serverHisto" waitAfterUS="100" pathexe="tclsh" path="./serverHisto/serverHisto.tcl" xmlconf="./serverHisto/conf.xml" />}
     puts $fid {    <item name="serverCultibox" waitAfterUS="100" pathexe="tclsh" path="./serverCultibox/serverCultibox.tcl" xmlconf="./serverCultibox/conf.xml" />}
     puts $fid {    <item name="serverMail" waitAfterUS="100" pathexe="tclsh" path="./serverMail/serverMail.tcl" xmlconf="./serverMail/conf.xml" />}
-    puts $fid {    <item name="serverIrrigation" waitAfterUS="100" pathexe="tclsh" path="./serverIrrigation/serverIrrigation.tcl" xmlconf="./serverIrrigation/conf.xml" />}
     puts $fid {    <item name="serverSupervision" waitAfterUS="100" pathexe="tclsh" path="./serverSupervision/serverSupervision.tcl" xmlconf="./serverSupervision/conf.xml" />}
     puts $fid {</starts>}
     close $fid
