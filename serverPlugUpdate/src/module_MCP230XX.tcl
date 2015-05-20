@@ -190,7 +190,7 @@ proc ::MCP230XX::setValue {plugNumber value address} {
     if {$RC != 0} {
         ::piLog::log [clock milliseconds] "error" "::MCP230XX::setValue Module $moduleAdresse does not respond :$msg "
     } else {
-        ::piLog::log [clock milliseconds] "info" "::MCP230XX::setValue Output GPIO to $register(${moduleAdresse},GPIO_LAST) OK (output pin $outputPin)"
+        ::piLog::log [clock milliseconds] "info" "::MCP230XX::setValue Output GPIO  $moduleAdresse to $register(${moduleAdresse},GPIO_LAST) OK (output pin $outputPin)"
     }
 
 }
