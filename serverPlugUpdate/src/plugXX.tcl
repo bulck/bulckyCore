@@ -13,7 +13,7 @@ proc plugXX_load {confPath} {
             ::piLog::log [clock milliseconds] "info" "reading $i plugXX $plugXXFilename"
             
             # On initialise les constantes de chaque prise
-            set ::plug($i,value) ""
+            set ::plug($i,value) "NA"
             set ::plug($i,inRegulation) "NONE"
             set ::plug($i,updateStatus) ""
             set ::plug($i,updateStatusComment) ""

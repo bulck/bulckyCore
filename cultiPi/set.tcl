@@ -24,5 +24,5 @@ set adresseIP [lindex $argv 1]
 
 
 # tclsh /opt/cultipi/cultiPi/set.tcl serverPlugUpdate localhost 3 on 10
-# tclsh "C:\cultibox\04_CultiPi\01_Software\01_cultiPi\cultiPi\set.tcl" serverPlugUpdate localhost 1 on 10
+# tclsh "D:\CBX\cultipiCore\cultiPi\set.tcl" serverPlugUpdate localhost 2 on 10
 

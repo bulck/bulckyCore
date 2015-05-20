@@ -51,7 +51,7 @@ proc ::sql::addPlugState {plgNumber state time} {
     if {$state == "9990" || $state == "0"} {
         ::sql::query "INSERT INTO power (timestamp, record, plug_number, date_catch, time_catch) VALUES ($formattedTime , $state , $plgNumber , \"$date_catch\" , \"$time_catch\" );"
     } else {
-        ::piLog::log [clock milliseconds] "error" "::sql::addPlugState : unknow state -${state}-"
+        ::piLog::log [clock milliseconds] "error" "::sql::addPlugState : unknow state -${state}- for plug $plgNumber "
     }
 }
 
@@ -82,6 +82,6 @@ proc ::sql::AddSensorValue {sensor val1 val2 time} {
     if {$val1 != NULL ||$val2 != NULL } {
         ::sql::query "INSERT INTO logs (timestamp, record1, record2, date_catch, time_catch, fake_log, sensor_nb) VALUES ($formattedTime , $val1 , $val2 , \"$date_catch\" , \"$time_catch\" , \"False\" , $sensor);"
     } else {
-        ::piLog::log [clock milliseconds] "waring" "::sql::AddSensorValue : val1 $val1 and val2 $val2 are not correct"
+        ::piLog::log [clock milliseconds] "warning" "::sql::AddSensorValue : val1 $val1 and val2 $val2 are not correct"
     }
 }

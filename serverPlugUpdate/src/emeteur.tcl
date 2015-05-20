@@ -262,7 +262,7 @@ proc updatePlug {plugNumber} {
 }
 
 proc savePlugSendValue {plug value} {
-    
+
     # On ne doit mettre à jour les abonnement que si l'état de la prise à changé
     if {$::plug($plug,value) != $value} {
         
@@ -302,8 +302,12 @@ proc emeteur_subscriptionEvenement {} {
         
             # On envoi à tous les client qui on un abonnement événementiel
             foreach client $::plug(subscription,$plugNb) {
-                
-                ::piServer::sendToServer $client "$client [incr ::TrameIndex] _subscriptionEvenement ::plug($plugNb,value) $::plug($plugNb,value) [clock milliseconds]"
+
+                if {$::plug($plugNb,value) == "NA" || $::plug($plugNb,value) == ""} {
+                    ::piLog::log [clock milliseconds] "warning" "emeteur_subscriptionEvenement Asked $plugNb value but value is - $::plug($plugNb,value) -"
+                } else {
+                    ::piServer::sendToServer $client "$client [incr ::TrameIndex] _subscriptionEvenement ::plug($plugNb,value) $::plug($plugNb,value) [clock milliseconds]"
+                }
                 
                 set ThereAreSomeClient 1
                 

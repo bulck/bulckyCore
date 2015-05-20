@@ -77,12 +77,15 @@ proc messageGestion {message networkhost} {
                 
                     # On ajoute le numéro de port à la liste des abonnés
                     lappend ::plug(subscription,$plugNumber) $serverForResponse
+                    
+                    # On envoi l'état actuel
+                    ::piServer::sendToServer $serverForResponse "$serverForResponse [incr ::TrameIndex] _subscriptionEvenement ::plug($plugNumber,value) $::plug($plugNumber,value) [clock milliseconds]"
                 
                 } else {
                     ::piLog::log [clock milliseconds] "error" "$plugNumber,value doesnot exists in ::plug"
                 }
             } else {
-                ::piLog::log [clock milliseconds] "error" "Couldnot rekognize Asked subscriptionEvenement $variable - parametre $repere"
+                ::piLog::log [clock milliseconds] "error" "Could not rekognize Asked subscriptionEvenement $variable - parametre $repere"
             }
         }
         "updateSubscriptionEvenement" {

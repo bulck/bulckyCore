@@ -124,11 +124,14 @@ proc ::piServer::sendToServer {portNumber message {ip localhost}} {
     variable debug
     variable portNumberReverse
     
+    set retVal 0
+    
     set channel ""
 
     set rc [catch { set channel [socket ${ip} $portNumber] } msg]
     if {$rc == 1} {
         ::piLog::log [clock milliseconds] "error" "::piServer::sendToServer try to open socket to -$ip : $portNumber - $portNumberReverse($portNumber)- - erreur :  -$msg-"
+        set retVal 1
     }
 
     set rc [catch \
@@ -138,6 +141,7 @@ proc ::piServer::sendToServer {portNumber message {ip localhost}} {
     } msg]
     if {$rc == 1} {
         ::piLog::log [clock milliseconds] "error" "::piServer::sendToServer try to send message to -$ip : $portNumber - $portNumberReverse($portNumber)- - erreur :  -$msg-"
+        set retVal 1
     } else {
         if {$debug == 1} { 
             ::piLog::log [clock milliseconds] "debug" "::piServer::sendToServer message send to -$ip : $portNumber - $portNumberReverse($portNumber) - message : -$message-"
@@ -151,7 +155,10 @@ proc ::piServer::sendToServer {portNumber message {ip localhost}} {
     if {$rc == 1} \
     {
         ::piLog::log [clock milliseconds] "error" "::piServer::sendToServer erreur closing channel -$channel-"
+        set retVal 1
     }
+    
+    return $retVal
 }
 
 # Cette procédure est utilisée pour trouver un port de dispo

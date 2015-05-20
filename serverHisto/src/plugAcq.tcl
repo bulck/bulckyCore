@@ -4,12 +4,6 @@ namespace eval ::plugAcq {
 
 # Utiliser pour initialiser la partie sensor
 proc ::plugAcq::init {} {
-
-    set ::port(serverPlugUpdate)   ""
-
-    # On demande le numéro de port du lecteur de capteur
-    ::piLog::log [clock milliseconds] "info" "ask getPort serverPlugUpdate"
-    ::piServer::sendToServer $::piServer::portNumber(serverCultipi) "$::piServer::portNumber(serverHisto) [incr ::TrameIndex] getPort serverPlugUpdate"
     
     for {set i 1} {$i < 17} {incr i} {
         set ::plug(${i},value) ""
@@ -28,22 +22,21 @@ proc ::plugAcq::loop {} {
     variable bandeMorteAcq
     
     # On vérifie si le numéro de port est disponible (et qu'on l'a pas demandé)
-    if {$::piServer::portNumber(serverPlugUpdate) != "" && $::subscriptionRunned(plugAcq) == 0} {
+    if {$::subscriptionRunned(plugAcq) == 0} {
     
         # Le numéro du port est disponible
         # On lui demande les repères nécessaires (les 16 premiers) par abonnement
+        set retErr 0
         for {set i 1} {$i < 17} {incr i} {
-            ::piServer::sendToServer $::piServer::portNumber(serverPlugUpdate) "$::piServer::portNumber(serverHisto) [incr ::TrameIndex] subscriptionEvenement plug ${i},value"
+            incr retErr [::piServer::sendToServer $::piServer::portNumber(serverPlugUpdate) "$::piServer::portNumber(serverHisto) [incr ::TrameIndex] subscriptionEvenement plug ${i},value"]
         }
 
-        set ::subscriptionRunned(plugAcq) 1
-        
-        # On lui demande une mise à jour des valeurs
-        # ::piServer::sendToServer $::piServer::portNumber(serverPlugUpdate) "$::piServer::portNumber(serverHisto) [incr ::TrameIndex] updateSubscriptionEvenement"
-        
-    
-    } elseif {$::subscriptionRunned(plugAcq) == 0} {
-        ::piLog::log [clock milliseconds] "debug" "::plugAcq::loop : port of serverPlugUpdate is not defined"
+        if {$retErr == 0} {
+            set ::subscriptionRunned(plugAcq) 1
+        } else {
+            ::piLog::log [clock milliseconds] "warning" "::plugAcq::loop : subscriptions are not done"
+        }
+
     }
     
     # En fin de journée, on demande une mise à jour des valeurs
