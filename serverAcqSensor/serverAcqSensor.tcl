@@ -338,8 +338,8 @@ proc readSensors {} {
     # Une fois l'ensemble lu, on l'indique
     set ::sensor(firsReadDone) 1
     
-    # On recherche après 1 seconde
-    after 1000 readSensors
+    # On recherche après 2.5 seconde
+    after 2500 readSensors
 }
 
 # On cherche les capteurs connectés
