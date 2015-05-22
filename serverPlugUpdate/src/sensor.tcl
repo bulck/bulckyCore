@@ -37,11 +37,6 @@ proc ::sensor::loop {} {
     } else {
         ::piLog::log [clock milliseconds] "warning" "::sensor::loop : subscriptions are not done"
     }
-    
-
-
-
-    
 
     # On tue la boucle si les souscriptions sont lancés
     if {$::subscriptionRunned == 0} {

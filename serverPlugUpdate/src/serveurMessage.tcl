@@ -126,7 +126,7 @@ proc messageGestion {message networkhost} {
             # On enregistre le retour de l'abonnement
             set ::${variable} $valeur
             
-            # ::piLog::log [clock milliseconds] "debug" "subscription response : variable $variable valeur -$valeur-"
+            ::piLog::log [clock milliseconds] "debug" "subscription response : variable $variable valeur -$valeur-"
         }
         default {
             # Si on reçoit le retour d'une commande, le nom du serveur est le notre
