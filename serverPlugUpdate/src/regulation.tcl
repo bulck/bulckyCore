@@ -52,9 +52,13 @@ proc emeteur_regulation {nbPlug plgPrgm} {
             set consigneSupSec [expr $::plug($nbPlug,SEC,value) + $::plug($nbPlug,SEC,precision)]
             set consigneInfSec [expr $::plug($nbPlug,SEC,value) - $::plug($nbPlug,SEC,precision)]
         
-            # On vérifie qu'il y a bien une valeur
-            if {$valueSecondaire != ""} {
+            # On vérifie qu'il n'y a pas eu d'erreur lors du calcul 
+            if {$valueSecondaire == "ERROR"} {
             
+            
+            } elseif {$valueSecondaire != ""} {
+                # On vérifie qu'il y a bien une valeur
+                
                 # Si le sens de la régulation est +
                 if {$::plug($nbPlug,SEC,sens) == "+"} {
                     # Si la valeur du capteur est supérieur à la consigne
@@ -114,11 +118,15 @@ proc emeteur_regulation {nbPlug plgPrgm} {
             set consigneSupPri [expr $plgPrgm + $::plug($nbPlug,REG,precision)]
             set consigneInfPri [expr $plgPrgm - $::plug($nbPlug,REG,precision)]
         
-            # Search sens
-            # If sens is +, effecteur will be on if temp is upper than consigne
-            # ie: ventilator, dehumidificator
-            if {$::plug($nbPlug,REG,sens) == "+"} {
+            # On vérifie qu'il n'y a pas eu d'erreur lors du calcul 
+            if {$valuePrimaire == "ERROR"} {
             
+            
+            } elseif {$::plug($nbPlug,REG,sens) == "+"} {
+                # Search sens
+                # If sens is +, effecteur will be on if temp is upper than consigne
+                # ie: ventilator, dehumidificator
+                
                 # Pas de donnée des capteurs
                 if {$valuePrimaire == ""} {
                     
@@ -309,6 +317,11 @@ proc computeValueForRegulation {nbPlug sensorType computeType} {
     
     if {$find == 0} {
         set outValue ""
+    }
+    
+    if {$outValue > 100 || $outValue < -30} {
+        ::piLog::log [clock milliseconds] "error" "computeValueForRegulation : Value is out of autorized values (val : $outValue)"
+        set outValue "ERROR"
     }
     
     return $outValue
