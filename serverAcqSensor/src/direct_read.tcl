@@ -45,10 +45,16 @@ proc ::direct_read::init {nb_maxSensor} {
         if {[array get ::configXML direct_read,$i,value] == ""} {
             set ::configXML(direct_read,$i,value) "NA"
         }
+        if {[array get ::configXML direct_read,$i,value0] == ""} {
+            set ::configXML(direct_read,$i,value) "NA"
+        }
         if {[array get ::configXML direct_read,$i,input2] == ""} {
             set ::configXML(direct_read,$i,input2) "NA"
         }
         if {[array get ::configXML direct_read,$i,value2] == ""} {
+            set ::configXML(direct_read,$i,value2) "NA"
+        }
+        if {[array get ::configXML direct_read,$i,value20] == ""} {
             set ::configXML(direct_read,$i,value2) "NA"
         }
         if {[array get ::configXML direct_read,$i,type] == ""} {

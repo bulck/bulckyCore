@@ -290,9 +290,10 @@ proc readSensors {} {
             
                 # Si l'utilisateur a prédéfinie des valeurs, on les appliques
                 if {$::configXML(direct_read,$sensorDirect,value) != "NA" && $value == 1} {
-                    set value $::configXML(direct_read,$sensorDirect,value)
-                }
-           
+					set value $::configXML(direct_read,$sensorDirect,value)
+				} elseif {$::configXML(direct_read,$sensorDirect,value0) != "NA" && $value == 0} {
+					set value $::configXML(direct_read,$sensorDirect,value0)
+				}
                 # On sauvegarde dans le repère global
                 set ::sensor($sensorDirect,value,1) $value
                 set ::sensor($sensorDirect,value)   $value
@@ -315,7 +316,9 @@ proc readSensors {} {
             if {[string is integer $value] && $value != ""} {
                 # Si l'utilisateur a prédéfinie des valeurs, on les appliques
                 if {$::configXML(direct_read,$sensorDirect,value2) != "NA" && $value == 1} {
-                    set value $::configXML(direct_read,$sensorDirect,value2)
+						set value $::configXML(direct_read,$sensorDirect,value2)
+                } elseif {$::configXML(direct_read,$sensorDirect,value20) != "NA" && $value == 0} {
+						set value $::configXML(direct_read,$sensorDirect,value20)
                 }
            
                 # On sauvegarde dans le repère global
