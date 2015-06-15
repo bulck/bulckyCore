@@ -54,6 +54,7 @@ namespace eval ::address {
     set val(65) MCP230XX
     set val(66) MCP230XX
     set val(67) MCP230XX
+    set val(68) MCP230XX
     
     # @0x21 cultibox : 0x42
     set val(70) MCP230XX
@@ -64,6 +65,7 @@ namespace eval ::address {
     set val(75) MCP230XX
     set val(76) MCP230XX
     set val(77) MCP230XX
+    set val(78) MCP230XX
     
     # @0x22 cultibox : 0x44
     set val(80) MCP230XX
@@ -74,6 +76,7 @@ namespace eval ::address {
     set val(85) MCP230XX
     set val(86) MCP230XX
     set val(87) MCP230XX
+    set val(88) MCP230XX
     
     # Adresse pour la commande en utilisant le vario
     # @0x10 cultibox : 0x20
