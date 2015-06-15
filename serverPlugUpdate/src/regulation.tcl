@@ -2,6 +2,8 @@
 
 proc emeteur_regulation {nbPlug plgPrgm} {
 
+    set errorFind 0
+
     set programmeToSend $::actualProgramm
     
     # On vérifie si l'état de la dernière commande envoyée existe
@@ -18,21 +20,25 @@ proc emeteur_regulation {nbPlug plgPrgm} {
     
         # Si le nom du module n'est pas définit
         ::piLog::log [clock milliseconds] "error" "Plug $nbPlug module is not defined"
+        set errorFind 1
         
     } elseif {$plgPrgm == ""} {
     
         # Si le programme n'est pas définit
         ::piLog::log [clock milliseconds] "error" "Plug $nbPlug programme is empty"
+        set errorFind 1
         
     } elseif {$::sensor(firsReadDone) == 0} {
     
         # Si la première lecture des capteurs n'est pas faite, on inhibe la régulation
         ::piLog::log [clock milliseconds] "info" "First read of sensor is not done, regulation of plug $nbPlug inhibited (programme $plgPrgm)"
+        set errorFind 1
         
     } elseif {$plgPrgm == "off" || $plgPrgm == "on"} {
 
         # Si l'état à piloter et on ou off, ce n'est vraiment pas normal !
         ::piLog::log [clock milliseconds] "error" "couldnt make regulation with programm $plgPrgm"
+        set errorFind 1
 
     } else {
 
@@ -252,9 +258,11 @@ proc emeteur_regulation {nbPlug plgPrgm} {
         
         # On envoi la commande au module
         if {$valeurToPilot != "" && $valeurToPilot != $::plug($nbPlug,value)} {
-            ::${module}::setValue $nbPlug $valeurToPilot $::plug($nbPlug,adress)
+            set errorFind [::${module}::setValue $nbPlug $valeurToPilot $::plug($nbPlug,adress)]
         }
     }
+    
+    return $errorFind
 }
 
 

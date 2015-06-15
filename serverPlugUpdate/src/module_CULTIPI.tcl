@@ -29,6 +29,8 @@ proc ::CULTIPI::init {plugList} {
 proc ::CULTIPI::setValue {plugNumber value address} {
     variable adresse_module
 
+    set errorDuringSend 0
+    
     # On cherche le nom du module correspondant
     set cultipi_numero "NA"
     # Il faut que la clé existe
@@ -39,12 +41,14 @@ proc ::CULTIPI::setValue {plugNumber value address} {
 
     if {$cultipi_numero == "NA"} {
         ::piLog::log [clock milliseconds] "error" "::CULTIPI::setValue Adress $address does not exists "
-        return
+        set errorDuringSend 1
+        return $errorDuringSend
     }
 
     if {$::configXML(module_CULTIPI,ip,$cultipi_numero) == "NA"} {
         ::piLog::log [clock milliseconds] "error" "::CULTIPI::setValue Adress of module does not exists "
-        return
+        set errorDuringSend 1
+        return $errorDuringSend
     }
 
     # On sauvegarde l'état de la prise
@@ -53,4 +57,5 @@ proc ::CULTIPI::setValue {plugNumber value address} {
     # On pilote la prise en sortie
     ::piServer::sendToServer $::piServer::portNumber(serverPlugUpdate) "$::piServer::portNumber(serverPlugUpdate) 0 setRepere $cultipi_prise $value 86399" $::configXML(module_CULTIPI,ip,$cultipi_numero)
 
+    return $errorDuringSend
 }

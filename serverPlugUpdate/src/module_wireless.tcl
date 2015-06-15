@@ -224,4 +224,5 @@ proc ::wireless::setValue {plugNumber value address} {
         ::piServer::sendToServer $::piServer::portNumber(serverCultipi) "$::piServer::portNumber(serverCultipi) [incr ::TrameIndex] stop"
     }
 
+    return $errorDuringSend
 }

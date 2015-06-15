@@ -233,32 +233,36 @@ proc updatePlug {plugNumber} {
     # On vérifie que le module utilisé pour le pilotage existe
     if {$::plug($plugNumber,module) == "NA"} {
         ::piLog::log [clock milliseconds] "error" "Plug $plugNumber module $module is not defined"
-
+        set statusError 1
     } elseif {$::plug($plugNumber,source) == "force"} {
         # On regarde si la prise est forcée dans un état par l'utilisateur
     
         # On envoi la commande au module
-        ::${module}::setValue $plugNumber $::plug($plugNumber,force,value) $::plug($plugNumber,adress)
+        set statusError [::${module}::setValue $plugNumber $::plug($plugNumber,force,value) $::plug($plugNumber,adress)]
         
         # On sauvegarde le fait qu'on n'est plus en régulation
         set ::plug($plugNumber,inRegulation) "NONE"
         
     } elseif {$plgPrgm == ""} {
+    
         ::piLog::log [clock milliseconds] "error" "Plug $plugNumber programme is empty"
+        set statusError 1
         
     } elseif {$plgPrgm != "off" && $plgPrgm != "on" && ${module} != "XMAX"} {
         # Si c'est de la régulation
-        emeteur_regulation $plugNumber $plgPrgm 
+        set statusError [emeteur_regulation $plugNumber $plgPrgm]
         
     } else {
         ::piLog::log [clock milliseconds] "info" "update plug $plugNumber with programm $plgPrgm - module : -${module}-"
         
         # On envoi la commande au module
-        ::${module}::setValue $plugNumber $plgPrgm $::plug($plugNumber,adress)
+        set statusError [::${module}::setValue $plugNumber $plgPrgm $::plug($plugNumber,adress)]
         
         # On sauvegarde le fait qu'on n'est plus en régulation
         set ::plug($plugNumber,inRegulation) "NONE"
     }
+    
+    return $statusError
 }
 
 proc savePlugSendValue {plug value} {

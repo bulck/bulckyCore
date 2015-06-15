@@ -70,6 +70,7 @@ proc restartSlave {outPutStyle} {
     # On eteint les esclaves
     set RC [catch {
         exec gpio -g mode 18 out
+        # /usr/local/bin/gpio -g write 18 0
         exec gpio -g write 18 0
     } msg]
     if {$RC != 0} {
@@ -84,6 +85,7 @@ proc restartSlave {outPutStyle} {
     
     # On alimente les esclaves
     set RC [catch {
+        # /usr/local/bin/gpio -g write 18 1
         exec gpio -g write 18 1
 
         # On pilote le fil vers les esclaves

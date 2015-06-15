@@ -95,6 +95,8 @@ proc ::direct::initPin {pinIndex} {
 proc ::direct::setValue {plugNumber value address} {
     variable pin 
 
+    set errorDuringSend 0
+    
     # On cherche la pin correspondante
     set pinNumber "NA"
     set pinIndex 0
@@ -108,7 +110,8 @@ proc ::direct::setValue {plugNumber value address} {
     
     if {$pinNumber == "NA"} {
         ::piLog::log [clock milliseconds] "error" "::direct::setValue Adress $address does not exists "
-        return
+        set errorDuringSend 1
+        return $errorDuringSend
     }
 
     # On sauvegarde l'état de la prise
@@ -128,9 +131,12 @@ proc ::direct::setValue {plugNumber value address} {
         set ::plug($plugNumber,updateStatus) "DEFCOM"
         set ::plug($plugNumber,updateStatusComment) ${msg}
         ::piLog::log [clock milliseconds] "error" "::direct::setValue default when updating value of plug $plugNumber (module : direct - pin $pinNumber) message:-$msg-"
+        set errorDuringSend 1
     } else {
         set ::plug($plugNumber,updateStatus) "OK"
         set ::plug($plugNumber,updateStatusComment) [clock milliseconds]
         ::piLog::log [clock milliseconds] "debug" "::direct::setValue plug $plugNumber (module : direct - pin $pinNumber)  is updated with value $value"
     }
+    
+    return $errorDuringSend
 }

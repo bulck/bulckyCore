@@ -62,6 +62,46 @@ proc messageGestion {message networkhost} {
             set ::plug($plugNumber,force,idAfterProc) [after [expr $time * 1000] unForcePlug $plugNumber]
             
         }
+        "setGetRepere" {
+            set plugNumber [::piTools::lindexRobust $message 3]
+            set value [::piTools::lindexRobust $message 4]
+            set time [::piTools::lindexRobust $message 5]
+            
+            set ::plug($plugNumber,source) "force"
+            set ::plug($plugNumber,force,value) $value
+            
+            ::piLog::log [clock milliseconds] "info" "Asked setGetRepere : force plug $plugNumber with value $value for time $time seconds"
+            
+            # On envoi la commande au module
+            set statusError 1
+            if {[array get ::plug "$plugNumber,module"] != "" && [array get ::plug "$plugNumber,adress"] != ""} {
+            
+                set module $::plug($plugNumber,module)
+            
+                set statusError [::${module}::setValue $plugNumber $::plug($plugNumber,force,value) $::plug($plugNumber,adress)]
+                # On sauvegarde le fait qu'on n'est plus en régulation
+                set ::plug($plugNumber,inRegulation) "NONE"
+            }
+            
+            # On retourne le fait que la prise a été mise à jour
+            if {$statusError == 0} {
+                ::piServer::sendToServer $serverForResponse "$serverForResponse $indexForResponse _setGetRepere done" $networkhost
+            } else {
+                ::piServer::sendToServer $serverForResponse "$serverForResponse $indexForResponse _setGetRepere error" $networkhost
+            }
+            
+            
+            # on appel la proc qui va déforcer la valeur
+            if {$::plug($plugNumber,force,idAfterProc) != ""} {
+                # S'il y avait déjà une proc d'appelée, on annule son appel
+                after cancel $::plug($plugNumber,force,idAfterProc)
+                set ::plug($plugNumber,force,idAfterProc) ""
+            }
+            
+            # On appel la proc
+            set ::plug($plugNumber,force,idAfterProc) [after [expr $time * 1000] unForcePlug $plugNumber]
+            
+        }
         "subscriptionEvenement" {
             # Le numéro de prise est indiqué 
             set variable [::piTools::lindexRobust $message 3]

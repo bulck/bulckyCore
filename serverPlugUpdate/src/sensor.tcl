@@ -26,6 +26,9 @@ proc ::sensor::loop {} {
     set retErr 0
     for {set i 1} {$i < 7} {incr i} {
         incr retErr [::piServer::sendToServer $::piServer::portNumber(serverAcqSensor) "$::piServer::portNumber(serverPlugUpdate) [incr ::TrameIndex] subscription ${i},value,1 2000"]
+        if {$retErr != 0} {
+            break
+        }
         incr retErr [::piServer::sendToServer $::piServer::portNumber(serverAcqSensor) "$::piServer::portNumber(serverPlugUpdate) [incr ::TrameIndex] subscription ${i},value,2 2000"]
     }
 

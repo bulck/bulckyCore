@@ -141,6 +141,8 @@ proc ::MCP230XX::setValue {plugNumber value address} {
     variable adresse_I2C
     variable register
 
+    set errorDuringSend 0
+    
     # On cherche le nom du module correspondant
     set moduleAdresse "NA"
     set outputPin "NA"
@@ -152,7 +154,8 @@ proc ::MCP230XX::setValue {plugNumber value address} {
     
     if {$moduleAdresse == "NA"} {
         ::piLog::log [clock milliseconds] "error" "::MCP230XX::setValue Adress $address does not exists "
-        return
+        set errorDuringSend 1
+        return $errorDuringSend
     }
 
     # On sauvegarde l'état de la prise
@@ -171,6 +174,7 @@ proc ::MCP230XX::setValue {plugNumber value address} {
     } msg]
     if {$RC != 0} {
         ::piLog::log [clock milliseconds] "error" "::MCP230XX::init Module $moduleAdresse does not respond :$msg "
+        set errorDuringSend 1
     } else {
         ::piLog::log [clock milliseconds] "info" "::MCP230XX::init init IODIR to 0x00 OK"
         set register(${moduleAdresse},init_done) 1
@@ -189,8 +193,11 @@ proc ::MCP230XX::setValue {plugNumber value address} {
     } msg]
     if {$RC != 0} {
         ::piLog::log [clock milliseconds] "error" "::MCP230XX::setValue Module $moduleAdresse does not respond :$msg "
+        set errorDuringSend 1
     } else {
         ::piLog::log [clock milliseconds] "info" "::MCP230XX::setValue Output GPIO  $moduleAdresse to $register(${moduleAdresse},GPIO_LAST) OK (output pin $outputPin)"
     }
+    
+    return $errorDuringSend
 
 }
