@@ -25,7 +25,9 @@ namespace eval ::MCP230XX {
     set adresse_module(66,out) 6
     set adresse_module(67) 0x20
     set adresse_module(67,out) 7
-    
+    set adresse_module(68) 0x20
+    set adresse_module(68,out) "all"
+
     # @0x21 cultibox : 0x42
     set adresse_module(70) 0x21
     set adresse_module(70,out) 0
@@ -43,6 +45,8 @@ namespace eval ::MCP230XX {
     set adresse_module(76,out) 6
     set adresse_module(77) 0x21
     set adresse_module(77,out) 7
+    set adresse_module(78) 0x21
+    set adresse_module(78,out) "all"
 
     # @0x22 cultibox : 0x44
     set adresse_module(80) 0x22
@@ -61,6 +65,8 @@ namespace eval ::MCP230XX {
     set adresse_module(86,out) 6
     set adresse_module(87) 0x22
     set adresse_module(87,out) 7
+    set adresse_module(88) 0x22
+    set adresse_module(88,out) "all"
 
     # Adresse des modules
     set adresse_I2C(0) 0x20
@@ -162,12 +168,21 @@ proc ::MCP230XX::setValue {plugNumber value address} {
     ::savePlugSendValue $plugNumber $value
     
     # On met à jour le registre
-    if {$value == "on"} {
-        set register(${moduleAdresse},GPIO_LAST) [expr $register(${moduleAdresse},GPIO_LAST) | (1 << $outputPin)] 
+    # Si c'est la dernière adresse, c'est un pilotage générale
+    if {$outputPin == "all"} {
+        if {$value == "on"} {
+            set register(${moduleAdresse},GPIO_LAST) [expr 0xff] 
+        } else {
+            set register(${moduleAdresse},GPIO_LAST) [expr 0x00]
+        }
     } else {
-        set register(${moduleAdresse},GPIO_LAST) [expr $register(${moduleAdresse},GPIO_LAST) & ~(1 << $outputPin)]
+        if {$value == "on"} {
+            set register(${moduleAdresse},GPIO_LAST) [expr $register(${moduleAdresse},GPIO_LAST) | (1 << $outputPin)] 
+        } else {
+            set register(${moduleAdresse},GPIO_LAST) [expr $register(${moduleAdresse},GPIO_LAST) & ~(1 << $outputPin)]
+        }
     }
-    
+
     set RC [catch {
         exec /usr/local/sbin/i2cset -y 1 $moduleAdresse $register(IODIR) 0x00
         after 10
