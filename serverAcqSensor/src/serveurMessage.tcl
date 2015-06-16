@@ -56,13 +56,12 @@ proc messageGestion {message networkhost} {
             set BandeMorteAcquisition [::piTools::lindexRobust $message 5]
             if {$BandeMorteAcquisition == ""} {set BandeMorteAcquisition 0}
             
-            ::piLog::log [clock milliseconds] "info" "Subscription of $repere by $serverForResponse frequency $frequency"
+            ::piLog::log [clock milliseconds] "info" "Subscription of $repere by $serverForResponse frequency $frequency ms"
 
             set ::subscriptionVariable($::SubscriptionIndex) ""
             
             # On cré la proc associée
             proc subscription${::SubscriptionIndex} {repere frequency SubscriptionIndex serverForResponse BandeMorteAcquisition networkhost} {
-
                 set reponse $::sensor($repere)
                 if {$reponse == ""} {
                     set reponse "DEFCOM"
@@ -78,23 +77,25 @@ proc messageGestion {message networkhost} {
                 
                     # Dans le cas d'un double, on vérifie la bande morte
                     if {[string is double $reponse] == 1} {
-                        # Reponse doit être > à l'ancienne valeur + BMA ou < à l'ancienne valeur - BMA
+                        # Réponse doit être > à l'ancienne valeur + BMA ou < à l'ancienne valeur - BMA
                         set oldValue $::subscriptionVariable($SubscriptionIndex)
                         if {[string is double $oldValue] != 1} {
                             set oldValue -100
                         }
                         if {$reponse > [expr $oldValue + $BandeMorteAcquisition] || $reponse < [expr $oldValue - $BandeMorteAcquisition]} {
-                            
                             ::piServer::sendToServer $serverForResponse "$serverForResponse [incr ::TrameIndex] _subscription ::sensor($repere) $reponse $time" $networkhost
                             set ::subscriptionVariable($SubscriptionIndex) $reponse
                         } else {
                             ::piLog::log [clock milliseconds] "debug" "Doesnot send ::sensor($repere) besause it's between BMA"
-                        
                         }
+                        
                     } else {
                         ::piServer::sendToServer $serverForResponse "$serverForResponse [incr ::TrameIndex] _subscription ::sensor($repere) $reponse $time" $networkhost
                         set ::subscriptionVariable($SubscriptionIndex) $reponse
+                        ::piLog::log [clock milliseconds] "debug" "Response is not a double _subscription ::sensor($repere) reponse : $reponse"
                     }
+                } else {
+                    #::piLog::log [clock milliseconds] "debug" "Doesnot resend ::sensor($repere) besause it's same value -$reponse-"
                 }
                 
                 after $frequency "subscription${SubscriptionIndex} $repere $frequency $SubscriptionIndex $serverForResponse $BandeMorteAcquisition $networkhost"

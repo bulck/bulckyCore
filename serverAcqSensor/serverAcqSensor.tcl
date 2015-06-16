@@ -257,21 +257,17 @@ proc readSensors {} {
                                 ::piLog::log [clock milliseconds] "warning" "Value 2 is not coherente : expr ($valueHP * 256 + $valueLP) / 100.0 : $computedValue"
                             }
                         }
-                    
                     }
                     
-                    # On demande un reboot du logiciel dans ce cas au bout du cinquieme probleme
+                    # On demande un reboot du logiciel dans ce cas au bout du cinquième problème
                     if {$::sensor($sensorType,$index,nbProblemRead) > 5} {
                         ::piLog::log [clock milliseconds] "error" "Ask software cultipi reboot"
                         ::piServer::sendToServer $::piServer::portNumber(serverCultipi) "$::piServer::portNumber(${::moduleLocalName}) [incr ::TrameIndex] stop"
                         set ::sensor($sensorType,$index,nbProblemRead) 0
                     }
-                    
-                }            
+                }
             }
-        
         }
-    
     }
     
     # Lecture des capteurs en direct
