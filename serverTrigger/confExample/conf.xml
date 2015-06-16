@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<conf>
+    <item name="verbose" level="debug" />
+    <item name="nbEtat" nb="2" />
+    <item name="etat,1,nbAction" value="2" />
+    <item name="etat,1,action,1,type" value="plug" />
+    <item name="etat,1,action,1,value" value="2 on" />
+    <item name="etat,1,action,2,type" value="plug" />
+    <item name="etat,1,action,2,value" value="3 on" />
+    <item name="etat,1,condition,type" input="time_ms" />
+    <item name="etat,1,condition,value" value="3000" />
+    <item name="etat,2,nbAction" value="1" />
+    <item name="etat,2,action,1,type" value="plug" />
+    <item name="etat,2,action,1,value" value="2 off" />
+    <item name="etat,2,condition,type" input="sensor" />
+    <item name="etat,2,condition,sensor" value="1" />
+    <item name="etat,2,condition,value" value="1" />
+    
+</conf>
