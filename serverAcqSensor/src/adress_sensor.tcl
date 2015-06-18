@@ -41,7 +41,7 @@ set sensor(ORP,5,adress) 0x28 ;#define SLAVE_ORP_ADRESS_5 0x40 | Old : 0x40 New 
 set sensor(ORP,6,adress) 0x29 ;#define SLAVE_ORP_ADRESS_6 0x42 | Old : 0x42 New 0x52
 
 set sensor(OD,2,adress) 0x2A ;#define SLAVE_OD_ADRESS_2 0x44 | Old : 0x44 New 0x54
-set sensor(OD,3,adress) 0x2B ;#define SLAVE_OD_ADRESS_3 0x46 | Old : 0x46 New 0x55
+set sensor(OD,3,adress) 0x2B ;#define SLAVE_OD_ADRESS_3 0x46 | Old : 0x46 New 0x56
 set sensor(OD,4,adress) 0x2C ;#define SLAVE_OD_ADRESS_4 0x48 | Old : 0x48 New 0x58
 set sensor(OD,5,adress) 0x2D ;#define SLAVE_OD_ADRESS_5 0x4A | Old : 0x4A New 0x5A
 set sensor(OD,6,adress) 0x2E ;#define SLAVE_OD_ADRESS_6 0x4C | Old : 0x4C New 0x5C

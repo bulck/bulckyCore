@@ -15,5 +15,4 @@
     <item name="etat,2,condition,type" input="sensor" />
     <item name="etat,2,condition,sensor" value="1" />
     <item name="etat,2,condition,value" value="1" />
-    
 </conf>
