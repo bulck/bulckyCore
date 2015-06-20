@@ -197,11 +197,11 @@ proc irrigationLoop {indexPlateforme indexZone} {
     set ::irrigationActive($indexPlateforme) true
 
     # On allume l'électrovanne 1 pour 2min30 secondes
-    ::piLog::log [clock milliseconds] "info" "irrigation : plate-forme $plateformeNom : zone $zoneNom : Mise en route EV pendant [expr $TempsOnEV + 1] s (temps définit pour $JourOuNuit)"; update
+    ::piLog::log [clock milliseconds] "info" "irrigation : plate-forme $plateformeNom : zone $zoneNom : ON EV pendant [expr $TempsOnEV + 1] s (temps définit pour $JourOuNuit)"; update
     ::piServer::sendToServer $::piServer::portNumber(serverPlugUpdate) "$::piServer::portNumber(${::moduleLocalName}) 0 setRepere $EVZone on [expr $TempsOnEV + 1]" $IP
 
     # On allume la pompe
-    ::piLog::log [clock milliseconds] "info" "irrigation : plate-forme $plateformeNom : zone $zoneNom : Mise en route pompe pendant $TempsOnEV s (temps définit pour $JourOuNuit)"; update
+    ::piLog::log [clock milliseconds] "info" "irrigation : plate-forme $plateformeNom : zone $zoneNom : ON pompe pendant $TempsOnEV s (temps définit pour $JourOuNuit)"; update
     ::piServer::sendToServer $::piServer::portNumber(serverPlugUpdate) "$::piServer::portNumber(${::moduleLocalName}) 0 setRepere $Pompe on $TempsOnEV" $IP
 
     # Dans X secondes, on indique que la zone n'est plus pilotée
@@ -232,7 +232,7 @@ initcuve
 # On met en route le serveur de message
 ::piServer::start messageGestion $::piServer::portNumber(${::moduleLocalName})
 
-# Mise en route de la mise à jour des cuves
+# ON de la mise à jour des cuves
 after 100 updateCuve
 
 # *************  Régulation

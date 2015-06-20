@@ -190,14 +190,14 @@ proc regulCuve {} {
     
     # Le principe est le suivant : 30s de remplissage par zone
     # On met en route l'irrigation avec de l'eau fraiche
-    # Mise en route de l'EV de la plateforme set prise(localtechnique,ev,engrais1)
-    ::piLog::log [clock milliseconds] "info" "Regul Cuve : plateforme $plateformeNom : zone $zoneNom : Mise en route ev $::regulCuveZoneIndex pendant 30 s"; update
+    # ON de l'EV de la plateforme set prise(localtechnique,ev,engrais1)
+    ::piLog::log [clock milliseconds] "info" "Regul Cuve : plateforme $plateformeNom : zone $zoneNom : ON EV $::regulCuveZoneIndex pendant 30 s"; update
     ::piServer::sendToServer $::piServer::portNumber(serverPlugUpdate) "$::piServer::portNumber(serverIrrigation) 0 setRepere $EVZone on 30" $IPplateforme
 
 
     # On met en route l'électrovanne du LT associée à la zone
-    # Mise en route de l'EV de la plateforme set prise(localtechnique,ev,engrais1)
-    ::piLog::log [clock milliseconds] "info" "Regul Cuve : plateforme $plateformeNom : zone $zoneNom : Mise en route localtechnique ev ${plateformeNom} pendant 30 s" ;update
+    # ON de l'EV de la plateforme set prise(localtechnique,ev,engrais1)
+    ::piLog::log [clock milliseconds] "info" "Regul Cuve : plateforme $plateformeNom : zone $zoneNom : ON localtechnique EV ${plateformeNom} pendant 30 s" ;update
     ::piServer::sendToServer $::piServer::portNumber(serverPlugUpdate) "$::piServer::portNumber(serverIrrigation) 0 setRepere $EVPFLT on 30" $IPlocalTechnique
 
     after 10
@@ -209,7 +209,7 @@ proc regulCuve {} {
             set name $::configXML(engrais,${i},name)
             set priseEVEngrais $::configXML(engrais,${i},prise)
 
-            ::piLog::log [clock milliseconds] "info" "Regul Cuve : plateforme $plateformeNom : zone $zoneNom : Mise en route localtechnique ev $name pendant 30 s";update
+            ::piLog::log [clock milliseconds] "info" "Regul Cuve : plateforme $plateformeNom : zone $zoneNom : ON localtechnique EV $name pendant 30 s";update
             ::piServer::sendToServer $::piServer::portNumber(serverPlugUpdate) "$::piServer::portNumber(serverIrrigation) 0 setRepere $priseEVEngrais on 30" $IPlocalTechnique
         }
     }
@@ -217,7 +217,7 @@ proc regulCuve {} {
     after 10
 
     # On met en route le pompe
-    ::piLog::log [clock milliseconds] "info" "Regul Cuve : plateforme $plateformeNom : zone $zoneNom : Mise en route localtechnique surpresseur pendant 29 s";update
+    ::piLog::log [clock milliseconds] "info" "Regul Cuve : plateforme $plateformeNom : zone $zoneNom : ON localtechnique surpresseur pendant 29 s";update
     ::piServer::sendToServer $::piServer::portNumber(serverPlugUpdate) "$::piServer::portNumber(serverIrrigation) 0 setRepere $Surpresseur on 29" $IPlocalTechnique
 
     # On sauvegarde le temps d'irrigation pour vérifier qu'on ne remplie pas trop
