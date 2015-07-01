@@ -202,6 +202,7 @@ proc ::MCP230XX::setValue {plugNumber value address} {
     # /usr/local/sbin/i2cget -y 1 0x20 0x0A
     # Pin 1 du module 1 :
     # /usr/local/sbin/i2cset -y 1 0x20 0x09 0x01
+    # /usr/local/sbin/i2cset -y 1 0x20 0x09 0x30
     
     set RC [catch {
         exec /usr/local/sbin/i2cset -y 1 $moduleAdresse $register(GPIO) $register(${moduleAdresse},GPIO_LAST)

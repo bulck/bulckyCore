@@ -51,7 +51,7 @@ proc ::sql::addPlugState {plgNumber state time} {
     if {$state == "9990" || $state == "0"} {
         ::sql::query "INSERT INTO power (timestamp, record, plug_number, date_catch, time_catch) VALUES ($formattedTime , $state , $plgNumber , \"$date_catch\" , \"$time_catch\" );"
     } else {
-        ::piLog::log [clock milliseconds] "error" "::sql::addPlugState : unknow state -${state}- for plug $plgNumber "
+        ::piLog::log [clock milliseconds] "warning" "::sql::addPlugState : unknow state -${state}- for plug $plgNumber "
     }
 }
 

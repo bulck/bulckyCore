@@ -23,6 +23,13 @@ namespace eval ::direct_read {
     set pin(7,init) 0
     set pin(8,GPIO) 5
     set pin(8,init) 0
+    
+    # Pin 1 bis
+    set pin(10,GPIO) 23
+    set pin(10,init) 0
+    # Pin 2 bis
+    set pin(11,GPIO) 24
+    set pin(11,init) 0
 
     set errorMessage(read,1) ""
     set errorMessage(read,2) ""

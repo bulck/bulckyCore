@@ -273,11 +273,17 @@ proc computeValueForRegulation {nbPlug sensorType computeType} {
     set outValue 0
     
     # On regarde quelle valeur on doit prendre
-    set indexSensorValue 1 
-    if {$sensorType == "H" } {
-        set indexSensorValue 2
-    } elseif {$sensorType != "T" } {
-        ::piLog::log [clock milliseconds] "error" "computeValueForRegulation : sensortype $sensorType is not recognize"
+    switch $sensorType {
+        "H" {
+            set indexSensorValue 2
+        }
+        "T" -
+        "L" {
+            set indexSensorValue 1
+        }
+        default {
+            ::piLog::log [clock milliseconds] "error" "computeValueForRegulation : sensortype $sensorType is not recognize"
+        }
     }
 
     switch $computeType {
