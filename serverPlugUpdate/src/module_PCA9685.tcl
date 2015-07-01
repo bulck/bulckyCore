@@ -56,16 +56,16 @@ namespace eval ::PCA9685 {
     set adresse_I2C(2) 0x42
     
     # Définition des registres
-    set register(MODE1)     0x0  ; #read/write Mode register 1     
-    set register(MODE2)     0x1  ; #read/write Mode register 2     
-    set register(SUBADR1)     0x2  ; #read/write I2C-bus subaddress 1     
-    set register(SUBADR2)     0x3  ; #read/write I2C-bus subaddress 2     
-    set register(SUBADR3)     0x4  ; #read/write I2C-bus subaddress 3     
-    set register(ALLCALLADR)     0x5  ; #read/write LED All Call I2C-bus address   
-    set register(LED0_ON_L)     0x6  ; #read/write LED0 output and brightness control byte 0 
-    set register(LED0_ON_H)     0x7  ; #read/write LED0 output and brightness control byte 1 
-    set register(LED0_OFF_L)     0x8  ; #read/write LED0 output and brightness control byte 2 
-    set register(LED0_OFF_H)     0x9  ; #read/write LED0 output and brightness control byte 3 
+    set register(MODE1)     0x00  ; #read/write Mode register 1     
+    set register(MODE2)     0x01  ; #read/write Mode register 2     
+    set register(SUBADR1)     0x02  ; #read/write I2C-bus subaddress 1     
+    set register(SUBADR2)     0x03  ; #read/write I2C-bus subaddress 2     
+    set register(SUBADR3)     0x04  ; #read/write I2C-bus subaddress 3     
+    set register(ALLCALLADR)     0x05  ; #read/write LED All Call I2C-bus address   
+    set register(LED0_ON_L)     0x06  ; #read/write LED0 output and brightness control byte 0 
+    set register(LED0_ON_H)     0x07  ; #read/write LED0 output and brightness control byte 1 
+    set register(LED0_OFF_L)     0x08  ; #read/write LED0 output and brightness control byte 2 
+    set register(LED0_OFF_H)     0x09  ; #read/write LED0 output and brightness control byte 3 
     set register(LED1_ON_L)     0x0A  ; #read/write LED1 output and brightness control byte 0 
     set register(LED1_ON_H)     0x0B  ; #read/write LED1 output and brightness control byte 1 
     set register(LED1_OFF_L)     0x0C  ; #read/write LED1 output and brightness control byte 2 
@@ -130,8 +130,8 @@ namespace eval ::PCA9685 {
     set register(ALL_LED_ON_H)     0xFB  ; #write/read zero load all the LEDn_ON registers, byte 1
     set register(ALL_LED_OFF_L)     0xFC  ; #write/read zero load all the LEDn_OFF registers, byte 2
     set register(ALL_LED_OFF_H)     0xFD  ; #write/read zero load all the LEDn_OFF registers, byte 3
-    set register(PRE_SCALE[1])     0xFE  ; #read/write prescaler for output frequency    
-    set register(TestMode[2])     0xFF  ; #read/write defines the test mode to be entered 
+    set register(PRE_SCALE)     0xFE  ; #read/write prescaler for output frequency    
+    set register(TestMode)     0xFF  ; #read/write defines the test mode to be entered 
 
     
     # Dernière valeur de GPIO
@@ -174,8 +174,16 @@ proc ::PCA9685::init {plugList} {
         if {$register(${moduleAdresse},init_done) == 0} {
         
             # On démarre le module
-            set RC [catch {
+            set RC [catch {               
+                # Dans l'ordre : On passe Sleep
+                # /usr/local/sbin/i2cget -y 1 0x40 0x10
+                # Prescaler : 25 000 000 / (4096 * 1 000) -> 6
+                # /usr/local/sbin/i2cset -y 1 0x40 0xFE 6
+                # On retourne en mode normal 
+                # /usr/local/sbin/i2cget -y 1 0x40 0x00
                 exec /usr/local/sbin/i2cset -y 1 $moduleAdresse $register(MODE1) 0x10
+                exec /usr/local/sbin/i2cset -y 1 $moduleAdresse $register(PRE_SCALE) 6
+                exec /usr/local/sbin/i2cset -y 1 $moduleAdresse $register(MODE1) 0x00
             } msg]
             if {$RC != 0} {
                 ::piLog::log [clock milliseconds] "error" "::PCA9685::init Module $moduleAdresse does not respond :$msg "
@@ -183,41 +191,7 @@ proc ::PCA9685::init {plugList} {
                 ::piLog::log [clock milliseconds] "info" "::PCA9685::init init MODE1 to 0x10 OK"
                 set register(${moduleAdresse},init_done) 1
             }
-        
-            if {0} {
-                # Définition de la fréquence
-                set freq [expr 1000 * 0.9]; # // Correct for overshoot in the frequency setting (see issue #11).
-                set prescaleval = 25000000;
-                set prescaleval [expr $prescaleval / 4096];
-                set prescaleval [expr $prescaleval / $freq];
-                set prescaleval [expr $prescaleval * -1];
-
-                set prescale [expr floor($prescaleval + 0.5)];
-
-                #set oldmode = read8(PCA9685_MODE1);
-                set oldmode [exec /usr/local/sbin/i2cget -y 1 $moduleAdress $register(MODE1)]
-
-                set newmode [expr ($oldmode & 0x7F) | 0x10] ;# // sleep
-
-                # write8(PCA9685_MODE1, newmode); // go to sleep
-                exec /usr/local/sbin/i2cset -y 1 $moduleAdresse $register(MODE1) $newmode
-
-                #write8(PCA9685_PRESCALE, prescale); // set the prescaler
-                exec /usr/local/sbin/i2cset -y 1 $moduleAdresse $register(PRESCALE) $prescale
-
-                #write8(PCA9685_MODE1, oldmode);
-                exec /usr/local/sbin/i2cset -y 1 $moduleAdresse $register(MODE1) $oldmode
-
-                #delay(5);
-                after 5
-
-                #write8(PCA9685_MODE1, oldmode | 0xa1);  //  This sets the MODE1 register to turn on auto increment.
-                #                                        // This is why the beginTransmission below was not working.
-                exec /usr/local/sbin/i2cset -y 1 $moduleAdresse $register(MODE1) [expr $oldmode | 0xa1]
-            
-            }
         }
-    
     }
 }
 
@@ -253,7 +227,7 @@ proc ::PCA9685::setValue {plugNumber value address} {
     if {$value == 0} {
         #// Special value for signal fully on (so inverted : fully off).
         set ON_L   0xff
-        set ON_H   0xff
+        set ON_H   0x1f
         set OFF_L  0x00
         set OFF_H  0x00
 
@@ -262,16 +236,28 @@ proc ::PCA9685::setValue {plugNumber value address} {
         set ON_L   0x00
         set ON_H   0x00
         set OFF_L  0xff
-        set OFF_H  0xff
+        set OFF_H  0x1f
     } else {
         set ON_L   0x00
         set ON_H   0x00
-        set OFF_L  [expr int(4095 - 4.096 * $value) >> 8]
-        set OFF_H  [expr int(4095 - 4.096 * $value) & 0x00ff]
+        set OFF_L  [expr int(4095 - 4.096 * $value) & 0x00ff]
+        set OFF_H  [expr int(4095 - 4.096 * $value) >> 8]
         #setPWM(num, 0, 4095-val);
     }
     
     set RC [catch {
+        # LED 8 25 % --> 3171 : 0x0B 0x0FF
+        # /usr/local/sbin/i2cset -y 1 0x40 0x26 0
+        # /usr/local/sbin/i2cset -y 1 0x40 0x27 0
+        # /usr/local/sbin/i2cset -y 1 0x40 0x28 0xFF
+        # /usr/local/sbin/i2cset -y 1 0x40 0x29 0x0B
+        
+        # LED 8 50 % --> 3171 : 0x0B 0x0FF
+        # /usr/local/sbin/i2cset -y 1 0x40 0x26 0
+        # /usr/local/sbin/i2cset -y 1 0x40 0x27 0
+        # /usr/local/sbin/i2cset -y 1 0x40 0x28 0xFF
+        # /usr/local/sbin/i2cset -y 1 0x40 0x29 0x07
+        
         exec /usr/local/sbin/i2cset -y 1 $moduleAdresse $register(LED${outputPin}_ON_L)  $ON_L
         exec /usr/local/sbin/i2cset -y 1 $moduleAdresse $register(LED${outputPin}_ON_H)  $ON_H
         exec /usr/local/sbin/i2cset -y 1 $moduleAdresse $register(LED${outputPin}_OFF_L) $OFF_L

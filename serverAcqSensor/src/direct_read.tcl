@@ -41,27 +41,45 @@ proc ::direct_read::init {nb_maxSensor} {
     for {set i 1} {$i <= $nb_maxSensor} {incr i} {
         if {[array get ::configXML direct_read,$i,input] == ""} {
             set ::configXML(direct_read,$i,input) "NA"
+        } elseif {$::configXML(direct_read,$i,input) == ""} {
+            set ::configXML(direct_read,$i,input) "NA"
         }
         if {[array get ::configXML direct_read,$i,value] == ""} {
             set ::configXML(direct_read,$i,value) "NA"
+        } elseif {$::configXML(direct_read,$i,value) == ""} {
+            set ::configXML(direct_read,$i,value) "NA"
         }
+        
         if {[array get ::configXML direct_read,$i,statusOK] == ""} {
             set ::configXML(direct_read,$i,statusOK) "1"
+        } elseif {$::configXML(direct_read,$i,statusOK) == ""} {
+            set ::configXML(direct_read,$i,statusOK) "NA"
         }
+        
         if {[array get ::configXML direct_read,$i,input2] == ""} {
             set ::configXML(direct_read,$i,input2) "NA"
+        } elseif {$::configXML(direct_read,$i,input2) == ""} {
+            set ::configXML(direct_read,$i,input2) "NA"
         }
+        
         if {[array get ::configXML direct_read,$i,value2] == ""} {
             set ::configXML(direct_read,$i,value2) "NA"
+        } elseif {$::configXML(direct_read,$i,value2) == ""} {
+            set ::configXML(direct_read,$i,value2) "NA"
         }
+        
         if {[array get ::configXML direct_read,$i,statusOK2] == ""} {
             set ::configXML(direct_read,$i,statusOK2) "1"
+        } elseif {$::configXML(direct_read,$i,statusOK2) == ""} {
+            set ::configXML(direct_read,$i,statusOK2) "NA"
         }
+        
         if {[array get ::configXML direct_read,$i,type] == ""} {
+            set ::configXML(direct_read,$i,type) "NA"
+        } elseif {$::configXML(direct_read,$i,type) == ""} {
             set ::configXML(direct_read,$i,type) "NA"
         }
     }
-
 }
 
 # Cette proc est utlisée pour initialiser la pin en sortie

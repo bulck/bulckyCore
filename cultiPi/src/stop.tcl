@@ -10,6 +10,8 @@ proc stopCultiPi {} {
         ::piLog::log [clock milliseconds] "error" "stopCultiPi : error $msg"
     }
 
+    # On attends 10 secondes que tous les modules ai le temps d'envoyer leur message
+    after 10000
 
     # Arret de tous les modules
     foreach moduleXML $::confStart(start) {
