@@ -71,6 +71,8 @@
     <item key="plateforme,0,tempsMaxRempNuit" value="92" />
     <item key="plateforme,0,tempsPercoApresMidi" value="90" />
     <item key="plateforme,0,tempsMaxRempApresMidi" value="91" />
+    <item key="plateforme,0,priseEau" value="5" />
+    <item key="plateforme,0,activeAutoRemplissage" value="true" />
     <item key="plateforme,0,nbZone" value="3" />
     <item key="plateforme,0,zone,0,id" value="1" />
     <item key="plateforme,0,zone,0,motherPlatef" value="0" />

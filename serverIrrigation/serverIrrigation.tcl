@@ -243,6 +243,9 @@ regulCuve
 # *************  Irrigation
 startIrrigation
 
+# *************  Auto remplissage
+autoRemplissage
+
 
 vwait forever
 

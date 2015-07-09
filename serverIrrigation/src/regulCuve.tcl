@@ -17,6 +17,134 @@ proc initRegulationVariable {} {
     }
 }
 
+set ::AfterAutoRemplissage ""
+set ::autoRemplissagePlateformeIndex 0
+proc autoRemplissage {} {
+    set ::AfterAutoRemplissage ""
+    
+    set plateformeNom     $::configXML(plateforme,$::autoRemplissagePlateformeIndex,name)
+    set plateformeActive  $::configXML(plateforme,$::autoRemplissagePlateformeIndex,active)
+    set plateformeNbZone  $::configXML(plateforme,$::autoRemplissagePlateformeIndex,nbZone)
+
+    if {[array names ::configXML -exact "plateforme,$::autoRemplissagePlateformeIndex,activeAutoRemplissage"] != ""} {
+        set remplissageAuto   $::configXML(plateforme,$::autoRemplissagePlateformeIndex,activeAutoRemplissage) 
+    } else {
+        set remplissageAuto "false"
+    }
+    set nbPlateforme      $::configXML(nbPlateforme)
+
+    # Si on est entre 6h et 22h -> utilisation des temps de jour
+    set hour [string trimleft [clock format [clock seconds] -format %H] "0"]
+    if {$hour == ""} {set hour 0}
+
+    if {$hour >= 6 && $hour < 14} {
+        set JourOuNuit Matin
+        set tempsMaxRemplissage $::configXML(plateforme,$::autoRemplissagePlateformeIndex,tempsMaxRemp)
+    } elseif {$hour >= 14 && $hour <= 22} {
+        set JourOuNuit Apres
+        set tempsMaxRemplissage $::configXML(plateforme,$::autoRemplissagePlateformeIndex,tempsMaxRempApresMidi)
+        
+    } else {
+        set JourOuNuit Nuit
+        set tempsMaxRemplissage $::configXML(plateforme,$::autoRemplissagePlateformeIndex,tempsMaxRempNuit)
+    }
+
+    set IPplateforme      $::configXML(plateforme,$::autoRemplissagePlateformeIndex,ip)
+    set IPlocalTechnique  $::configXML(localtechnique,ip)
+    if {[array names ::configXML -exact "plateforme,$::autoRemplissagePlateformeIndex,priseEau"] != ""} {
+        set EVRemplissage   $::configXML(plateforme,$::autoRemplissagePlateformeIndex,priseEau) 
+    } else {
+        set EVRemplissage "0"
+    }
+    set Surpresseur       $::configXML(localtechnique,pompePrise)
+    
+    # Si la plateforme est désactivée, on passe à la suivante
+    if {$plateformeActive == 0 || $plateformeActive == "false"} {
+        ::piLog::log [clock milliseconds] "debug" "Rempli Cuve : plateforme $plateformeNom : désactivée"
+        incr ::autoRemplissagePlateformeIndex
+        if {$::autoRemplissagePlateformeIndex >= $nbPlateforme} {
+            set ::autoRemplissagePlateformeIndex 0
+        }
+        set ::idAfterRegul [after 1000 [list after idle autoRemplissage]]
+        return
+    }
+    
+    # Si le remplissage auto est désactivé, on passe à la plateforme suivante
+    if {$remplissageAuto == 0 || $remplissageAuto == "false"} {
+        ::piLog::log [clock milliseconds] "debug" "Rempli Cuve : plateforme $plateformeNom : auto remplissage désactivé"
+        incr ::autoRemplissagePlateformeIndex
+        if {$::autoRemplissagePlateformeIndex >= $nbPlateforme} {
+            set ::autoRemplissagePlateformeIndex 0
+        }
+        set ::idAfterRegul [after 1000 [list after idle autoRemplissage]]
+        return
+    }
+    
+    # Si la prise utilisée pour piloter l'électrovanne n'est pas définit on passe à la plateforme suivante
+    if {$EVRemplissage == 0} {
+        ::piLog::log [clock milliseconds] "debug" "Rempli Cuve : plateforme $plateformeNom : pas de prise pour le remplissage"
+        incr ::autoRemplissagePlateformeIndex
+        if {$::autoRemplissagePlateformeIndex >= $nbPlateforme} {
+            set ::autoRemplissagePlateformeIndex 0
+        }
+        set ::idAfterRegul [after 1000 [list after idle autoRemplissage]]
+        return
+    }
+
+    # Si on a pas d'information sur la hauteur
+    if {$::cuve($::autoRemplissagePlateformeIndex) == "NA" || 
+        $::cuve($::autoRemplissagePlateformeIndex) == "" || 
+        $::cuve($::autoRemplissagePlateformeIndex) == "DEFCOM" || 
+        $::cuve($::autoRemplissagePlateformeIndex) == "TIMEOUT" ||
+        [string is double $::cuve($::autoRemplissagePlateformeIndex)] != 1} {
+        ::piLog::log [clock milliseconds] "info" "Rempli Cuve : plateforme $plateformeNom : Pas d'information sur la hauteur de cuve ( $::cuve($::autoRemplissagePlateformeIndex) ) , on passe à la suivante";update
+        incr ::autoRemplissagePlateformeIndex
+        if {$::autoRemplissagePlateformeIndex >= $nbPlateforme} {
+            set ::autoRemplissagePlateformeIndex 0
+        }
+        set ::idAfterRegul [after 1000 [list after idle autoRemplissage]]
+        return
+    }
+
+    # Si l'arrosage a été réalisé plus 10 minute durant l'heure, on passe à la suivante
+    if {$::tempsIrrigation($::autoRemplissagePlateformeIndex) >= $tempsMaxRemplissage} {
+        set oldTmpsIrrig $::tempsIrrigation($::autoRemplissagePlateformeIndex)
+        incr ::autoRemplissagePlateformeIndex
+        if {$::autoRemplissagePlateformeIndex >= $nbPlateforme} {
+            set ::autoRemplissagePlateformeIndex 0
+        }
+        ::piLog::log [clock milliseconds] "info" "Rempli Cuve : plateforme $plateformeNom : Cuve trop remplie pour cette heure (actuel : $oldTmpsIrrig - max : $tempsMaxRemplissage ), on passe à la suivante ( $::autoRemplissagePlateformeIndex ) dans 27s";update
+
+        set ::idAfterRegul [after 1000  [list after idle autoRemplissage]]
+
+        return
+    }
+
+    # La cuve est dessous du niveau minimum, on ouvre la vanne jusqu'à ce que le capteur cuve basse soit actif ou que le temps de remplissage soit dépassé
+    if {$::cuve($::autoRemplissagePlateformeIndex) == 0} {
+    
+        # On ouvre l'EV 
+        ::piLog::log [clock milliseconds] "info" "Rempli Cuve : plateforme $plateformeNom : ON EV remplissage"; update
+        ::piServer::sendToServer $::piServer::portNumber(serverPlugUpdate) "$::piServer::portNumber(serverIrrigation) 0 setRepere $EVRemplissage on 999" $IPplateforme
+    
+        # on attend que le niveau soit remonté
+        while {$::cuve($::autoRemplissagePlateformeIndex) == 0 && $::tempsIrrigation($::autoRemplissagePlateformeIndex) < $tempsMaxRemplissage} {
+        
+            set ::tempsIrrigation($::autoRemplissagePlateformeIndex) [expr $::tempsIrrigation($::autoRemplissagePlateformeIndex) + 1]
+        
+            after 950
+            update
+        }
+        
+        # On éteint l'électrovanne 
+        ::piLog::log [clock milliseconds] "info" "Rempli Cuve : plateforme $plateformeNom : OFF EV remplissage"; update
+        ::piServer::sendToServer $::piServer::portNumber(serverPlugUpdate) "$::piServer::portNumber(serverIrrigation) 0 setRepere $EVRemplissage off 999" $IPplateforme
+    }
+
+    # On passe à la zone suivante
+    set ::idAfterRegul [after 1000  [list after idle autoRemplissage]]
+    return
+}
 
 set ::tempsIrrigation(actualHour)  [clock format [clock seconds] -format "%H"]
 set ::regulCuvePlateformeIndex 0
@@ -82,7 +210,7 @@ proc regulCuve {} {
         return
     }
     
-    # Si la plateforme est désactivée, on passe à la suivante
+    # Si on a pas d'information sur la hauteur
     if {$::cuve($::regulCuvePlateformeIndex) == "NA" || 
         $::cuve($::regulCuvePlateformeIndex) == "" || 
         $::cuve($::regulCuvePlateformeIndex) == "DEFCOM" || 
@@ -216,7 +344,7 @@ proc regulCuve {} {
 
     after 10
 
-    # On met en route le pompe
+    # On met en route la pompe
     ::piLog::log [clock milliseconds] "info" "Regul Cuve : plateforme $plateformeNom : zone $zoneNom : ON localtechnique surpresseur pendant 29 s";update
     ::piServer::sendToServer $::piServer::portNumber(serverPlugUpdate) "$::piServer::portNumber(serverIrrigation) 0 setRepere $Surpresseur on 29" $IPlocalTechnique
 
