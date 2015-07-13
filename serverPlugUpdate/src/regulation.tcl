@@ -334,7 +334,7 @@ proc computeValueForRegulation {nbPlug sensorType computeType} {
     }
     
     if {$outValue > 100 || $outValue < -30} {
-        ::piLog::log [clock milliseconds] "error" "computeValueForRegulation : Value is out of autorized values (val : $outValue)"
+        ::piLog::log [clock milliseconds] "error" "computeValueForRegulation : Value is out of autorized values (val : $outValue , plug $nbPlug , sensorType $sensorType , computeType $computeType)"
         set outValue "ERROR"
     }
     

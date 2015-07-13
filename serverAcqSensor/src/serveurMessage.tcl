@@ -86,7 +86,7 @@ proc messageGestion {message networkhost} {
                             ::piServer::sendToServer $serverForResponse "$serverForResponse [incr ::TrameIndex] _subscription ::sensor($repere) $reponse $time" $networkhost
                             set ::subscriptionVariable($SubscriptionIndex) $reponse
                         } else {
-                            ::piLog::log [clock milliseconds] "debug" "Doesnot send ::sensor($repere) besause it's between BMA"
+                            ::piLog::log [clock milliseconds] "debug" "Doesnot send ::sensor($repere) besause it's between BMA $reponse sup [expr $oldValue + $BandeMorteAcquisition] OR $reponse inf [expr $oldValue - $BandeMorteAcquisition]"
                         }
                         
                     } else {
