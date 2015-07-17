@@ -134,6 +134,7 @@ proc ::piServer::sendToServer {portNumber message {ip localhost}} {
     if {$rc == 1} {
         ::piLog::log [clock milliseconds] "error" "::piServer::sendToServer try to open socket to -$ip : $portNumber - $portNumberReverse($portNumber)- - erreur :  -$msg-"
         set retVal 1
+        return $retVal
     }
 
     set rc [catch \
