@@ -57,24 +57,31 @@ proc ::sensorAcq::saveType {index type} {
     set toNotRegister 0
 
     switch $type {
+        2 -
         SHT {
             set type 2
         }
+        3 -
         DS18B20 {
             set type 3
         }
+        6 -
         WATER_LEVEL {
             set type 6
         }
+        8 -
         PH {
             set type 8
         }
+        9 -
         EC {
             set type 9
         }
+        10 -
         OD {
             set type 10
         }
+        11 -
         ORP {
             set type 11
         }
