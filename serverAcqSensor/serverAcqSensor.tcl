@@ -21,6 +21,7 @@ source [file join $rootDir ${::moduleLocalName} src adress_sensor.tcl]
 source [file join $rootDir ${::moduleLocalName} src serveurMessage.tcl]
 source [file join $rootDir ${::moduleLocalName} src direct_read.tcl]
 source [file join $rootDir ${::moduleLocalName} src network_read.tcl]
+source [file join $rootDir ${::moduleLocalName} src sensor_co2.tcl]
 
 # Initialisation d'un compteur pour les commandes externes envoyées
 set TrameIndex 0
@@ -84,8 +85,13 @@ if {$configXML(simulator) != "off"} {
 
 # Initialisation du direct read 
 ::direct_read::init $configXML(nb_maxSensor)
+
 # Initialisation du network read 
 ::network_read::init $configXML(nb_maxSensor)
+
+# Initialisation du CO² 
+::sensor_co2::init $configXML(nb_maxSensor)
+
 
 # Initialisation pour tous les capteurs des valeurs
 set sensorTypeList [list SHT DS18B20 WATER_LEVEL PH EC OD ORP]
@@ -210,7 +216,7 @@ proc readSensors {} {
                             # On sauvegarde dans le repère global
                             set ::sensor($sensorType,$index,nbProblemRead) 0
                             set ::sensor($index,value,1)    $computedValue
-                            set ::sensor($index,value)      $computedValue
+                            set ::sensor($index,value)      "$computedValue NULL"
                             set ::sensor($index,type)       $sensorType
                             set ::sensor($index,value,time) [clock milliseconds]
                         } else {
@@ -293,7 +299,7 @@ proc readSensors {} {
                 }
                 # On sauvegarde dans le repère global
                 set ::sensor($sensorDirect,value,1) $value
-                set ::sensor($sensorDirect,value)   $value
+                set ::sensor($sensorDirect,value)   "$value NULL"
                 set ::sensor($sensorDirect,type)    $::configXML(direct_read,$sensorDirect,type)
                 set ::sensor($sensorDirect,value,time) [clock milliseconds]
 
@@ -309,7 +315,7 @@ proc readSensors {} {
             # On lit la valeur
             set value [::direct_read::read_value $pin]
             
-            # SI la valeur est valide, on la sauvegarde
+            # Si la valeur est valide, on la sauvegarde
             if {[string is integer $value] && $value != ""} {
                 # Si l'utilisateur a prédéfinie des valeurs, on les appliques
                 if {$::configXML(direct_read,$sensorDirect,value2) != "NA" && 
@@ -321,7 +327,7 @@ proc readSensors {} {
            
                 # On sauvegarde dans le repère global
                 set ::sensor($sensorDirect,value,1) [expr $::sensor($sensorDirect,value,1) + $value]
-                set ::sensor($sensorDirect,value)   [expr $::sensor($sensorDirect,value) + $value]
+                set ::sensor($sensorDirect,value)   "[expr $::sensor($sensorDirect,value,1) + $value] NULL"
                 set ::sensor($sensorDirect,type)    $::configXML(direct_read,$sensorDirect,type)
                 set ::sensor($sensorDirect,value,time) [clock milliseconds]
 
@@ -329,6 +335,9 @@ proc readSensors {} {
         }
         
     }
+    
+    # Lecture du capteur de CO²
+    ::sensor_co2::read_value
 
     if {[incr ::indexForSearchingSensor] > 60} {
         # Une fois sur 60 , on recherche les capteurs

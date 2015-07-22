@@ -71,6 +71,7 @@ proc messageGestion {message networkhost} {
                             set valeur1      [::piTools::lindexRobust $message 4]
                             set valeur2      [::piTools::lindexRobust $message 5]
                             set time         [::piTools::lindexRobust $message 6]
+
                             # Si c'est la valeur
                             # ::piLog::log [clock milliseconds] "debug" "_subscription response : save sensor value : $message - [lindex $splitted 1] $valeur1 $valeur2 $time"
                             if {$valeur1 == "DEFCOM"} {

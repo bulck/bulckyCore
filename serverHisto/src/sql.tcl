@@ -68,17 +68,17 @@ proc ::sql::AddSensorValue {sensor val1 val2 time} {
     set date_catch [clock format $time -format "%Y-%m-%d"]
     set time_catch [clock format $time -format "%H%M%S"]
     
-    if {$val1 == "DEFCOM" || $val1 > 100 || $val1 < -30 || $val1 == ""} {
+    if {$val1 == "DEFCOM" || $val1 > 10000 || $val1 < -30 || $val1 == ""} {
         set val1 NULL
     } else {
         set val1 [string map {" " "0"} [format %4.f [expr $val1 * 100]]]
     }
-    if {$val2 == "DEFCOM" || $val2 > 100 || $val2 < -30 || $val2 == ""} {
+    if {$val2 == "DEFCOM" || $val2 > 10000 || $val2 < -30 || $val2 == ""} {
         set val2 NULL
     } else {
         set val2 [string map {" " "0"} [format %4.f [expr $val2 * 100]]]
     }
-    
+
     if {$val1 != "NULL" || $val2 != "NULL" } {
         ::sql::query "INSERT INTO logs (timestamp, record1, record2, date_catch, time_catch, fake_log, sensor_nb) VALUES ($formattedTime , $val1 , $val2 , \"$date_catch\" , \"$time_catch\" , \"False\" , $sensor);"
     } else {

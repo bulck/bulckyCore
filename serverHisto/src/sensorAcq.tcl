@@ -77,13 +77,17 @@ proc ::sensorAcq::saveType {index type} {
         EC {
             set type 9
         }
-        10 -
+        ":" -
         OD {
-            set type 10
+            set type ":"
         }
-        11 -
+        ";" -
         ORP {
-            set type 11
+            set type ";"
+        }
+        10 -
+        "co2" {
+            set type "10"
         }
         "DEFCOM" {
             set toNotRegister 1
