@@ -36,7 +36,7 @@ source [file join $rootDir ${::moduleLocalName} src module_CULTIPI.tcl]
 source [file join $rootDir ${::moduleLocalName} src module_DIMMER.tcl]
 source [file join $rootDir ${::moduleLocalName} src module_MCP230XX.tcl]
 source [file join $rootDir ${::moduleLocalName} src module_XMAX.tcl]
-
+source [file join $rootDir ${::moduleLocalName} src module_PCA9685.tcl]
 
 # Initialisation d'un compteur pour les commandes externes envoyées
 set TrameIndex 0

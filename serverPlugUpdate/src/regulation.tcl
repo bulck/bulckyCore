@@ -271,11 +271,17 @@ proc computeValueForRegulation {nbPlug sensorType computeType} {
     # Calcul de la valeur pour régulation primaire
     set find 0
     set outValue 0
+    # Le coef permet de multiplier par une valeur ce qui est lu
+    set coef 1
     
     # On regarde quelle valeur on doit prendre
     switch $sensorType {
         "H" {
             set indexSensorValue 2
+        }
+        "C" {
+            set indexSensorValue 1
+            set coef 0.1
         }
         "T" -
         "L" {
@@ -331,10 +337,14 @@ proc computeValueForRegulation {nbPlug sensorType computeType} {
     
     if {$find == 0} {
         set outValue ""
+    } else {
+        set outValue [expr $outValue * $coef]
     }
     
-    if {$outValue > 100 || $outValue < -30} {
-        ::piLog::log [clock milliseconds] "error" "computeValueForRegulation : Value is out of autorized values (val : $outValue , plug $nbPlug , sensorType $sensorType , computeType $computeType)"
+    
+    
+    if {$outValue > 2000 || $outValue < -30} {
+        ::piLog::log [clock milliseconds] "error" "computeValueForRegulation : Value is out of autorized values (val : $outValue , plug $nbPlug , sensorType $sensorType , computeType $computeType, coef $coef)"
         set outValue "ERROR"
     }
     

@@ -21,34 +21,38 @@ namespace eval ::PCA9685 {
     set adresse_module(35,out) 4
     set adresse_module(36) 0x40
     set adresse_module(36,out) 5
-
+    set adresse_module(37) 0x40
+    set adresse_module(37,out) 5
+    set adresse_module(38) 0x40
+    set adresse_module(38,out) 5
+    
     # @0x41 cultibox : 0x82
-    set adresse_module(37) 0x41
-    set adresse_module(37,out) 0
-    set adresse_module(38) 0x41
-    set adresse_module(38,out) 1
     set adresse_module(39) 0x41
-    set adresse_module(39,out) 2
+    set adresse_module(39,out) 0
     set adresse_module(40) 0x41
-    set adresse_module(40,out) 3
+    set adresse_module(40,out) 1
     set adresse_module(41) 0x41
-    set adresse_module(41,out) 4
+    set adresse_module(41,out) 2
     set adresse_module(42) 0x41
-    set adresse_module(42,out) 5
+    set adresse_module(42,out) 3
+    set adresse_module(43) 0x41
+    set adresse_module(43,out) 4
+    set adresse_module(44) 0x41
+    set adresse_module(44,out) 5
 
     # @0x42 cultibox : 0x84
-    set adresse_module(43) 0x42
-    set adresse_module(43,out) 0
-    set adresse_module(44) 0x42
-    set adresse_module(44,out) 1
     set adresse_module(45) 0x42
-    set adresse_module(45,out) 2
+    set adresse_module(45,out) 0
     set adresse_module(46) 0x42
-    set adresse_module(46,out) 3
+    set adresse_module(46,out) 1
     set adresse_module(47) 0x42
-    set adresse_module(47,out) 4
+    set adresse_module(47,out) 2
     set adresse_module(48) 0x42
-    set adresse_module(48,out) 5
+    set adresse_module(48,out) 3
+    set adresse_module(49) 0x42
+    set adresse_module(49,out) 4
+#    set adresse_module(48) 0x42
+#    set adresse_module(48,out) 5
 
     # Adresse des modules
     set adresse_I2C(0) 0x40
@@ -224,14 +228,14 @@ proc ::PCA9685::setValue {plugNumber value address} {
     #   0 --> Off
     # 999 --> On
     # Par défaut on est inversé
-    if {$value == 0} {
+    if {$value == 0 || $value == "off" } {
         #// Special value for signal fully on (so inverted : fully off).
         set ON_L   0xff
         set ON_H   0x1f
         set OFF_L  0x00
         set OFF_H  0x00
 
-    } elseif {$value == 999} {
+    } elseif {$value == 999 || $value == "on"} {
         #// Special value for signal fully off (so inverted : fully on).
         set ON_L   0x00
         set ON_H   0x00

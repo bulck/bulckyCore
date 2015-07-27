@@ -202,22 +202,24 @@ namespace eval ::address {
     set val(34) PCA9685
     set val(35) PCA9685
     set val(36) PCA9685
-    
-    # @0x41 cultibox : 0x82
     set val(37) PCA9685
     set val(38) PCA9685
+    
+    # @0x41 cultibox : 0x82
     set val(39) PCA9685
     set val(40) PCA9685
     set val(41) PCA9685
     set val(42) PCA9685
-    
-    # @0x42 cultibox : 0x84
     set val(43) PCA9685
     set val(44) PCA9685
+    
+    # @0x42 cultibox : 0x84
     set val(45) PCA9685
     set val(46) PCA9685
     set val(47) PCA9685
     set val(48) PCA9685
+    set val(49) PCA9685
+    # set val(50) PCA9685
     
 }
 
