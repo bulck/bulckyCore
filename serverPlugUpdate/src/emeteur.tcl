@@ -199,7 +199,10 @@ proc emeteur_update_loop {} {
             
                 set plgPrgm [lindex $::actualProgramm [expr $i - 1]]
                 # On ne met à jour que les plugs qui font de régulation
-                if {$plgPrgm != "on" && $plgPrgm != "off" && $module != "XMAX"} {
+                if {$plgPrgm != "on" && 
+                    $plgPrgm != "off" && 
+                    $module != "XMAX" && 
+                    $module != "PCA9685"} {
                     updatePlug $i
                 }
             }
@@ -248,7 +251,10 @@ proc updatePlug {plugNumber} {
         ::piLog::log [clock milliseconds] "error" "Plug $plugNumber programme is empty"
         set statusError 1
         
-    } elseif {$plgPrgm != "off" && $plgPrgm != "on" && ${module} != "XMAX"} {
+    } elseif {$plgPrgm != "off" && 
+              $plgPrgm != "on" && 
+              ${module} != "XMAX" && 
+              ${module} != "PCA9685"} {
         # Si c'est de la régulation
         set statusError [emeteur_regulation $plugNumber $plgPrgm]
         

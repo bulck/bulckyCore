@@ -289,6 +289,7 @@ proc computeValueForRegulation {nbPlug sensorType computeType} {
         }
         default {
             ::piLog::log [clock milliseconds] "error" "computeValueForRegulation : sensortype $sensorType is not recognize"
+            return ""
         }
     }
 

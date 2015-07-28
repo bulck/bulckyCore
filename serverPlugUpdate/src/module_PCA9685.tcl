@@ -7,6 +7,7 @@ namespace eval ::PCA9685 {
     variable adresse_module
     variable adresse_I2C
     variable register
+    variable outputReversed
     
     # @0x40 cultibox : 0x80
     set adresse_module(31) 0x40
@@ -22,9 +23,9 @@ namespace eval ::PCA9685 {
     set adresse_module(36) 0x40
     set adresse_module(36,out) 5
     set adresse_module(37) 0x40
-    set adresse_module(37,out) 5
+    set adresse_module(37,out) 6
     set adresse_module(38) 0x40
-    set adresse_module(38,out) 5
+    set adresse_module(38,out) 7
     
     # @0x41 cultibox : 0x82
     set adresse_module(39) 0x41
@@ -148,12 +149,22 @@ namespace eval ::PCA9685 {
     set register($adresse_I2C(1),init_done) 0
     set register($adresse_I2C(2),init_done) 0
     
+    # Pour inverser la sortie
+    set outputReversed 0
 }
 
 # Cette proc est utilisée pour initialiser les modules
 proc ::PCA9685::init {plugList} {
     variable adresse_module
     variable register
+    variable outputReversed
+    
+    # On initialise le fonctionnement de la sortie
+    if {$::configXML(pwm_output) == "reversed"} {
+        set outputReversed 1
+        ::piLog::log [clock milliseconds] "info" "::PCA9685::init output must be reversed"
+    }
+
 
     # Pour chaque adresse, on cherche le module et on l'initialise
     foreach plug $plugList {
@@ -203,7 +214,8 @@ proc ::PCA9685::setValue {plugNumber value address} {
     variable adresse_module
     variable adresse_I2C
     variable register
-
+    variable outputReversed
+    
     set errorDuringSend 0
     
     # On cherche le nom du module correspondant
@@ -224,30 +236,61 @@ proc ::PCA9685::setValue {plugNumber value address} {
     # On sauvegarde l'état de la prise
     ::savePlugSendValue $plugNumber $value
 
-    # On met à jour le registre
-    #   0 --> Off
-    # 999 --> On
-    # Par défaut on est inversé
-    if {$value == 0 || $value == "off" } {
-        #// Special value for signal fully on (so inverted : fully off).
-        set ON_L   0xff
-        set ON_H   0x1f
-        set OFF_L  0x00
-        set OFF_H  0x00
+    # la valeur en entrée est entre 0 et 100
+   
+    if {$outputReversed == 0} {
+        # Si la sortie est normale 
+        # On met à jour le registre
+        #   0 --> Off
+        # 999 --> On
+        # Par défaut on est inversé
+        if {$value == 0 || $value == "off" } {
+            #// Special value for signal fully on (so inverted : fully off).
+            set ON_L   0xff
+            set ON_H   0x1f
+            set OFF_L  0x00
+            set OFF_H  0x00
 
-    } elseif {$value == 999 || $value == "on"} {
-        #// Special value for signal fully off (so inverted : fully on).
-        set ON_L   0x00
-        set ON_H   0x00
-        set OFF_L  0xff
-        set OFF_H  0x1f
+        } elseif {$value == 999 || $value == "on"} {
+            #// Special value for signal fully off (so inverted : fully on).
+            set ON_L   0x00
+            set ON_H   0x00
+            set OFF_L  0xff
+            set OFF_H  0x1f
+        } else {
+            set ON_L   0x00
+            set ON_H   0x00
+            set OFF_L  [expr int(4095 - 4.096 * $value * 10) & 0x00ff]
+            set OFF_H  [expr int(4095 - 4.096 * $value * 10) >> 8]
+            #setPWM(num, 0, 4095-val);
+        }
     } else {
-        set ON_L   0x00
-        set ON_H   0x00
-        set OFF_L  [expr int(4095 - 4.096 * $value) & 0x00ff]
-        set OFF_H  [expr int(4095 - 4.096 * $value) >> 8]
-        #setPWM(num, 0, 4095-val);
+        # la sortie est inversée
+        # On met à jour le registre
+        #   0 --> Off
+        # 999 --> On
+        # Par défaut on est inversé
+        if {$value == 0 || $value == "off" } {
+            #// Special value for signal fully on (so inverted : fully off).
+            set ON_L   0x00
+            set ON_H   0x00
+            set OFF_L  0xff
+            set OFF_H  0x1f
+        } elseif {$value == 999 || $value == "on"} {
+            #// Special value for signal fully off (so inverted : fully on).
+            set ON_L   0xff
+            set ON_H   0x1f
+            set OFF_L  0x00
+            set OFF_H  0x00
+        } else {
+            set ON_L   0x00
+            set ON_H   0x00
+            set OFF_L  [expr int(4.096 * $value * 10) & 0x00ff]
+            set OFF_H  [expr int(4.096 * $value * 10) >> 8]
+            #setPWM(num, 0, 4095-val);
+        }
     }
+
     
     set RC [catch {
         # LED 8 25 % --> 3171 : 0x0B 0x0FF
@@ -271,7 +314,7 @@ proc ::PCA9685::setValue {plugNumber value address} {
         ::piLog::log [clock milliseconds] "error" "::PCA9685::setValue Module $moduleAdresse does not respond :$msg "
         set errorDuringSend 1
     } else {
-        ::piLog::log [clock milliseconds] "info" "::PCA9685::setValue Output PWM  $ON_L $ON_H $OFF_L $OFF_H to $register(LED${outputPin}_ON_L) OK (output pin $outputPin)"
+        ::piLog::log [clock milliseconds] "info" "::PCA9685::setValue Output PWM  $ON_L $ON_H $OFF_L $OFF_H to $register(LED${outputPin}_ON_L) OK (output pin $outputPin) value $value"
     }
 
     return $errorDuringSend
