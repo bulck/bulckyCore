@@ -159,8 +159,10 @@ proc ::PCA9685::init {plugList} {
     variable register
     variable outputReversed
     
+    
+    
     # On initialise le fonctionnement de la sortie
-    if {$::configXML(pwm_output) == "reversed"} {
+    if {[::piTools::readArrayElem [array get ::configXML] pwm_output "normal"] == "reversed"} {
         set outputReversed 1
         ::piLog::log [clock milliseconds] "info" "::PCA9685::init output must be reversed"
     }

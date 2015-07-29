@@ -48,6 +48,14 @@ proc messageGestion {message networkhost} {
             ::piServer::sendToServer $serverForResponse "$serverForResponse $indexForResponse _getRepere $returnList" $networkhost
 
         }
+        "setRepere" {
+            set variable [::piTools::lindexRobust $message 3]
+            set value [::piTools::lindexRobust $message 4]
+            
+            set ::${variable} $value
+
+            ::piLog::log [clock milliseconds] "info" "Asked setRepere : force $variable to $value"
+        }
         "subscription" {
             # Le repère est l'index des capteurs
             set repere [::piTools::lindexRobust $message 3]

@@ -25,4 +25,5 @@ set adresseIP [lindex $argv 1]
 
 # tclsh /opt/cultipi/cultiPi/set.tcl serverPlugUpdate localhost 3 on 10
 # tclsh "D:\CBX\cultipiCore\cultiPi\set.tcl" serverPlugUpdate localhost 2 on 10
+# tclsh "D:\CBX\cultipiCore\cultiPi\set.tcl" serverAcqSensor localhost "sensor(2,value,1)" 1500
 

@@ -81,6 +81,9 @@ proc stopIt {} {
 # On charge le simulateur uniquement si c'est définit le fichier XML
 if {$configXML(simulator) != "off"} {
     source [file join $rootDir ${::moduleLocalName} src simulator.tcl]
+    
+    # Initialisation du simulateur 
+    ::simulateur::init
 }
 
 # Initialisation du direct read 

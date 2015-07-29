@@ -36,3 +36,16 @@ proc ::piTools::lindexRobust {str index} {
     return "[string range $str $previousIndex [expr $indexF - 1]]"
 }
 
+# cherche une valeur dans un vecteur
+proc ::piTools::readArrayElem {arrayVal name defaultValue} {
+
+    array set arrayTemp $arrayVal
+    
+    if {[array names ::configXML -exact "${name}"] != ""} {
+        set retval   $::configXML(${name}) 
+    } else {
+        set retval $defaultValue
+    }
+
+    return $retval
+}

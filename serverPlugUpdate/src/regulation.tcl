@@ -281,7 +281,7 @@ proc computeValueForRegulation {nbPlug sensorType computeType} {
         }
         "C" {
             set indexSensorValue 1
-            set coef 0.1
+            set coef 0.01
         }
         "T" -
         "L" {

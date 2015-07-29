@@ -1,6 +1,26 @@
 
 set ::simulator(valueToSend) "0"
 
+
+namespace eval ::simulateur {
+
+}
+
+proc ::simulateur::init {} {
+
+    variable sensorSImu
+
+    # On charge en mémoire la configuration des capteurs a simuler
+    for {set i 1} {$i < 7} {incr i} {
+
+        set sensorSimu($i,type) [::piTools::readArrayElem [array get ::configXML] "simulator,${i},type" "NA"]
+        set sensorSimu($i,min) [::piTools::readArrayElem [array get ::configXML] "simulator,${i},min" "10"]
+        set sensorSimu($i,max) [::piTools::readArrayElem [array get ::configXML] "simulator,${i},max" "40"]
+
+    }
+
+}
+
 proc exec {args} {
 
     set commande [lindex $args 0]
