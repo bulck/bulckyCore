@@ -131,9 +131,9 @@ proc updateSensorVal {sensor value1 value2} {
             exec /usr/local/sbin/i2cset -y 1 0x31 0 10 0 $registre $::sensor($sensor,type) $val11 $val12 $val21 $val22 1 i
         } msg]
         if {$RC != 0} {
-            ::piLog::log [clock milliseconds] "debug" "updateSensorVal : Cultibox does not respond (try [expr $i + 1] / 3) :$msg "
+            ::piLog::log [clock milliseconds] "debug" "updateSensorVal : Sensor $sensor : Cultibox does not respond (try [expr $i + 1] / 3) :$msg "
         } else {
-            ::piLog::log [clock milliseconds] "debug" "updateSensorVal : Sensor value is updated is updated"
+            ::piLog::log [clock milliseconds] "debug" "updateSensorVal : Sensor $sensor : value is updated is updated"
             set i 4
         }
         after 20
