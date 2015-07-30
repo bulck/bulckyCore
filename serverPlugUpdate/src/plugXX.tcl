@@ -46,7 +46,12 @@ proc plugXX_load {confPath} {
                         # Pour le calcul, on enlève les zéro à gauche  et si c'est vide c'est que c'est 0
                         set precision [string trimleft [string range $OneLine 6 8] "0"]
                         if {$precision == ""} {set precision 0}
-                        set ::plug($i,REG,precision) [expr $precision / 10.0]
+                        if {$::plug($i,REG,type) == "C"} {
+                            set ::plug($i,REG,precision) [expr $precision / 100.0]
+                        } else {
+                            set ::plug($i,REG,precision) [expr $precision / 10.0]
+                        }
+                        
                     }
                     "SEC:" {
                         
