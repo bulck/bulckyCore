@@ -9,12 +9,6 @@ namespace eval ::sensorAcq {
 proc ::sensorAcq::init {logPeriode} {
     variable periodeAcq 
 
-    set ::port(serverAcqSensor)   ""
-
-    # On demande le numéro de port du lecteur de capteur
-    ::piLog::log [clock milliseconds] "info" "::sensorAcq::init ask getPort serverAcqSensor"
-    ::piServer::sendToServer $::piServer::portNumber(serverCultipi) "$::piServer::portNumber(serverCultibox) [incr ::TrameIndex] getPort serverAcqSensor"
-
     for {set i 1} {$i < 7} {incr i} {
         set ::sensor(${i},value,1) ""
         set ::sensor(${i},value,2) ""
@@ -27,29 +21,25 @@ proc ::sensorAcq::init {logPeriode} {
 
 }
 
-
 proc ::sensorAcq::loop {} {
 
     variable periodeAcq
     variable bandeMorteAcq
-    
-    # On vérifie si le numéro de port est disponible
-    if {$::piServer::portNumber(serverAcqSensor) != ""} {
-    
-        # Le numéro du port est disponible
-        # On lui demande les repères nécessaires (les 6 premiers) par abonnement
-        for {set i 1} {$i < 7} {incr i} {
-            ::piServer::sendToServer $::piServer::portNumber(serverAcqSensor) "$::piServer::portNumber(serverCultibox) [incr ::TrameIndex] subscription ${i},value $periodeAcq $bandeMorteAcq"
-            
-            # Les lignes suivantes marchent aussi !
-            #::piServer::sendToServer $::piServer::portNumber(serverAcqSensor) "$::piServer::portNumber(serverCultibox) [incr ::TrameIndex] getRepere ${i},value,1"
-            #::piServer::sendToServer $::piServer::portNumber(serverAcqSensor) "$::piServer::portNumber(serverCultibox) [incr ::TrameIndex] getRepere ${i},value,2"
-        }
 
+    # Le numéro du port est disponible
+    # On lui demande les repères nécessaires (les 6 premiers) par abonnement
+    set retErr 0
+    for {set i 1} {$i < 7} {incr i} {
+        incr retErr [::piServer::sendToServer $::piServer::portNumber(serverAcqSensor) "$::piServer::portNumber(serverCultibox) [incr ::TrameIndex] subscription ${i},value 2000"]
+    }
+
+    # On prend un abonnement sur l'état de la lecture des capteurs
+    incr retErr [::piServer::sendToServer $::piServer::portNumber(serverAcqSensor) "$::piServer::portNumber(serverCultibox) [incr ::TrameIndex] subscription firsReadDone 2000"]
+
+    if {$retErr == 0} {
         set ::subscriptionRunned(sensorAcq) 1
-    
     } else {
-        ::piLog::log [clock milliseconds] "debug" "::sensorAcq::loop : port of serverAcqSensor is not defined"
+        ::piLog::log [clock milliseconds] "warning" "::sensorAcq::loop : subscriptions are not done"
     }
 
     # On tue la boucle si les souscriptions sont lancés

@@ -104,11 +104,22 @@ proc updateSensorVal {sensor value1 value2} {
 
     # On calcul le numéro du registre
     set registre [expr 10 + $sensor - 1]
-    set val11 [expr int ( floor ($value1 / 2.56) )]
-    set val12 [expr int ($value1 * 100) % 256]
     
-    set val21 [expr int ( floor ($value2 / 2.56) )]
-    set val22 [expr int ($value2 * 100) % 256]
+    if {$value1 == "" || $value1 == "NULL"} {
+        set val11 0
+        set val12 0
+    } else {
+        set val11 [expr int ( floor ($value1 / 2.56) )]
+        set val12 [expr int ($value1 * 100) % 256]
+    }
+    
+    if {$value2 == "" || $value2 == "NULL"} {
+        set val21 0
+        set val22 0
+    } else {
+        set val21 [expr int ( floor ($value2 / 2.56) )]
+        set val22 [expr int ($value2 * 100) % 256]
+    }
     
     # Mise à jour des valeurs de capteurs
     # Capteur 1 : 0 6 Mots envoyés Registre 0 10 , SHT 2 , T Haut 1 , T Bas 25 , H Haut 2 , H Bas 36
@@ -120,23 +131,19 @@ proc updateSensorVal {sensor value1 value2} {
             exec /usr/local/sbin/i2cset -y 1 0x31 0 10 0 $registre $::sensor($sensor,type) $val11 $val12 $val21 $val22 1 i
         } msg]
         if {$RC != 0} {
-            ::piLog::log [clock milliseconds] "debug" "updateHour : Cultibox does not respond (try [expr $i + 1] / 3) :$msg "
+            ::piLog::log [clock milliseconds] "debug" "updateSensorVal : Cultibox does not respond (try [expr $i + 1] / 3) :$msg "
         } else {
-            ::piLog::log [clock milliseconds] "debug" "updateHour : Sensor value is updated is updated"
+            ::piLog::log [clock milliseconds] "debug" "updateSensorVal : Sensor value is updated is updated"
             set i 4
         }
         after 20
     }
-
-    
-    after 2000 updateHour
-
 }
 
-# On demande le port du serveur d'acquisition
+# On initialise la partie sur les capteurs 
 ::sensorAcq::init $configXML(updateFreq)
 
-# On lance la boucle de mise à jour des capteurs
+# On réalise la souscription sur les capteurs 
 ::sensorAcq::loop
 
 # On lance la mise à l'heure de la Cultibox

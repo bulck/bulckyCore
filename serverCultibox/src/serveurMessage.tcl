@@ -131,8 +131,8 @@ proc messageGestion {message networkhost} {
                             } else {
                                 set ::sensor([lindex $splitted 1],value,1) $valeur1
                                 set ::sensor([lindex $splitted 1],value,2) $valeur2
+                                # Update sensor value in cultibox
                                 updateSensorVal [lindex $splitted 1] $valeur1 $valeur2
-                                # Update sensor value
                             }
                             
                         } 
@@ -143,8 +143,7 @@ proc messageGestion {message networkhost} {
                 }
                 "::plug" {
                     # Si c'est l'état d'une prise, on enregistre immédiatement
-                    ::piLog::log [clock milliseconds] "debug" "_subscription response : save plug [lindex $splitted 1] $valeur time $time - msg : $message"
-                    ::sql::addPlugState [lindex $splitted 1] $valeur $time
+                    ::piLog::log [clock milliseconds] "error" "_subscription response : save plug [lindex $splitted 1] $valeur time $time - msg : $message"
                 }
                 default {
                     ::piLog::log [clock milliseconds] "error" "_subscription response : unknow variable name $variableName - msg : $message"
