@@ -103,54 +103,25 @@ proc messageGestion {message networkhost} {
         "_subscription" -
         "_subscriptionEvenement" {
             # On parse le retour de la commande
-            set variable    [::piTools::lindexRobust $message 3]
-            set valeur      [::piTools::lindexRobust $message 4]
-            set time        [::piTools::lindexRobust $message 5]
+            set variable  [::piTools::lindexRobust $message 3]
+            set valeur [::piTools::lindexRobust $message 4]
             
             # On enregistre le retour de l'abonnement
-            set ${variable} $valeur
+            set ::${variable} $valeur
             
-            # On traite immédiatement cette info
+            ::piLog::log [clock milliseconds] "debug" "subscription response : variable $variable valeur -$valeur-"
+            
             set splitted [split ${variable} "(,)"]
             set variableName [lindex $splitted 0]
-            switch $variableName {
-                "::sensor" {
-                    switch [lindex $splitted 2] {
-                        "type" {
-                            # Si c'est le type de capteur
-                            ::piLog::log [clock milliseconds] "debug" "_subscription response : save sensor type : $message"
-                            set ::sensor([lindex $splitted 1],type) $valeur
-                        }
-                        "value" {
-                            set valeur1      [::piTools::lindexRobust $message 4]
-                            set valeur2      [::piTools::lindexRobust $message 5]
-                            set time         [::piTools::lindexRobust $message 6]
-                            # Si c'est la valeur
-                            if {$valeur1 == "DEFCOM"} {
-                                ::piLog::log [clock milliseconds] "debug" "_subscription response : send value to cultibox : DEFCOM so not saved - msg : $message"
-                            } else {
-                                set ::sensor([lindex $splitted 1],value,1) $valeur1
-                                set ::sensor([lindex $splitted 1],value,2) $valeur2
-                                # Update sensor value in cultibox
-                                updateSensorVal [lindex $splitted 1] $valeur1 $valeur2
-                            }
-                            
-                        } 
-                        default {
-                            ::piLog::log [clock milliseconds] "error" "_subscription response : not recognize type [lindex $splitted 2]  - msg : $message"
-                        }
-                    }
-                }
-                "::plug" {
-                    # Si c'est l'état d'une prise, on enregistre immédiatement
-                    ::piLog::log [clock milliseconds] "error" "_subscription response : save plug [lindex $splitted 1] $valeur time $time - msg : $message"
-                }
-                default {
-                    ::piLog::log [clock milliseconds] "error" "_subscription response : unknow variable name $variableName - msg : $message"
-                }
+            set sensorIndex [lindex $splitted 1]
+            set variableType [lindex $splitted 2]
+            if {$variableName == "::sensor" && $variableType == "value"} {
+                updateSensorVal $sensorIndex
+            } elseif {$variableType != "value"} {
+                ::piLog::log [clock milliseconds] "debug" "_subscription response : this not a value : $variableType - msg : $message"
+            } else {
+                ::piLog::log [clock milliseconds] "error" "_subscription response : not recognize type $variableName  - msg : $message"
             }
-
-            # ::piLog::log [clock milliseconds] "debug" "subscription response : variable $variable valeur -$valeur-"
         }
         default {
             # Si on reçoit le retour d'une commande, le nom du serveur est le notre

@@ -30,12 +30,22 @@ proc ::sensorAcq::loop {} {
     # On lui demande les repères nécessaires (les 6 premiers) par abonnement
     set retErr 0
     for {set i 1} {$i < 7} {incr i} {
-        incr retErr [::piServer::sendToServer $::piServer::portNumber(serverAcqSensor) "$::piServer::portNumber(serverCultibox) [incr ::TrameIndex] subscription ${i},value 2000"]
+        incr retErr [::piServer::sendToServer $::piServer::portNumber(serverAcqSensor) "$::piServer::portNumber(serverCultibox) [incr ::TrameIndex] subscription ${i},value,1 2000"]
+        if {$retErr != 0} {
+            break
+        }
+        
+        incr retErr [::piServer::sendToServer $::piServer::portNumber(serverAcqSensor) "$::piServer::portNumber(serverCultibox) [incr ::TrameIndex] subscription ${i},value,2 2000"]
+        if {$retErr != 0} {
+            break
+        }
     }
 
     # On prend un abonnement sur l'état de la lecture des capteurs
-    incr retErr [::piServer::sendToServer $::piServer::portNumber(serverAcqSensor) "$::piServer::portNumber(serverCultibox) [incr ::TrameIndex] subscription firsReadDone 2000"]
-
+    if {$retErr == 0} {
+        incr retErr [::piServer::sendToServer $::piServer::portNumber(serverAcqSensor) "$::piServer::portNumber(serverCultibox) [incr ::TrameIndex] subscription firsReadDone 2000"]
+    }
+    
     if {$retErr == 0} {
         set ::subscriptionRunned(sensorAcq) 1
     } else {

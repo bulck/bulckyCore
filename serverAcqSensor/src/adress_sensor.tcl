@@ -13,9 +13,9 @@ set sensor(SHT,2,adress) 0x02 ;#define SLAVE_SHT_ADRESS_2 0x04
 set sensor(SHT,3,adress) 0x03 ;#define SLAVE_SHT_ADRESS_3 0x06
 set sensor(SHT,4,adress) 0x04 ;#define SLAVE_SHT_ADRESS_4 0x08
 
-set sensor(DS18B20,2,adress) 0x05 ;#define SLAVE_DS18B20_ADRESS_2 0x10
-set sensor(DS18B20,3,adress) 0x06 ;#define SLAVE_DS18B20_ADRESS_3 0x12
-set sensor(DS18B20,4,adress) 0x07 ;#define SLAVE_DS18B20_ADRESS_4 0x14
+set sensor(DS18B20,2,adress) 0x08 ;#define SLAVE_DS18B20_ADRESS_2 0x10
+set sensor(DS18B20,3,adress) 0x09 ;#define SLAVE_DS18B20_ADRESS_3 0x12
+set sensor(DS18B20,4,adress) 0x0A ;#define SLAVE_DS18B20_ADRESS_4 0x14
 set sensor(DS18B20,5,adress) 0x2F ;#define SLAVE_DS18B20_ADRESS_5 0x4E 0100 1110 --> 0010 0111  | Old : 0x4E New 0x5E
 set sensor(DS18B20,6,adress) 0x30 ;#define SLAVE_DS18B20_ADRESS_6 0x50 0101 0000 --> 0010 1000  | Old : 0x50 New 0x60
 

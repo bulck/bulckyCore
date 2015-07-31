@@ -100,12 +100,15 @@ proc updateHour {} {
     after 2000 updateHour
 }
 
-proc updateSensorVal {sensor value1 value2} {
+proc updateSensorVal {sensor} {
 
     # On calcul le numéro du registre
     set registre [expr 10 + $sensor - 1]
     
-    if {$value1 == "" || $value1 == "NULL"} {
+    set value1 $::sensor(${sensor},value,1)
+    set value2 $::sensor(${sensor},value,2)
+    
+    if {$value1 == "" || $value1 == "NULL" || $value1 == "DEFCOM"} {
         set val11 0
         set val12 0
     } else {
@@ -113,12 +116,20 @@ proc updateSensorVal {sensor value1 value2} {
         set val12 [expr int ($value1 * 100) % 256]
     }
     
-    if {$value2 == "" || $value2 == "NULL"} {
+    if {$value2 == "" || $value2 == "NULL" || $value2 == "DEFCOM"} {
         set val21 0
         set val22 0
     } else {
         set val21 [expr int ( floor ($value2 / 2.56) )]
         set val22 [expr int ($value2 * 100) % 256]
+    }
+    
+    if {$val11 == 0 && 
+        $val12 == 0 && 
+        $val21 == 0 && 
+        $val22 == 0} {
+            ::piLog::log [clock milliseconds] "debug" "updateSensorVal : No value to send"
+        return
     }
     
     # Mise à jour des valeurs de capteurs

@@ -100,7 +100,7 @@ proc messageGestion {message networkhost} {
                     } else {
                         ::piServer::sendToServer $serverForResponse "$serverForResponse [incr ::TrameIndex] _subscription ::sensor($repere) $reponse $time" $networkhost
                         set ::subscriptionVariable($SubscriptionIndex) $reponse
-                        ::piLog::log [clock milliseconds] "debug" "Response is not a double _subscription ::sensor($repere) reponse : $reponse"
+                        ::piLog::log [clock milliseconds] "debug" "Response is not a double _subscription ::sensor($repere) reponse : $reponse - to $serverForResponse"
                     }
                 } else {
                     #::piLog::log [clock milliseconds] "debug" "Doesnot resend ::sensor($repere) besause it's same value -$reponse-"
