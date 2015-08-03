@@ -26,37 +26,19 @@ proc messageGestion {message networkhost} {
             send_email $from $to $subject $body
             
         }
+        "_subscription" -
+        "_subscriptionEvenement" {
+            # On parse le retour de la commande
+            set variable  [::piTools::lindexRobust $message 3]
+            set valeur [::piTools::lindexRobust $message 4]
+            
+            # On enregistre le retour de l'abonnement
+            set ::${variable} $valeur
+            
+            ::piLog::log [clock milliseconds] "debug" "subscription response : variable $variable valeur -$valeur-"
+        }
         default {
-            # Si on reçoit le retour d'une commande, le nom du serveur est le notre
-            if {$serverForResponse == $::piServer::portNumber(${::moduleLocalName})} {
-            
-                if {[array names ::TrameSended -exact $indexForResponse] != ""} {
-                    
-                    switch [lindex $::TrameSended($indexForResponse) 0] {
-                        "update_plug_value" {
-                            set plugumber [lindex $::TrameSended($indexForResponse) 1]
-                        
-                            set ::plug($plugumber,updateStatus) $commande
-                            set ::plug($plugumber,updateStatusComment) ${message}
-                        
-                            ::piLog::log [clock milliseconds] "info" "I2C Update plug $plugumber updateStatus : -$commande- updateStatusComment : -${message}-"
-                        
-                            # On supprime cette donnée de la mémoire
-                            unset ::TrameSended($indexForResponse)
-                        }
-                        default {
-                            ::piLog::log [clock milliseconds] "error" "Not recognize keyword response -${message}-"
-                        }                    
-                    }
-                    
-                } else {
-                    ::piLog::log [clock milliseconds] "error" "Not requested response -${message}-"
-                }
-            
-                
-            } else {
-                ::piLog::log [clock milliseconds] "error" "Received -${message}- but not interpreted"
-            }
+            ::piLog::log [clock milliseconds] "error" "Received -${message}- but not interpreted"
         }
     }
 }

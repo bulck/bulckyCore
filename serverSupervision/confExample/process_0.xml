@@ -5,6 +5,6 @@
     <item name="sensor"     value="1" />
     <item name="sensorOutput" value="1" />
     <item name="valueSeuil"   value="26" />
-    <item name="timeSeuilInS" value="120" />
+    <item name="timeSeuilInS" value="20" />
     <item name="alertIf"     value="up" />
 </conf>

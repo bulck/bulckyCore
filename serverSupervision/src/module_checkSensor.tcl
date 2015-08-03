@@ -66,24 +66,25 @@ proc checkSensor::check {processID} {
     variable XMLprocess
    
     set sensorValue $::sensor($XMLprocess($processID,sensor),value,$XMLprocess($processID,sensorOutput))
+    set noValue 0
    
     if {$sensorValue == "" || $sensorValue == "NULL" || $sensorValue == "DEFCOM" || $sensorValue == "NA" } {
-        ::piLog::log [clock milliseconds] "warning" "::checkSensor::check : No value for sensor ::sensor($XMLprocess($processID,sensor),value,$XMLprocess($processID,sensorOutput))"
+        ::piLog::log [clock milliseconds] "warning" "::checkSensor::check : No value for sensor ::sensor($XMLprocess($processID,sensor),value,$XMLprocess($processID,sensorOutput)) value : $sensorValue"
         
-        set XMLprocess($processID,IDAfter) [after 1000 [list ::checkSensor::check $processID]]
-        
-        return 
+        set noValue 1
     }
    
     # On vérifie si la valeur est supérieur ou pas au seuil 
     # Deux cas : on a choisit d'envoyer une alerte si la valeur est supérieure
-    if {$XMLprocess($processID,alertIf) == "up"} {
+    if {$XMLprocess($processID,alertIf) == "up" && $noValue == 0} {
     
         if {$sensorValue > $XMLprocess($processID,valueSeuil)} {
             # La valeur du capteur est supérieur au seuil définit
             if {$XMLprocess($processID,startAlertInS) == 0} {
                 # On enregistre l'heure de départ du dépassement de seuil
                 set XMLprocess($processID,startAlertInS) [clock seconds]
+            } else {
+                ::piLog::log [clock milliseconds] "debug" "checkSensor::check start count alert"
             }
             
             # Si la valeur est supérieur au seuil depuis trop longtemps, envoyer un message à l'utilisateur
@@ -99,10 +100,16 @@ proc checkSensor::check {processID} {
                     
                     # On sauvegarde l'envoi du message
                     set XMLprocess($processID,messageSend) 1 
+                } else {
+                    ::piLog::log [clock milliseconds] "debug" "checkSensor::check message already sended"
                 }
+            } else {
+                ::piLog::log [clock milliseconds] "debug" "checkSensor::check alert in [expr $XMLprocess($processID,timeSeuilInS) - $nbSecAlert]"
             }
             
         } else {
+            ::piLog::log [clock milliseconds] "info" "checkSensor::check value is normal"
+        
             # La valeur du capteur est inférieure au seuil 
             set XMLprocess($processID,startAlertInS) 0
             
@@ -118,7 +125,7 @@ proc checkSensor::check {processID} {
             
         }
     
-    } else {
+    } elseif {$XMLprocess($processID,alertIf) == "down" && $noValue == 0} {
         # Si on a choisit d'envoyer une alerte si la valeur est inférieure
         
         if {$sensorValue < $XMLprocess($processID,valueSeuil)} {
@@ -126,6 +133,8 @@ proc checkSensor::check {processID} {
             if {$XMLprocess($processID,startAlertInS) == 0} {
                 # On enregistre l'heure de départ du dépassement de seuil
                 set XMLprocess($processID,startAlertInS) [clock seconds]
+            } else {
+                ::piLog::log [clock milliseconds] "debug" "checkSensor::check start count alert"
             }
             
             # Si la valeur est inférieure au seuil depuis trop longtemps, envoyer un message à l'utilisateur
@@ -139,10 +148,50 @@ proc checkSensor::check {processID} {
                     
                     # On sauvegarde l'envoi du message
                     set XMLprocess($processID,messageSend) 1 
+                } else {
+                    ::piLog::log [clock milliseconds] "debug" "checkSensor::check message already sended"
+                }
+                
+            } else {
+                ::piLog::log [clock milliseconds] "debug" "checkSensor::check alert in [expr $XMLprocess($processID,timeSeuilInS) - $nbSecAlert]"
+            }
+            
+        } else {
+            # La valeur du capteur est supérieure au seuil 
+            set XMLprocess($processID,startAlertInS) 0
+            
+            # Si un message d'alerte a été envoyé , renvoyer un message pour dire que tout va bien
+            if {$XMLprocess($processID,messageSend) == 1} {
+                ::checkSensor::sendRetToNormal $processID
+
+                set XMLprocess($processID,messageSend) 0
+            }
+        }
+    } elseif {$XMLprocess($processID,alertIf) == "DEFCOM"} {
+        # Si on a choisit d'envoyer une alerte si la valeur est en défaut de communication
+        
+        if {$noValue == 1} {
+            # La valeur du capteur est en défaut de communication
+            if {$XMLprocess($processID,startAlertInS) == 0} {
+                # On enregistre l'heure de départ du dépassement de seuil
+                set XMLprocess($processID,startAlertInS) [clock seconds]
+            }
+            
+            # Si la valeur est en défaut de communication depuis trop longtemps, envoyer un message à l'utilisateur
+            set nbSecAlert [expr [clock seconds] - $XMLprocess($processID,startAlertInS)]
+            if {$nbSecAlert >= $XMLprocess($processID,timeSeuilInS)} {
+                # Si on a pas envoyé déjà un message 
+                if {$XMLprocess($processID,messageSend) == 0} {
+                    # Si on a pas envoyé déjà un message 
+                    # On envoi une alerte
+                    ::checkSensor::sendAlert $processID
+                    
+                    # On sauvegarde l'envoi du message
+                    set XMLprocess($processID,messageSend) 1 
                 }
             }
         } else {
-            # La valeur du capteur est supérieure au seuil 
+            # La valeur du capteur est redevenue normale
             set XMLprocess($processID,startAlertInS) 0
             
             # Si un message d'alerte a été envoyé , renvoyer un message pour dire que tout va bien
@@ -160,22 +209,25 @@ proc checkSensor::check {processID} {
 }
 
 proc checkSensor::sendAlert {processID} {
+    variable XMLprocess
 
     # On calcul les données a mettre dans le mail 
     set nbSecAlert [expr [clock seconds] - $XMLprocess($processID,startAlertInS)]
     set seuil $XMLprocess($processID,valueSeuil)
     set capteur $XMLprocess($processID,sensor)
     if {$XMLprocess($processID,alertIf) == "up"} {
-        set sens "supérieure"
+        set msgAlert "La valeur du capteur $capteur est supérieure au seuil de $seuil depuis $nbSecAlert secondes."
+    } elseif {$XMLprocess($processID,alertIf) == "down"} {
+        set msgAlert "La valeur du capteur $capteur est inférieure au seuil de $seuil depuis $nbSecAlert secondes."
     } else {
-        set sens "inférieure"
+        set msgAlert "La valeur du capteur en défaut de communication depuis $nbSecAlert secondes."
     }
 
     set title {[Cultibox : Alerte]}
     
     set message "Alerte générée le [clock format [clock seconds] -format "%Y/%m/%d %H:%M:%S"] : "
     
-    set message "${message}\\nLa valeur du capteur $capteur est $sens au seuil de $seuil depuis $nbSecAlert secondes."
+    set message "${message}\\n${msgAlert}"
     
     set message "${message}\\nVous recevrez un nouvel eMail lorsque tout sera rentré dans l'ordre"
     
@@ -186,21 +238,17 @@ proc checkSensor::sendAlert {processID} {
 }
 
 proc checkSensor::sendRetToNormal {processID} {
+    variable XMLprocess
 
     # On calcul les données a mettre dans le mail 
     set seuil $XMLprocess($processID,valueSeuil)
     set capteur $XMLprocess($processID,sensor)
-    if {$XMLprocess($processID,alertIf) == "up"} {
-        set sens "inférieure"
-    } else {
-        set sens "supérieure"
-    }
 
     set title {[Cultibox : Alerte]}
     
     set message "Retour à la normal généré le [clock format [clock seconds] -format "%Y/%m/%d %H:%M:%S"] : "
     
-    set message "${message}\\nLa valeur du capteur $capteur est redevenue $sens au seuil de $seuil."
+    set message "${message}\\nLa valeur du capteur $capteur est redevenue normale."
 
     set message "${message}\\nMessage envoyé automatiquement par ma Cultibox"
     
