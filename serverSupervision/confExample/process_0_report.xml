@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<conf>
+    <item name="action"     value="report" />
+    <item name="frequency"  value="now" />
+    <item name="hour"       value="16" />
+    <item name="eMail"      value="alliaume.rico@gmail.com" />
+</conf>

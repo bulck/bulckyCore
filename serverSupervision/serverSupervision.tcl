@@ -18,6 +18,7 @@ package require piXML
 source [file join $rootDir ${::moduleLocalName} src serveurMessage.tcl]
 source [file join $rootDir ${::moduleLocalName} src module_checkPing.tcl]
 source [file join $rootDir ${::moduleLocalName} src module_report.tcl]
+source [file join $rootDir ${::moduleLocalName} src module_checkSensor.tcl]
 
 # Initialisation d'un compteur pour les commandes externes envoyées
 set TrameIndex 0
@@ -76,9 +77,16 @@ for {set i 0} {$i < $configXML(nbProcess)} {incr i} {
         # On charge le fichier de conf
         array set process_xml [::piXML::convertXMLToArray $confFileName]
         
-        # En fonction de l'action a réaliser, on initialise le process
-        $process_xml(action)::start [array get process_xml]
-        
+        # Si il n'y a pas d'action définit, ce n'est pas normal
+        if {[array names process_xml -exact action] == ""} {
+            ::piLog::log [clock milliseconds] "error" "Can not create supervision process $i : file - $confFileName - Action is not defined"
+            
+        } else { 
+            # En fonction de l'action a réaliser, on initialise le process
+            $process_xml(action)::start [array get process_xml]
+        }
+
+        array unset process_xml
         
     } else {
         ::piLog::log [clock milliseconds] "error" "Can not create supervision process $i : file - $confFileName - doesnot exists"
