@@ -66,7 +66,11 @@ proc load_plugXX {{plugVFileName ""}} {
                         lappend list "on"
                     }
                     default {
-                        lappend list [expr [string trimleft $programmeCourt 0] / 10.0]
+                        set withoutZero [string trimleft $programmeCourt 0]
+                        if {$withoutZero == ""} {
+                            set withoutZero 0
+                        }
+                        lappend list [expr $withoutZero / 10.0]
                     }
                 }
             }
