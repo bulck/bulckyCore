@@ -329,8 +329,9 @@ proc readSensors {} {
                 }
            
                 # On sauvegarde dans le repère global
-                set ::sensor($sensorDirect,value,1) [expr $::sensor($sensorDirect,value,1) + $value]
-                set ::sensor($sensorDirect,value)   "[expr $::sensor($sensorDirect,value) + $value] NULL"
+                set sensor1Value $::sensor($sensorDirect,value,1)
+                set ::sensor($sensorDirect,value,1) [expr $sensor1Value + $value]
+                set ::sensor($sensorDirect,value)   "[expr $sensor1Value + $value] NULL"
                 set ::sensor($sensorDirect,type)    $::configXML(direct_read,$sensorDirect,type)
                 set ::sensor($sensorDirect,value,time) [clock milliseconds]
 
