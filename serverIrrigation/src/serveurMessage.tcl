@@ -33,7 +33,23 @@ proc messageGestion {message networkhost} {
                 ::piLog::log [clock milliseconds] "info" "messageGestion : response : $serverForResponse $indexForResponse _getRepere $returnValue"
                 ::piServer::sendToServer $serverForResponse "$serverForResponse $indexForResponse _getRepere $returnValue" $networkhost
             } else {
-                ::piLog::log [clock milliseconds] "error" "messageGestion : Asked variable $variable - variable doesnot exists"
+            
+                # la varibale est peut être un vecteur 
+                set aNam [lindex [split $variable "()"] 0]
+                if {[array exists $aNam] == 1} {
+                
+                    if {[array names $aNam -exact [lindex [split $variable "()"] 1]] == 1} {
+                        eval set returnValue $$variable
+                        ::piLog::log [clock milliseconds] "info" "messageGestion : response : $serverForResponse $indexForResponse _getRepere $returnValue"
+                        ::piServer::sendToServer $serverForResponse "$serverForResponse $indexForResponse _getRepere $returnValue" $networkhost
+                    } else {
+                        ::piLog::log [clock milliseconds] "error" "messageGestion : Asked variable $variable - variable is array but key doesnot exists"
+                    }
+                
+                } else {
+                    ::piLog::log [clock milliseconds] "error" "messageGestion : Asked variable $variable - variable doesnot exists"
+                }
+                
             }
         }
         default {

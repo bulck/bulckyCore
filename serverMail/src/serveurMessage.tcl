@@ -19,7 +19,6 @@ proc messageGestion {message networkhost} {
             ::piLog::log [clock milliseconds] "info" "Asked to send mail"
             
             set to      [::piTools::lindexRobust $message 3]
-            puts $message
             set subject [lindex $message 4]
             set body    [lindex $message 5]
             

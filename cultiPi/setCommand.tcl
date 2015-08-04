@@ -28,3 +28,4 @@ set adresseIP [lindex $argv 1]
 # tclsh /opt/cultipi/cultiPi/setCommand.tcl serverMail localhost sendMail info@greenbox-botanic.com "Essai 2 " "Corps du message et contenu"
 # tclsh "D:\CBX\cultipiCore\cultiPi\setCommand.tcl" serverMail localhost sendMail gl@greenbox-botanic.com "Essai 2 " "Corps du message et contenu"
 # tclsh "D:\CBX\cultipiCore\cultiPi/setCommand.tcl" serverIrrigation localhost stop
+# tclsh /opt/cultipi/cultiPi/setCommand.tcl serverMail 192.168.0.53 sendMail info@cultibox.fr test Body
