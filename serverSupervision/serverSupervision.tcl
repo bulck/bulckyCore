@@ -68,11 +68,11 @@ proc stopIt {} {
 }
 
 # Pour chaque process, on crée les fonctions associées
-for {set i 0} {$i < $configXML(nbProcess)} {incr i} {
+foreach confFileName [glob -nocomplain -directory [file dirname $confXML] *.xml] {
 
     # On vérifie que le fichier de config existe
     set confFileName [string map [list "conf.xml" "process_${i}.xml"] $confXML]
-    if {[file exists $confFileName]} {
+    if {[file exists $confFileName] && [string first "conf.xml" $confFileName] == -1} {
     
         # On charge le fichier de conf
         array set process_xml [::piXML::convertXMLToArray $confFileName]
