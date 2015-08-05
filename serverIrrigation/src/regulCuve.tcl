@@ -106,11 +106,11 @@ proc autoRemplissage {} {
             if {$::regulationActivePlateforme($::autoRemplissagePlateformeIndex) == "false"} {
                 
                 # On ouvre l'EV de l'eau
-                ::piLog::log [clock milliseconds] "info" "Regul Cuve : plateforme $plateformeNom  : ON localtechnique EV eau pendant 32 s";update
+                ::piLog::log [clock milliseconds] "info" "Rempli Cuve : plateforme $plateformeNom  : ON localtechnique EV eau pendant 32 s";update
                 ::piServer::sendToServer $::piServer::portNumber(serverPlugUpdate) "$::piServer::portNumber(serverIrrigation) 0 setRepere $evLTeau on 32" $IPlocalTechnique
                 
                 # On ouvre l'EV de la platfeorme 
-                ::piLog::log [clock milliseconds] "info" "Regul Cuve : plateforme $plateformeNom  : ON localtechnique EV ${plateformeNom} pendant 32 s" ;update
+                ::piLog::log [clock milliseconds] "info" "Rempli Cuve : plateforme $plateformeNom  : ON localtechnique EV ${plateformeNom} pendant 32 s" ;update
                 ::piServer::sendToServer $::piServer::portNumber(serverPlugUpdate) "$::piServer::portNumber(serverIrrigation) 0 setRepere $EVPFLT on 32" $IPlocalTechnique
                 
                 # On ouvre l'EV de remplissage
@@ -118,15 +118,15 @@ proc autoRemplissage {} {
                 ::piServer::sendToServer $::piServer::portNumber(serverPlugUpdate) "$::piServer::portNumber(serverIrrigation) 0 setRepere $priseRemplissage on 32" $IPplateforme
                 
                 # On allume le surpresseur 
-                ::piLog::log [clock milliseconds] "info" "Regul Cuve : plateforme $plateformeNom : ON localtechnique surpresseur pendant 30 s";update
+                ::piLog::log [clock milliseconds] "info" "Rempli Cuve : plateforme $plateformeNom : ON localtechnique surpresseur pendant 30 s";update
                 ::piServer::sendToServer $::piServer::portNumber(serverPlugUpdate) "$::piServer::portNumber(serverIrrigation) 0 setRepere $Surpresseur on 30" $IPlocalTechnique
                 
             } else {
                 ::piLog::log [clock milliseconds] "info" "Rempli Cuve : plateforme $plateformeNom : En régulation, on attend"; update
             }
         }
-
-
+    } else {
+        ::piLog::log [clock milliseconds] "debug" "Rempli Cuve : plateforme $plateformeNom : la cuve est OK : $::cuve($::autoRemplissagePlateformeIndex) "; update
     }
 
     # On passe à la zone suivante

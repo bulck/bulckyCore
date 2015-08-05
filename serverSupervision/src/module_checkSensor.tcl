@@ -215,6 +215,10 @@ proc checkSensor::sendAlert {processID} {
     set nbSecAlert [expr [clock seconds] - $XMLprocess($processID,startAlertInS)]
     set seuil $XMLprocess($processID,valueSeuil)
     set capteur $XMLprocess($processID,sensor)
+    
+    set hostnameValue [exec hostname]
+    set title "$hostnameValue : Alerte"
+    
     if {$XMLprocess($processID,alertIf) == "up"} {
         set msgAlert "La valeur du capteur $capteur est supérieure au seuil de $seuil depuis $nbSecAlert secondes."
     } elseif {$XMLprocess($processID,alertIf) == "down"} {
@@ -222,8 +226,6 @@ proc checkSensor::sendAlert {processID} {
     } else {
         set msgAlert "La valeur du capteur en défaut de communication depuis $nbSecAlert secondes."
     }
-
-    set title {[Cultibox : Alerte]}
     
     set message "Alerte générée le [clock format [clock seconds] -format "%Y/%m/%d %H:%M:%S"] : "
     
@@ -244,7 +246,8 @@ proc checkSensor::sendRetToNormal {processID} {
     set seuil $XMLprocess($processID,valueSeuil)
     set capteur $XMLprocess($processID,sensor)
 
-    set title {[Cultibox : Alerte]}
+    set hostnameValue [exec hostname]
+    set title "$hostnameValue : Retour à la normale"
     
     set message "Retour à la normal généré le [clock format [clock seconds] -format "%Y/%m/%d %H:%M:%S"] : "
     
