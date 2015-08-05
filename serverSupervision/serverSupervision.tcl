@@ -70,16 +70,13 @@ proc stopIt {} {
 # Pour chaque process, on crée les fonctions associées
 foreach confFileName [glob -nocomplain -directory [file dirname $confXML] *.xml] {
 
-    # On vérifie que le fichier de config existe
-    set confFileName [string map [list "conf.xml" "process_${i}.xml"] $confXML]
-    if {[file exists $confFileName] && [string first "conf.xml" $confFileName] == -1} {
-    
+    if {[file exists $confFileName] && [file tail $confFileName] !=  "conf.xml"} {
         # On charge le fichier de conf
         array set process_xml [::piXML::convertXMLToArray $confFileName]
         
         # Si il n'y a pas d'action définit, ce n'est pas normal
         if {[array names process_xml -exact action] == ""} {
-            ::piLog::log [clock milliseconds] "error" "Can not create supervision process $i : file - $confFileName - Action is not defined"
+            ::piLog::log [clock milliseconds] "error" "Can not create supervision process : file - $confFileName - Action is not defined"
             
         } else { 
             # En fonction de l'action a réaliser, on initialise le process
@@ -89,7 +86,7 @@ foreach confFileName [glob -nocomplain -directory [file dirname $confXML] *.xml]
         array unset process_xml
         
     } else {
-        ::piLog::log [clock milliseconds] "error" "Can not create supervision process $i : file - $confFileName - doesnot exists"
+        ::piLog::log [clock milliseconds] "error" "Can not create supervision process : file - $confFileName - doesnot exists or it's conf.xml"
     }
 
 }
