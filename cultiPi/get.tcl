@@ -48,13 +48,13 @@ set killID [after 4000 {
 
 vwait forever
 
-# tclsh /opt/cultipi/cultiPi/get.tcl serverAcqSensor 192.168.0.55 "::sensor(1,value)" 
+# tclsh /opt/cultipi/cultiPi/get.tcl serverAcqSensor 192.168.0.55 "::sensor(1,value,1)" 
 # tclsh /opt/cultipi/cultiPi/get.tcl serverIrrigation 192.168.0.50 "::cuve(0)" 
 # tclsh /opt/cultipi/cultiPi/get.tcl serverAcqSensor localhost "::sensor(1,value)" "::sensor(2,value)"
 # tclsh /opt/cultipi/cultiPi/get.tcl serverPlugUpdate localhost "::plug(1,value)" "::plug(2,value)" "::plug(3,value)" "::plug(4,value)"
 # tclsh /opt/cultipi/cultiPi/get.tcl serverAcqSensor localhost "::sensor(firsReadDone)" 
 # tclsh "D:\CBX\cultipiCore\cultiPi\get.tcl" serverAcqSensor 192.168.0.100 "::sensor(1,value)"
-# tclsh "D:\CBX\cultipiCore\cultiPi\get.tcl" serverAcqSensor localhost "::sensor(1,value)"
+# tclsh "D:\CBX\cultipiCore\cultiPi\get.tcl" serverAcqSensor localhost "::sensor(1,value,1)"
 # tclsh "D:\CBX\cultipiCore\cultiPi\get.tcl" serverAcqSensor localhost "::sensor(1,value)" "::sensor(2,value)"
 # tclsh "D:\CBX\cultipiCore\cultiPi\get.tcl" serverCultipi localhost "statusInitialisation"
 # tclsh "D:\CBX\cultipiCore\cultiPi\get.tcl" serverCultipi localhost  statusInitialisation cultipiActualHour

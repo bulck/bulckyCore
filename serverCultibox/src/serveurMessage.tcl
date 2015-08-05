@@ -15,6 +15,20 @@ proc messageGestion {message networkhost} {
             ::piLog::log [clock milliseconds] "info" "Asked pid"
             ::piServer::sendToServer $serverForResponse "$::piServer::portNumber(${::moduleLocalName}) $indexForResponse _pid ${::moduleLocalName} [pid]" $networkhost
         }
+        "reloadXML" {
+            ::piLog::log [clock milliseconds] "info" "messageGestion : Asked reloadXML"
+            set RC [catch {
+                array set ::configXML [::piXML::convertXMLToArray $::confXML]
+            } msg]
+            if {$RC != 0} {
+                ::piLog::log [clock milliseconds] "error" "messageGestion : Asked reloadXML error : $msg"
+            } else {
+                # On affiche les infos dans le fichier de debug
+                foreach element [lsort [array names ::configXML]] {
+                    ::piLog::log [clock milliseconds] "info" "$element : $::configXML($element)"
+                }
+            }
+        }
         "getRepere" {
             # Pour toutes les variables demandées
             set indexVar 3
