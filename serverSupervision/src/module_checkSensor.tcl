@@ -247,7 +247,7 @@ proc checkSensor::sendRetToNormal {processID} {
     set capteur $XMLprocess($processID,sensor)
 
     set hostnameValue [exec hostname]
-    set title "$hostnameValue : Retour à la normale"
+    set title "$hostnameValue : Alerte"
     
     set message "Retour à la normal généré le [clock format [clock seconds] -format "%Y/%m/%d %H:%M:%S"] : "
     
