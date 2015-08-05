@@ -15,16 +15,30 @@ proc messageGestion {message networkhost} {
             ::piLog::log [clock milliseconds] "info" "Asked pid"
             ::piServer::sendToServer $serverForResponse "$::piServer::portNumber(${::moduleLocalName}) $indexForResponse _pid ${::moduleLocalName} [pid]" $networkhost
         }
-        "sendmail" {
-            ::piLog::log [clock milliseconds] "info" "Asked to send mail"
-            
-            set from    [::piTools::lindexRobust $message 3]
-            set to      [::piTools::lindexRobust $message 4]
-            set subject [::piTools::lindexRobust $message 5]
-            set body    [::piTools::lindexRobust $message 6]
-            
-            send_email $from $to $subject $body
-            
+        "getRepere" {
+            # Pour toutes les variables demandées
+            set indexVar 3
+            set returnList ""
+            while {[set variable [::piTools::lindexRobust $message $indexVar]] != ""} {
+                # La variable est le nom de la variable à lire
+
+                ::piLog::log [clock milliseconds] "debug" "Asked getRepere $variable"
+
+                if {[info exists ::$variable] == 1} {
+                
+                    eval set returnValue $$variable
+
+                    lappend returnList $returnValue
+                } else {
+                    ::piLog::log [clock milliseconds] "error" "Asked variable $variable - variable doesnot exists"
+                }
+                
+                incr indexVar
+            }
+
+            ::piLog::log [clock milliseconds] "info" "response : $serverForResponse $indexForResponse _getRepere - $returnList - to $networkhost"
+            ::piServer::sendToServer $serverForResponse "$serverForResponse $indexForResponse _getRepere $returnList" $networkhost
+
         }
         "_subscription" -
         "_subscriptionEvenement" {

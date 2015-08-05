@@ -97,4 +97,4 @@ for {set i 0} {$i < $configXML(nbProcess)} {incr i} {
 vwait forever
 
 # tclsh "D:\CBX\cultipiCore\serverSupervision\serverSupervision.tcl" "D:\CBX\cultipiCore\serverSupervision\confExample\conf.xml"
-# tclsh /opt/cultipi/serverSupervision/serverSupervision.tcl 6019 /etc/cultipi/01_defaultConf_RPi/./serverSupervision/conf.xml 6003 6000
+# tclsh /opt/cultipi/serverSupervision/serverSupervision.tcl /etc/cultipi/01_defaultConf_RPi/./serverSupervision/conf.xml

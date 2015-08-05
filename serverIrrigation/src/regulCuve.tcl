@@ -106,39 +106,13 @@ proc autoRemplissage {} {
         return
     }
 
-    # Si l'arrosage a été réalisé plus 10 minute durant l'heure, on passe à la suivante
-    if {$::tempsIrrigation($::autoRemplissagePlateformeIndex) >= $tempsMaxRemplissage} {
-        set oldTmpsIrrig $::tempsIrrigation($::autoRemplissagePlateformeIndex)
-        incr ::autoRemplissagePlateformeIndex
-        if {$::autoRemplissagePlateformeIndex >= $nbPlateforme} {
-            set ::autoRemplissagePlateformeIndex 0
-        }
-        ::piLog::log [clock milliseconds] "info" "Rempli Cuve : plateforme $plateformeNom : Cuve trop remplie pour cette heure (actuel : $oldTmpsIrrig - max : $tempsMaxRemplissage ), on passe à la suivante ( $::autoRemplissagePlateformeIndex ) dans 27s";update
-
-        set ::idAfterRegul [after 1000  [list after idle autoRemplissage]]
-
-        return
-    }
-
     # La cuve est dessous du niveau minimum, on ouvre la vanne jusqu'à ce que le capteur cuve basse soit actif ou que le temps de remplissage soit dépassé
     if {$::cuve($::autoRemplissagePlateformeIndex) == 0} {
     
-        # On ouvre l'EV 
-        ::piLog::log [clock milliseconds] "info" "Rempli Cuve : plateforme $plateformeNom : ON EV remplissage"; update
-        ::piServer::sendToServer $::piServer::portNumber(serverPlugUpdate) "$::piServer::portNumber(serverIrrigation) 0 setRepere $EVRemplissage on 999" $IPplateforme
-    
-        # on attend que le niveau soit remonté
-        while {$::cuve($::autoRemplissagePlateformeIndex) == 0 && $::tempsIrrigation($::autoRemplissagePlateformeIndex) < $tempsMaxRemplissage} {
-        
-            set ::tempsIrrigation($::autoRemplissagePlateformeIndex) [expr $::tempsIrrigation($::autoRemplissagePlateformeIndex) + 1]
-        
-            after 950
-            update
-        }
-        
-        # On éteint l'électrovanne 
-        ::piLog::log [clock milliseconds] "info" "Rempli Cuve : plateforme $plateformeNom : OFF EV remplissage"; update
-        ::piServer::sendToServer $::piServer::portNumber(serverPlugUpdate) "$::piServer::portNumber(serverIrrigation) 0 setRepere $EVRemplissage off 999" $IPplateforme
+        # On ouvre l'EV pendant 30 secondes
+        ::piLog::log [clock milliseconds] "info" "Rempli Cuve : plateforme $plateformeNom : ON EV remplissage 30s"; update
+        ::piServer::sendToServer $::piServer::portNumber(serverPlugUpdate) "$::piServer::portNumber(serverIrrigation) 0 setRepere $EVRemplissage on 30" $IPplateforme
+
     }
 
     # On passe à la zone suivante

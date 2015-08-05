@@ -16,21 +16,29 @@ proc messageGestion {message networkhost} {
             ::piServer::sendToServer $serverForResponse "$::piServer::portNumber(${::moduleLocalName}) $indexForResponse _pid ${::moduleLocalName} [pid]" $networkhost
         }
         "getRepere" {
-            # La variable est le nom de la variable à lire
-            set variable  [::piTools::lindexRobust $message 3]
+            # Pour toutes les variables demandées
+            set indexVar 3
+            set returnList ""
+            while {[set variable [::piTools::lindexRobust $message $indexVar]] != ""} {
+                # La variable est le nom de la variable à lire
 
-            ::piLog::log [clock milliseconds] "info" "Asked getRepere $variable"
-            # Les parametres d'un repere : nom Valeur 
-            
-            if {[info exists ::$variable] == 1} {
-            
-                eval set returnValue $$variable
-            
-                ::piLog::log [clock milliseconds] "info" "response : $serverForResponse $indexForResponse _getRepere $returnValue"
-                ::piServer::sendToServer $serverForResponse "$serverForResponse $indexForResponse _getRepere $returnValue" $networkhost
-            } else {
-                ::piLog::log [clock milliseconds] "error" "Asked variable $variable - variable doesnot exists"
+                ::piLog::log [clock milliseconds] "debug" "Asked getRepere $variable"
+
+                if {[info exists ::$variable] == 1} {
+                
+                    eval set returnValue $$variable
+
+                    lappend returnList $returnValue
+                } else {
+                    ::piLog::log [clock milliseconds] "error" "Asked variable $variable - variable doesnot exists"
+                }
+                
+                incr indexVar
             }
+
+            ::piLog::log [clock milliseconds] "info" "response : $serverForResponse $indexForResponse _getRepere - $returnList - to $networkhost"
+            ::piServer::sendToServer $serverForResponse "$serverForResponse $indexForResponse _getRepere $returnList" $networkhost
+
         }
         "_getPort" {
             set ::port([::piTools::lindexRobust $message 3]) [::piTools::lindexRobust $message 4]

@@ -30,7 +30,12 @@ proc messageGestion {message networkhost} {
                     eval set returnValue $$variable
                     
                     # Condition particuliere : pour les regroupement de variable, on met DEFCOM si null
-                    if {$variable == "::sensor(1,value)" || $variable == "::sensor(2,value)"  || $variable == "::sensor(3,value)"  || $variable == "::sensor(4,value)"  || $variable == "::sensor(5,value)"  || $variable == "::sensor(6,value)" } {
+                    if {$variable == "::sensor(1,value)" || 
+                        $variable == "::sensor(2,value)"  ||
+                        $variable == "::sensor(3,value)"  ||
+                        $variable == "::sensor(4,value)"  ||
+                        $variable == "::sensor(5,value)"  ||
+                        $variable == "::sensor(6,value)" } {
                         if {$returnValue == ""} {
                             set returnValue "DEFCOM"
                         }
