@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <conf>
-    <item name="action"     level="checkSensor" />
+    <item name="action"     value="checkSensor" />
     <item name="eMail"      value="alliaume.rico@gmail.com" />
     <item name="sensor"     value="1" />
     <item name="sensorOutput" value="1" />
