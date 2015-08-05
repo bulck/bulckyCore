@@ -283,7 +283,7 @@ proc readSensors {} {
     for {set sensorDirect 1} {$sensorDirect <= $::configXML(nb_maxSensor)} {incr sensorDirect} {
     
         set pin $::configXML(direct_read,$sensorDirect,input)
-    
+
         # Si la valeur est demandé dans le fichier de config
         if {$pin != "NA"} {
             

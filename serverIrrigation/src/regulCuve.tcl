@@ -25,38 +25,23 @@ proc autoRemplissage {} {
     set plateformeNom     $::configXML(plateforme,$::autoRemplissagePlateformeIndex,name)
     set plateformeActive  $::configXML(plateforme,$::autoRemplissagePlateformeIndex,active)
     set plateformeNbZone  $::configXML(plateforme,$::autoRemplissagePlateformeIndex,nbZone)
+    set Surpresseur       $::configXML(localtechnique,pompePrise)
+    set EVPFLT            $::configXML(plateforme,$::autoRemplissagePlateformeIndex,priseDansLT)
+    
+    set activeAutoRemplissage [::piTools::readArrayElem [array get ::configXML] "plateforme,$::autoRemplissagePlateformeIndex,activeAutoRemplissage" "false"]
+    set autoRemplissageDirect [::piTools::readArrayElem [array get ::configXML] "plateforme,$::autoRemplissagePlateformeIndex,autoRemplissageDirect" "true"]
+    set priseRegulation       [::piTools::readArrayElem [array get ::configXML] "plateforme,$::autoRemplissagePlateformeIndex,priseRegulation" "0"]
+    set priseRemplissage      [::piTools::readArrayElem [array get ::configXML] "plateforme,$::autoRemplissagePlateformeIndex,priseRemplissage" "0"]
+    
+    set evLTeau      [::piTools::readArrayElem [array get ::configXML] "engrais,3,prise" "0"]
 
-    if {[array names ::configXML -exact "plateforme,$::autoRemplissagePlateformeIndex,activeAutoRemplissage"] != ""} {
-        set remplissageAuto   $::configXML(plateforme,$::autoRemplissagePlateformeIndex,activeAutoRemplissage) 
-    } else {
-        set remplissageAuto "false"
-    }
     set nbPlateforme      $::configXML(nbPlateforme)
 
-    # Si on est entre 6h et 22h -> utilisation des temps de jour
-    set hour [string trimleft [clock format [clock seconds] -format %H] "0"]
-    if {$hour == ""} {set hour 0}
-
-    if {$hour >= 6 && $hour < 14} {
-        set JourOuNuit Matin
-        set tempsMaxRemplissage $::configXML(plateforme,$::autoRemplissagePlateformeIndex,tempsMaxRemp)
-    } elseif {$hour >= 14 && $hour <= 22} {
-        set JourOuNuit Apres
-        set tempsMaxRemplissage $::configXML(plateforme,$::autoRemplissagePlateformeIndex,tempsMaxRempApresMidi)
-        
-    } else {
-        set JourOuNuit Nuit
-        set tempsMaxRemplissage $::configXML(plateforme,$::autoRemplissagePlateformeIndex,tempsMaxRempNuit)
-    }
 
     set IPplateforme      $::configXML(plateforme,$::autoRemplissagePlateformeIndex,ip)
     set IPlocalTechnique  $::configXML(localtechnique,ip)
-    if {[array names ::configXML -exact "plateforme,$::autoRemplissagePlateformeIndex,priseEau"] != ""} {
-        set EVRemplissage   $::configXML(plateforme,$::autoRemplissagePlateformeIndex,priseEau) 
-    } else {
-        set EVRemplissage "0"
-    }
-    set Surpresseur       $::configXML(localtechnique,pompePrise)
+    set EVRemplissage      [::piTools::readArrayElem [array get ::configXML] "plateforme,$::autoRemplissagePlateformeIndex,priseEau" "0"]
+
     
     # Si la plateforme est désactivée, on passe à la suivante
     if {$plateformeActive == 0 || $plateformeActive == "false"} {
@@ -70,7 +55,7 @@ proc autoRemplissage {} {
     }
     
     # Si le remplissage auto est désactivé, on passe à la plateforme suivante
-    if {$remplissageAuto == 0 || $remplissageAuto == "false"} {
+    if {$activeAutoRemplissage == 0 || $activeAutoRemplissage == "false"} {
         ::piLog::log [clock milliseconds] "debug" "Rempli Cuve : plateforme $plateformeNom : auto remplissage désactivé"
         incr ::autoRemplissagePlateformeIndex
         if {$::autoRemplissagePlateformeIndex >= $nbPlateforme} {
@@ -109,9 +94,38 @@ proc autoRemplissage {} {
     # La cuve est dessous du niveau minimum, on ouvre la vanne jusqu'à ce que le capteur cuve basse soit actif ou que le temps de remplissage soit dépassé
     if {$::cuve($::autoRemplissagePlateformeIndex) == 0} {
     
-        # On ouvre l'EV pendant 30 secondes
-        ::piLog::log [clock milliseconds] "info" "Rempli Cuve : plateforme $plateformeNom : ON EV remplissage 30s"; update
-        ::piServer::sendToServer $::piServer::portNumber(serverPlugUpdate) "$::piServer::portNumber(serverIrrigation) 0 setRepere $EVRemplissage on 30" $IPplateforme
+        # Deux cas :
+        #  - Soit on ouvre juste l'EV qui rempli 
+        #  - Soit on ouvre l'EV de remplissage + l'EV de la zone dans le local technique + le surpresseur
+        if {$autoRemplissageDirect == "true"} {
+            # On ouvre l'EV pendant 30 secondes
+            ::piLog::log [clock milliseconds] "info" "Rempli Cuve : plateforme $plateformeNom : ON EV remplissage 30s"; update
+            ::piServer::sendToServer $::piServer::portNumber(serverPlugUpdate) "$::piServer::portNumber(serverIrrigation) 0 setRepere $EVRemplissage on 30" $IPplateforme
+        }  else {
+            # On vérifie qu'on est pas en remplissage de cuve 
+            if {$::regulationActivePlateforme($::autoRemplissagePlateformeIndex) == "false"} {
+                
+                # On ouvre l'EV de l'eau
+                ::piLog::log [clock milliseconds] "info" "Regul Cuve : plateforme $plateformeNom  : ON localtechnique EV eau pendant 32 s";update
+                ::piServer::sendToServer $::piServer::portNumber(serverPlugUpdate) "$::piServer::portNumber(serverIrrigation) 0 setRepere $evLTeau on 32" $IPlocalTechnique
+                
+                # On ouvre l'EV de la platfeorme 
+                ::piLog::log [clock milliseconds] "info" "Regul Cuve : plateforme $plateformeNom  : ON localtechnique EV ${plateformeNom} pendant 32 s" ;update
+                ::piServer::sendToServer $::piServer::portNumber(serverPlugUpdate) "$::piServer::portNumber(serverIrrigation) 0 setRepere $EVPFLT on 32" $IPlocalTechnique
+                
+                # On ouvre l'EV de remplissage
+                ::piLog::log [clock milliseconds] "info" "Rempli Cuve : plateforme $plateformeNom : ON EV remplissage 32s"; update
+                ::piServer::sendToServer $::piServer::portNumber(serverPlugUpdate) "$::piServer::portNumber(serverIrrigation) 0 setRepere $priseRemplissage on 32" $IPplateforme
+                
+                # On allume le surpresseur 
+                ::piLog::log [clock milliseconds] "info" "Regul Cuve : plateforme $plateformeNom : ON localtechnique surpresseur pendant 30 s";update
+                ::piServer::sendToServer $::piServer::portNumber(serverPlugUpdate) "$::piServer::portNumber(serverIrrigation) 0 setRepere $Surpresseur on 30" $IPlocalTechnique
+                
+            } else {
+                ::piLog::log [clock milliseconds] "info" "Rempli Cuve : plateforme $plateformeNom : En régulation, on attend"; update
+            }
+        }
+
 
     }
 
@@ -142,6 +156,9 @@ proc regulCuve {} {
     set EVZone            $::configXML(plateforme,$::regulCuvePlateformeIndex,zone,$::regulCuveZoneIndex,prise)
     set EVPFLT            $::configXML(plateforme,$::regulCuvePlateformeIndex,priseDansLT)
     set Surpresseur       $::configXML(localtechnique,pompePrise)
+    
+    set autoRemplissageDirect [::piTools::readArrayElem [array get ::configXML] "plateforme,$::regulCuvePlateformeIndex,autoRemplissageDirect" "true"]
+    set priseRegulation       [::piTools::readArrayElem [array get ::configXML] "plateforme,$::regulCuvePlateformeIndex,priseRegulation" "0"]
     
     # Si on est entre 6h et 22h -> utilisation des temps de jour
     set hour [string trimleft [clock format [clock seconds] -format %H] "0"]
@@ -296,12 +313,17 @@ proc regulCuve {} {
     ::piLog::log [clock milliseconds] "info" "Regul Cuve : plateforme $plateformeNom : zone $zoneNom : ON EV $::regulCuveZoneIndex pendant 30 s"; update
     ::piServer::sendToServer $::piServer::portNumber(serverPlugUpdate) "$::piServer::portNumber(serverIrrigation) 0 setRepere $EVZone on 30" $IPplateforme
 
-
     # On met en route l'électrovanne du LT associée à la zone
     # ON de l'EV de la plateforme set prise(localtechnique,ev,engrais1)
     ::piLog::log [clock milliseconds] "info" "Regul Cuve : plateforme $plateformeNom : zone $zoneNom : ON localtechnique EV ${plateformeNom} pendant 30 s" ;update
     ::piServer::sendToServer $::piServer::portNumber(serverPlugUpdate) "$::piServer::portNumber(serverIrrigation) 0 setRepere $EVPFLT on 30" $IPlocalTechnique
 
+    # Si il y a une électrovanne pour la régulation 
+    if {$autoRemplissageDirect == "false"} {
+        ::piLog::log [clock milliseconds] "info" "Regul Cuve : plateforme $plateformeNom : zone $zoneNom : ON EV $::priseRegulation pendant 30 s"; update
+        ::piServer::sendToServer $::piServer::portNumber(serverPlugUpdate) "$::piServer::portNumber(serverIrrigation) 0 setRepere $priseRegulation on 30" $IPplateforme
+    }
+    
     after 10
     
     # On ouvre toutes les électrovannes des engrais associés
