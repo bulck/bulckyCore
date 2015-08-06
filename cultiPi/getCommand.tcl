@@ -60,4 +60,4 @@ vwait forever
 # tclsh /home/sdf/Bureau/Cultipi/cultiPi/getCommand.tcl serverAcqSensor 192.168.1.55 getRepere "::sensor(1,value)"
 # tclsh /home/sdf/Bureau/Cultipi/cultiPi/getCommand.tcl serverAcqSensor localhost pid
 # tclsh D:\CBX\cultipiCore\cultiPi\getCommand.tcl serverAcqSensor localhost pid
-# tclsh D:\CBX\cultipiCore\cultiPi\getCommand.tcl serverIrrigation localhost reloadXML
+# tclsh /opt/cultipi/cultiPi/getCommand.tcl serverIrrigation localhost getRepere "::regulationActivePlateforme(2)"

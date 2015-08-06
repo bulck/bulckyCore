@@ -30,3 +30,4 @@ set adresseIP [lindex $argv 1]
 # tclsh "D:\CBX\cultipiCore\cultiPi/setCommand.tcl" serverIrrigation localhost stop
 # tclsh "D:\CBX\cultipiCore\cultiPi/setCommand.tcl" serverIrrigation localhost fillCuve
 # tclsh /opt/cultipi/cultiPi/setCommand.tcl serverMail 192.168.0.53 sendMail info@cultibox.fr test Body
+# tclsh /opt/cultipi/cultiPi/getCommand.tcl serverIrrigation localhost gsetRepere "::regulationActivePlateforme(2)" false

@@ -168,7 +168,7 @@ proc autoRemplissage {} {
             
         }  else {
             # On vérifie qu'on est pas en remplissage de cuve 
-            if {$::regulationActivePlateforme($::autoRemplissagePlateformeIndex) == "false"} {
+            # if {$::regulationActivePlateforme($::autoRemplissagePlateformeIndex) == "false"} {
                 
                 # On sauvegarde le nom de la plateforme en régulation
                 set ::autoRemplissageActivePlateforme($::autoRemplissagePlateformeIndex) "true"
@@ -195,9 +195,9 @@ proc autoRemplissage {} {
                 after [expr 1000 * $TempsEV] [list set ::autoRemplissageActivePlateforme($::autoRemplissagePlateformeIndex) false]
                 after [expr 1000 * $TempsEV] [list ::piLog::log [expr [clock milliseconds] + 1000 * $TempsEV] "info" "Rempli Cuve : plateforme $plateformeNom : Fin Rempli Cuve"]
                 
-            } else {
-                ::piLog::log [clock milliseconds] "info" "Rempli Cuve : plateforme $plateformeNom : En régulation, on attend"; update
-            }
+            # } else {
+                # ::piLog::log [clock milliseconds] "info" "Rempli Cuve : plateforme $plateformeNom : En régulation, on attend"; update
+            # }
         }
     } else {
         ::piLog::log [clock milliseconds] "debug" "Rempli Cuve : plateforme $plateformeNom : la cuve est OK : $::cuve($::autoRemplissagePlateformeIndex) "; update
@@ -353,11 +353,11 @@ proc regulCuve {} {
     
 
     # Si la zone est en régulation, on passe à la suivante
-    if {$::irrigationActive($::regulCuvePlateformeIndex) == "true"} {
-        ::piLog::log [clock milliseconds] "info" "Regul Cuve : plateforme $plateformeNom : La plateforme est en irrigation, on attend 15 secondes et on retente";update
-        set ::idAfterRegul [after 15000 [list after idle regulCuve]]
-        return
-    }
+    # if {$::irrigationActive($::regulCuvePlateformeIndex) == "true"} {
+        # ::piLog::log [clock milliseconds] "info" "Regul Cuve : plateforme $plateformeNom : La plateforme est en irrigation, on attend 15 secondes et on retente";update
+        # set ::idAfterRegul [after 15000 [list after idle regulCuve]]
+        # return
+    # }
     
     # Si la zone est désactivée, on passe à la suivante
     if {$zoneActive == 0 || $zoneActive == "false"} {

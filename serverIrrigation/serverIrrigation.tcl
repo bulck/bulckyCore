@@ -186,12 +186,12 @@ proc irrigationLoop {indexPlateforme indexZone} {
     }
     
     # Si la zone est en régulation, on rettente dans 10 secondes
-    if {$::regulationActivePlateforme($indexPlateforme) == "true"} {
-        ::piLog::log [clock milliseconds] "info" "irrigation : plate-forme $plateformeNom : zone $zoneNom : La zone est actuellement en régulation, on attend 10 secondes";update
+    # if {$::regulationActivePlateforme($indexPlateforme) == "true"} {
+        # ::piLog::log [clock milliseconds] "info" "irrigation : plate-forme $plateformeNom : zone $zoneNom : La zone est actuellement en régulation, on attend 10 secondes";update
 
-        set ::idAfter [after 10000 [list after idle irrigationLoop $indexPlateforme $indexZone]]
-        return 
-    }    
+        # set ::idAfter [after 10000 [list after idle irrigationLoop $indexPlateforme $indexZone]]
+        # return 
+    # }    
     
     # ::piLog::log [clock milliseconds] "debug" $::irrigationActive(montmartre)
     set ::irrigationActive($indexPlateforme) true
