@@ -96,7 +96,7 @@ proc autoRemplissage {} {
     set IPlocalTechnique  $::configXML(localtechnique,ip)
     set EVRemplissage      [::piTools::readArrayElem [array get ::configXML] "plateforme,$::autoRemplissagePlateformeIndex,priseEau" "0"]
 
-    set TempsAutoRemplissage [::piTools::readArrayElem [array get ::configXML] "plateforme,$::autoRemplissagePlateformeIndex,TempsAutoRemplissage" 30]
+    set tempsAutoRemplissage [::piTools::readArrayElem [array get ::configXML] "plateforme,$::autoRemplissagePlateformeIndex,tempsAutoRemplissage" 30]
     
     # Si la plateforme est désactivée, on passe à la suivante
     if {$plateformeActive == 0 || $plateformeActive == "false"} {
@@ -159,12 +159,12 @@ proc autoRemplissage {} {
             # set ::autoRemplissageActivePlateforme($::autoRemplissagePlateformeIndex) "true"
         
             # On ouvre l'EV pendant 30 secondes
-            ::piLog::log [clock milliseconds] "info" "Rempli Cuve : plateforme $plateformeNom : ON EV remplissage $TempsAutoRemplissage s"; update
-            ::piServer::sendToServer $::piServer::portNumber(serverPlugUpdate) "$::piServer::portNumber(serverIrrigation) 0 setRepere $EVRemplissage on $TempsAutoRemplissage" $IPplateforme
+            ::piLog::log [clock milliseconds] "info" "Rempli Cuve : plateforme $plateformeNom : ON EV remplissage $tempsAutoRemplissage s"; update
+            ::piServer::sendToServer $::piServer::portNumber(serverPlugUpdate) "$::piServer::portNumber(serverIrrigation) 0 setRepere $EVRemplissage on $tempsAutoRemplissage" $IPplateforme
             
             # Dans 30 secondes on indique que la régulation est terminée
-            # after [expr 1000 * $TempsAutoRemplissage] [list set ::autoRemplissageActivePlateforme($::autoRemplissagePlateformeIndex) false]
-            after [expr 1000 * $TempsAutoRemplissage] [list ::piLog::log [expr [clock milliseconds] + 1000 * $TempsAutoRemplissage] "info" "Rempli Cuve : plateforme $plateformeNom : Fin Rempli Cuve"]
+            # after [expr 1000 * $tempsAutoRemplissage] [list set ::autoRemplissageActivePlateforme($::autoRemplissagePlateformeIndex) false]
+            after [expr 1000 * $tempsAutoRemplissage] [list ::piLog::log [expr [clock milliseconds] + 1000 * $tempsAutoRemplissage] "info" "Rempli Cuve : plateforme $plateformeNom : Fin Rempli Cuve"]
             
         }  else {
             # On vérifie qu'on est pas en remplissage de cuve 
@@ -173,7 +173,7 @@ proc autoRemplissage {} {
                 # On sauvegarde le nom de la plateforme en régulation
                 set ::autoRemplissageActivePlateforme($::autoRemplissagePlateformeIndex) "true"
                 
-                set TempsEV [ expr $TempsAutoRemplissage + 2]
+                set TempsEV [ expr $tempsAutoRemplissage + 2]
                 
                 # On ouvre l'EV de l'eau
                 ::piLog::log [clock milliseconds] "info" "Rempli Cuve : plateforme $plateformeNom  : ON localtechnique EV eau pendant $TempsEV s";update
@@ -188,8 +188,8 @@ proc autoRemplissage {} {
                 ::piServer::sendToServer $::piServer::portNumber(serverPlugUpdate) "$::piServer::portNumber(serverIrrigation) 0 setRepere $priseRemplissage on $TempsEV" $IPplateforme
                 
                 # On allume le surpresseur 
-                ::piLog::log [clock milliseconds] "info" "Rempli Cuve : plateforme $plateformeNom : ON localtechnique surpresseur pendant $TempsAutoRemplissage s";update
-                ::piServer::sendToServer $::piServer::portNumber(serverPlugUpdate) "$::piServer::portNumber(serverIrrigation) 0 setRepere $Surpresseur on $TempsAutoRemplissage" $IPlocalTechnique
+                ::piLog::log [clock milliseconds] "info" "Rempli Cuve : plateforme $plateformeNom : ON localtechnique surpresseur pendant $tempsAutoRemplissage s";update
+                ::piServer::sendToServer $::piServer::portNumber(serverPlugUpdate) "$::piServer::portNumber(serverIrrigation) 0 setRepere $Surpresseur on $tempsAutoRemplissage" $IPlocalTechnique
                 
                 # Dans 30 secondes on indique que la régulation est terminée
                 after [expr 1000 * $TempsEV] [list set ::autoRemplissageActivePlateforme($::autoRemplissagePlateformeIndex) false]
