@@ -30,7 +30,7 @@ proc ::piXML::open_xml {fichier {doctype ""}} {
         }
     }
     # C'est tout bon, on peut parser le reste :
-    set data [encoding convertfrom $encoding [read $fin]]
+    set data [read $fin]
     close $fin
     return [::piXML::xml2list $data]
 }
