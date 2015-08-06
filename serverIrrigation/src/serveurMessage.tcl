@@ -33,6 +33,21 @@ proc messageGestion {message networkhost} {
                 }
             }
         }
+        "fillCuve" {
+            set cuve [::piTools::lindexRobust $message 3]
+            ::piLog::log [clock milliseconds] "info" "messageGestion : Asked fillCuve  plateforme $cuve"
+            
+            remplissageCuve $cuve
+
+        }
+        "setRepere" {
+            set variable [::piTools::lindexRobust $message 3]
+            set value   [::piTools::lindexRobust $message 4]
+            ::piLog::log [clock milliseconds] "info" "messageGestion : Asked setRepere  variable $variable value $value"
+            
+            set $variable $value
+            
+        }
         "getRepere" {
             # Pour toutes les variables demandées
             set indexVar 3
@@ -42,7 +57,7 @@ proc messageGestion {message networkhost} {
 
                 ::piLog::log [clock milliseconds] "debug" "Asked getRepere $variable"
 
-                if {[info exists ::$variable] == 1} {
+                if {[info exists $variable] == 1} {
                 
                     eval set returnValue $$variable
 
