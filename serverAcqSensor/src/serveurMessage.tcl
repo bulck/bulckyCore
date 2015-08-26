@@ -83,7 +83,7 @@ proc messageGestion {message networkhost} {
             set BandeMorteAcquisition [::piTools::lindexRobust $message 5]
             if {$BandeMorteAcquisition == ""} {set BandeMorteAcquisition 0}
             
-            ::piLog::log [clock milliseconds] "info" "Subscription of $repere by $serverForResponse frequency $frequency ms"
+            ::piLog::log [clock milliseconds] "info" "Subscription of $repere by $serverForResponse frequency $frequency ms BMA $BandeMorteAcquisition"
 
             set ::subscriptionVariable($::SubscriptionIndex) ""
             
@@ -109,7 +109,7 @@ proc messageGestion {message networkhost} {
                         if {[string is double $oldValue] != 1} {
                             set oldValue -100
                         }
-                        if {$reponse > [expr $oldValue + $BandeMorteAcquisition] || $reponse < [expr $oldValue - $BandeMorteAcquisition]} {
+                        if {$reponse >= [expr $oldValue + $BandeMorteAcquisition] || $reponse <= [expr $oldValue - $BandeMorteAcquisition]} {
                             ::piServer::sendToServer $serverForResponse "$serverForResponse [incr ::TrameIndex] _subscription ::sensor($repere) $reponse $time" $networkhost
                             set ::subscriptionVariable($SubscriptionIndex) $reponse
                         } else {
