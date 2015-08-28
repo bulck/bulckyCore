@@ -14,6 +14,7 @@ proc checkSensor::start {arrayIn} {
         $processID,eMail     "NA" \
         $processID,sensor    "1" \
         $processID,sensorOutput  1 \
+        $processID,sensorName  "NA" \
         $processID,valueSeuil    "25" \
         $processID,timeSeuilInS  "120" \
         $processID,alertIf       "up" \
@@ -219,10 +220,16 @@ proc checkSensor::sendAlert {processID} {
     set hostnameValue [exec hostname]
     set title "$hostnameValue : Alerte"
     
+    # SI le nom du capteur est définit , on l'ajoute dans le message 
+    set sensorName ""
+    if {$XMLprocess($processID,sensorName) != ""} {
+        set sensorName $XMLprocess($processID,sensorName)
+    }
+
     if {$XMLprocess($processID,alertIf) == "up"} {
-        set msgAlert "La valeur du capteur $capteur est supérieure au seuil de $seuil depuis $nbSecAlert secondes."
+        set msgAlert "La valeur du capteur $capteur $sensorName est supérieure au seuil de $seuil depuis $nbSecAlert secondes."
     } elseif {$XMLprocess($processID,alertIf) == "down"} {
-        set msgAlert "La valeur du capteur $capteur est inférieure au seuil de $seuil depuis $nbSecAlert secondes."
+        set msgAlert "La valeur du capteur $capteur $sensorName est inférieure au seuil de $seuil depuis $nbSecAlert secondes."
     } else {
         set msgAlert "La valeur du capteur en défaut de communication depuis $nbSecAlert secondes."
     }
@@ -233,7 +240,7 @@ proc checkSensor::sendAlert {processID} {
     
     set message "${message}\\nVous recevrez un nouvel eMail lorsque tout sera rentré dans l'ordre"
     
-    set message "${message}\\nMessage envoyé automatiquement par ma Cultibox"
+    set message "${message}\\nMessage envoyé automatiquement"
     
     # On envoi le message
     ::piServer::sendToServer $::piServer::portNumber(serverMail) "$::piServer::portNumber(serverSupervision) [incr ::TrameIndex] sendMail $XMLprocess($processID,eMail) \"${title}\" \"${message}\""
@@ -249,11 +256,17 @@ proc checkSensor::sendRetToNormal {processID} {
     set hostnameValue [exec hostname]
     set title "$hostnameValue : Alerte"
     
+    # Si le nom du capteur est définit , on l'ajoute dans le message 
+    set sensorName ""
+    if {$XMLprocess($processID,sensorName) != ""} {
+        set sensorName $XMLprocess($processID,sensorName)
+    }
+    
     set message "Retour à la normal généré le [clock format [clock seconds] -format "%Y/%m/%d %H:%M:%S"] : "
     
-    set message "${message}\\nLa valeur du capteur $capteur est redevenue normale."
+    set message "${message}\\nLa valeur du capteur $capteur $sensorName est redevenue normale."
 
-    set message "${message}\\nMessage envoyé automatiquement par ma Cultibox"
+    set message "${message}\\nMessage envoyé automatiquement"
     
     # On envoi le message
     ::piServer::sendToServer $::piServer::portNumber(serverMail) "$::piServer::portNumber(serverSupervision) [incr ::TrameIndex] sendMail $XMLprocess($processID,eMail) \"${title}\" \"${message}\""
