@@ -32,10 +32,14 @@ proc ::01_demarrage_individuel::test {rootDir} {
     ::piXML::writeXML ${rootDir}/serverLog/confExample/conf.xml [array get logConf]
     setPluga ${rootDir}/serverPlugUpdate/confExample/plg/pluga [list 50 51 52]
 
-    # On modifie les acquisitions qui doivent être réalisées par le serverSUpervision
-    set supervisionConf(verbose) debug
-    set supervisionConf(nbProcess) 0
+    # On modifie les acquisitions qui doivent être réalisées par le serverSupervision
+    # set supervisionConf(verbose) debug
+    # set supervisionConf(nbProcess) 0
     ::piXML::writeXML ${rootDir}/serverSupervision/confExample/conf.xml [array get supervisionConf]
+    # Pour chaque process, on crée les fonctions associées
+    foreach confFileName [glob -nocomplain -directory ${rootDir}/serverSupervision/confExample *.xml] {
+        file rename -force $confFileName [string map {".xml" ".txml"} $confFileName]
+    }
 
     foreach module $moduleListLogFirst {
         puts "* 01_demarage_individuel Démarrage de $module"
