@@ -147,7 +147,7 @@ proc autoRemplissage {} {
     }
 
     # La cuve est dessous du niveau minimum, on ouvre la vanne jusqu'à ce que le capteur cuve basse soit actif ou que le temps de remplissage soit dépassé
-    if {$::cuve($::autoRemplissagePlateformeIndex) == 0} {
+    if {$::cuve($::autoRemplissagePlateformeIndex) < 5} {
     
         # Deux cas :
         #  - Soit on ouvre juste l'EV qui rempli 

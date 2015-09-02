@@ -78,6 +78,8 @@ proc stopIt {} {
 
 proc send_email {to subject body} { 
 
+    set msg ""
+
     set err [catch {
         set token [mime::initialize -canonical "text/plain" -encoding "7bit" -string $body]
         mime::setheader $token Subject $subject
@@ -100,6 +102,7 @@ proc send_email {to subject body} {
         ::piLog::log [clock milliseconds] "error" "send_email : error msg : $msg"
     }
     
+    return $msg
 } 
 
 vwait forever

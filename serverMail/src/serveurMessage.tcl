@@ -27,6 +27,21 @@ proc messageGestion {message networkhost} {
             send_email $to $subject $body
             
         }
+        "sendmailtest" {
+            ::piLog::log [clock milliseconds] "info" "Asked to send mail"
+            
+            set to      [::piTools::lindexRobust $message 3]
+            set subject [lindex $message 4]
+            set body    [lindex $message 5]
+            
+            ::piLog::log [clock milliseconds] "debug" "to : $to - subject : $subject - body : $body"
+            
+            set response [send_email $to $subject $body]
+            
+            ::piLog::log [clock milliseconds] "info" "response : $serverForResponse $indexForResponse _sendmailtest - $response - to $networkhost"
+            ::piServer::sendToServer $serverForResponse "$serverForResponse $indexForResponse _sendmailtest $response" $networkhost
+            
+        }
         "reloadXML" {
             ::piLog::log [clock milliseconds] "info" "messageGestion : Asked reloadXML"
             set RC [catch {

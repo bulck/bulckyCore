@@ -61,3 +61,4 @@ vwait forever
 # tclsh /home/sdf/Bureau/Cultipi/cultiPi/getCommand.tcl serverAcqSensor localhost pid
 # tclsh D:\CBX\cultipiCore\cultiPi\getCommand.tcl serverAcqSensor localhost pid
 # tclsh /opt/cultipi/cultiPi/getCommand.tcl serverIrrigation localhost getRepere "::regulationActivePlateforme(2)"
+# tclsh "D:\CBX\cultipiCore\cultiPi\getCommand.tcl" serverMail localhost sendmailtest info@cultibox.fr test Body
