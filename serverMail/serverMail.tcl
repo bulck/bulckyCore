@@ -100,6 +100,8 @@ proc send_email {to subject body} {
     
     if {$err != 0 } {
         ::piLog::log [clock milliseconds] "error" "send_email : error msg : $msg"
+    } else {
+        set msg "OK"
     }
     
     return $msg

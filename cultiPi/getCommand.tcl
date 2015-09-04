@@ -11,6 +11,20 @@ package require piTools
 
 ::piLog::openLogAs "none"
 
+set timeout 4000
+if {[set index [lsearch $argv "-timeout"]] != -1} {
+    set timeout [lindex $argv [expr $index + 1]]
+    set tempArgv $argv
+    set argv ""
+    set counter 0
+    foreach element $tempArgv {
+        if {$counter != $index && $counter != [expr $index + 1]} {
+            lappend argv $element
+        }
+        incr counter
+    }
+}
+
 set module   [lindex $argv 0]
 set adresseIP [lindex $argv 1]
 
@@ -41,7 +55,7 @@ proc messageGestion {message host} {
 ::piServer::sendToServer $::piServer::portNumber($module) "$::piServer::portNumber(serverGetCommand) 0 [lrange $argv 2 [expr $argc - 1]]" $adresseIP
 
 # Après 2 secondes, s'il n'a pas répondu on le tue
-set killID [after 4000 {
+set killID [after $timeout {
     set ::forever 1
     puts "TIMEOUT"
 }]

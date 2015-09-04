@@ -42,7 +42,7 @@ proc messageGestion {message networkhost} {
             ::piServer::sendToServer $serverForResponse "$serverForResponse $indexForResponse _sendmailtest $response" $networkhost
             
         }
-        "reloadXML" {
+        "reloadxml" {
             ::piLog::log [clock milliseconds] "info" "messageGestion : Asked reloadXML"
             set RC [catch {
                 array set ::configXML [::piXML::convertXMLToArray $::confXML]
