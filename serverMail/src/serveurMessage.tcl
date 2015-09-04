@@ -56,7 +56,7 @@ proc messageGestion {message networkhost} {
                 }
             }
         }
-        "getRepere" {
+        "getrepere" {
             # Pour toutes les variables demandées
             set indexVar 3
             set returnList ""
