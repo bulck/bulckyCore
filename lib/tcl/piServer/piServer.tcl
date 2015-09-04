@@ -25,7 +25,9 @@ namespace eval ::piServer {
     set portNumber(serverSet)         6024
     set portNumber(serverSetCommand)  6025
     
-    set portNumber(serverTrigger)     6026    
+    set portNumber(serverTrigger)     6026
+    
+    set portNumber(serverPHP)         6027
     
     foreach name [array names portNumber] {
         set portNumberReverse($portNumber($name)) $name
