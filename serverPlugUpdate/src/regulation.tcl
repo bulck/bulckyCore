@@ -149,7 +149,36 @@ proc emeteur_regulation {nbPlug plgPrgm} {
                     # On sauvegarde le fait qu'on a pas de régulation
                     set ::plug($nbPlug,inRegulation) "NONE"
                     
-                } elseif {$::plug($nbPlug,module) == "dimmer"} {
+                } elseif {$::plug($nbPlug,module) == "dimmer" || $::plug($nbPlug,module) == "BULCKY"} {
+                
+                    # On calcul l'erreur entre la consigne et la valeur mesurée
+                    set erreurN     [expr $valuePrimaire - $plgPrgm]
+                    set erreurN1    $::plug($nbPlug,regulation,erreurNmoins1)
+                    set commandeN1  $::plug($nbPlug,regulation,commandeNmoins1)
+                    set Kp          $::plug($nbPlug,regulation,kp)
+                    set Ki          $::plug($nbPlug,regulation,ki)
+                    set SeuilMin    [format %.2f [expr $::plug($nbPlug,regulation,pourcentMin) / 100.0]]
+                    set SeuilMax    [format %.2f [expr $::plug($nbPlug,regulation,pourcentMax) / 100.0]]
+                    
+                    # On calcul la régulation a appliquer :
+                    # U = Un-1 + Kp * (erreurN - erreurN-1) + Ki * erreurN 
+                    
+                    set commande [ expr $commandeN1 + $Kp * ($erreurN - $erreurN1) + $Ki * $erreurN]
+                    
+                    # On format la commande 
+                    set commande [format %.2f $commande]
+                    
+                    # On seuil la valeur 
+                    if {$commande > [expr $SeuilMax / 100.0]} {set valeurToPilot [expr $SeuilMax / 100.0]}
+                    if {$commande < [expr $SeuilMin / 100.0]} {set valeurToPilot [expr $SeuilMin / 100.0]}
+                
+                    # On sauvegarde les valeurs
+                    set ::plug($nbPlug,regulation,erreurNmoins1) $erreurN
+                    set ::plug($nbPlug,regulation,commandeNmoins1) $commande
+                    
+                    # on transforme la commande 
+                    set valeurToPilot [expr int($commande * 100)]
+                
                     # Dimmer case
                     # $valeurToPilot < 0
                     # ie : 0100 < 2800 -  2600
@@ -209,7 +238,36 @@ proc emeteur_regulation {nbPlug plgPrgm} {
                         # On sauvegarde le fait qu'on a une régulation primaire
                         set ::plug($nbPlug,inRegulation) "NONE"
                     
-                } elseif {$::plug($nbPlug,module) == "dimmer"} {
+                } elseif {$::plug($nbPlug,module) == "dimmer"  || $::plug($nbPlug,module) == "BULCKY"} {
+                
+                    # On calcul l'erreur entre la consigne et la valeur mesurée
+                    set erreurN     [expr $valuePrimaire - $plgPrgm]
+                    set erreurN1    $::plug($nbPlug,regulation,erreurNmoins1)
+                    set commandeN1  $::plug($nbPlug,regulation,commandeNmoins1)
+                    set Kp          $::plug($nbPlug,regulation,kp)
+                    set Ki          $::plug($nbPlug,regulation,ki)
+                    set SeuilMin    [format %.2f [expr $::plug($nbPlug,regulation,pourcentMin) / 100.0]]
+                    set SeuilMax    [format %.2f [expr $::plug($nbPlug,regulation,pourcentMax) / 100.0]]
+                    
+                    # On calcul la régulation a appliquer :
+                    # U = Un-1 + Kp * (erreurN - erreurN-1) + Ki * erreurN 
+                    
+                    set commande [ expr $commandeN1 - $Kp * ($erreurN - $erreurN1) - $Ki * $erreurN]
+                    
+                    # On format la commande 
+                    set commande [format %.2f $commande]
+                    
+                    # On seuil la valeur 
+                    if {$commande > [expr $SeuilMax / 100.0]} {set valeurToPilot [expr $SeuilMax / 100.0]}
+                    if {$commande < [expr $SeuilMin / 100.0]} {set valeurToPilot [expr $SeuilMin / 100.0]}
+                
+                    # On sauvegarde les valeurs
+                    set ::plug($nbPlug,regulation,erreurNmoins1) $erreurN
+                    set ::plug($nbPlug,regulation,commandeNmoins1) $commande
+                    
+                    # on transforme la commande 
+                    set valeurToPilot [expr int($commande * 100)]
+                
                     # Dimmer case
                     # If  $valeurToPilot < 0
                     # if {(int)emeteur_regulation_previous_value[uc8_plug] < (($valuePrimaire) - (int)emeteur_regulation_value[uc8_plug])} {

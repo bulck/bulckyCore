@@ -221,6 +221,25 @@ namespace eval ::address {
     set val(49) PCA9685
     # set val(50) PCA9685
     
+    # Adresses pour le module bulcky 
+    # @2000 --> 2030
+    set val(2000) BULCKY
+    set val(2001) BULCKY
+    set val(2002) BULCKY
+    set val(2003) BULCKY
+    
+    # Module 2
+    set val(2010) BULCKY
+    set val(2011) BULCKY
+    set val(2012) BULCKY
+    set val(2013) BULCKY
+
+    # Module 3
+    set val(2020) BULCKY
+    set val(2021) BULCKY
+    set val(2022) BULCKY
+    set val(2023) BULCKY
+    
 }
 
 proc ::address::get_module {address} {

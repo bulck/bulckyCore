@@ -5,6 +5,8 @@ proc plugXX_load {confPath} {
 
         set plugXXFilename [file join $confPath plg "plug[string map {" " "0"} [format %2.f $i]]"]
         
+        set plugXXConfFileName [file join $confPath plg "plug[string map {" " "0"} [format %2.f $i]].xml"]
+        
         # On vérifie la présence du fichier
         if {[file exists $plugXXFilename] != 1} {
             ::piLog::log [clock milliseconds] "info" "File $plugXXFilename does not exists, so stop reading plugXX files"
@@ -35,6 +37,14 @@ proc plugXX_load {confPath} {
             set ::plug($i,calcul,capteur_4) "0"
             set ::plug($i,calcul,capteur_5) "0"
             set ::plug($i,calcul,capteur_6) "0"
+            
+            # On ajoute les variables permettant de faire de la régulation
+            set ::plug($i,regulation,erreurNmoins1) 0
+            set ::plug($i,regulation,commandeNmoins1) 0
+            set ::plug($i,regulation,kp) 0.1
+            set ::plug($i,regulation,ki) 0.01
+            set ::plug($i,regulation,pourcentMin) 20
+            set ::plug($i,regulation,pourcentMax) 100
             
             set fid [open $plugXXFilename r]
             while {[eof $fid] != 1} {
