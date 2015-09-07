@@ -157,6 +157,16 @@ proc messageGestion {message networkhost} {
             }
             
         }
+        "setMode" {
+            set plugNumber  [::piTools::lindexRobust $message 3]
+            set mode        [::piTools::lindexRobust $message 4]
+            
+            set module $::plug($plugNumber,module)
+            
+            ::piLog::log [clock milliseconds] "info" "Asked setRepere : force plug $plugNumber to mode $mode"
+            ::${module}::setMode $plugNumber $mode
+
+        }
         "_getPort" {
             set ::port([::piTools::lindexRobust $message 3]) [::piTools::lindexRobust $message 4]
             ::piLog::log [clock milliseconds] "debug" "getPort response : module [::piTools::lindexRobust $message 3] port [::piTools::lindexRobust $message 4]"

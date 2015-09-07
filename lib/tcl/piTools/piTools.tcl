@@ -49,3 +49,13 @@ proc ::piTools::readArrayElem {arrayVal name defaultValue} {
 
     return $retval
 }
+
+# On attends un peu
+proc ::piTools::waitMoment {timeMS intervalMS} {
+
+    for {set i 0} {$i < [expr $timeMS / $intervalMS]} { incr i} {
+        after $intervalMS
+        update
+    }
+    
+}

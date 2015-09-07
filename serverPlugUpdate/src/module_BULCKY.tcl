@@ -56,9 +56,7 @@ proc ::BULCKY::putC {ComPort commande} {
     # On envoi la commande
     puts $fid "${commande}$register(EOL)"
     flush $fid
-    
-    close $fid
-    
+
     return 0
 }
 
@@ -80,8 +78,6 @@ proc ::BULCKY::getC {ComPort commande} {
     
     # On lit la réponse
     set rawData [read $fid]
-
-    close $fid
     
     return $rawData
 }
@@ -146,6 +142,9 @@ proc ::BULCKY::init {plugList} {
         fconfigure $module_bulcky($ComPort)  -blocking 0 -buffering none -handshake none \
                         -mode 9600,n,8,1 -translation binary -eofchar {}
     
+        # On attend un peu - Il a besoin de 1400ms pour démarrer
+        ::piTools::waitMoment 1800 100
+    
         # On demande l'identificateur unique UUID 
         set id [getC $ComPort $register(UUID)]
         
@@ -205,7 +204,8 @@ proc ::BULCKY::init {plugList} {
                 if {$comid($id,used) == 0} {
                 
                     # Dans ce cas on enregistre temporairement le nom du périphérique 
-                    set module_bulcky($module,peripherique) $comid($id)
+                    set module_bulcky($module,peripherique) $comid($id) 
+                    set module_bulcky($module,UUID)         $id
                     
                     # On indique que l'on utilise 
                     set comid($id,used) 1
@@ -220,7 +220,7 @@ proc ::BULCKY::init {plugList} {
         if {$module_bulcky($module,peripherique) == "NA"} {
             ::piLog::log [clock milliseconds] "error" "::BULCKY::init Not found Bulcky $module ... "
         } else {
-            ::piLog::log [clock milliseconds] "info" "::BULCKY::init  Bulcky $module on port $module_bulcky($module,peripherique) "
+            ::piLog::log [clock milliseconds] "info" "::BULCKY::init  Bulcky $module on port $module_bulcky($module,peripherique) UUID $module_bulcky($module,UUID) "
         }
     }
 }
@@ -236,7 +236,7 @@ proc ::BULCKY::setValue {plugNumber value address} {
     set moduleIndex "NA"
     set plugIndex   "NA"
     # Il faut que la clé existe
-    if {[array get prise_blucky $address] != ""} {
+    if {[array get prise_blucky "$address,plug"] != ""} {
         set moduleIndex $prise_blucky($address,module)
         set plugIndex   $prise_blucky($address,plug)
     }        
@@ -246,6 +246,9 @@ proc ::BULCKY::setValue {plugNumber value address} {
         set errorDuringSend 1
         return $errorDuringSend
     }
+    
+    if {$value == "on"} {set value 100}
+    if {$value == "off"} {set value 0}
     
     # On vérifie que le module a bien un adaptateur connecté
     if {$module_bulcky($moduleIndex,peripherique) == "NA"} {
@@ -264,6 +267,56 @@ proc ::BULCKY::setValue {plugNumber value address} {
         set errorDuringSend 1
     } else {
         ::piLog::log [clock milliseconds] "info" "::BULCKY::setValue $moduleIndex to $register(DIMMER,$plugIndex,PERCENT)$value OK"
+    }
+    
+    return $errorDuringSend
+
+}
+
+proc ::BULCKY::setMode {plugNumber mode} {
+    variable module_bulcky
+    variable prise_blucky
+    variable register
+
+    set errorDuringSend 0
+    
+    set address $::plug($plugNumber,adress)
+    
+    # On cherche le nom du module correspondant
+    set moduleIndex "NA"
+    set plugIndex   "NA"
+    # Il faut que la clé existe
+    if {[array get prise_blucky "$address,plug"] != ""} {
+        set moduleIndex $prise_blucky($address,module)
+        set plugIndex   $prise_blucky($address,plug)
+    }        
+    
+    if {$moduleIndex == "NA"} {
+        ::piLog::log [clock milliseconds] "error" "::BULCKY::setMode Address $address does not exists "
+        set errorDuringSend 1
+        return $errorDuringSend
+    }
+
+    # On traduit les modes 
+    if {$mode == "phase"} {set mode 1}
+    if {$mode == "cycle"} {set mode 0}
+    
+    # On vérifie que le module a bien un adaptateur connecté
+    if {$module_bulcky($moduleIndex,peripherique) == "NA"} {
+        ::piLog::log [clock milliseconds] "error" "::BULCKY::setMode Module $moduleIndex is not found "
+        set errorDuringSend 1
+        return $errorDuringSend
+    }
+
+    # On pilote le registre de sortie
+    set RC [catch {
+        putC $module_bulcky($moduleIndex,peripherique) "$register(DIMMER,$plugIndex,MODE)$mode"
+    } msg]
+    if {$RC != 0} {
+        ::piLog::log [clock milliseconds] "error" "::BULCKY::setMode Module $moduleIndex does not respond :$msg "
+        set errorDuringSend 1
+    } else {
+        ::piLog::log [clock milliseconds] "info" "::BULCKY::setMode $moduleIndex to $register(DIMMER,$plugIndex,MODE)$mode OK"
     }
     
     return $errorDuringSend
