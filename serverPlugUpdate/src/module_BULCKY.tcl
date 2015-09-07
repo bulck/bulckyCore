@@ -100,8 +100,8 @@ proc ::BULCKY::init {plugList} {
     
     # On recherche les périphérique USB branché
     set ListCom {}
-    switch -- $::tcl_platform(os) {
-        "Windows NT" {
+    switch [string tolower $::tcl_platform(os)] {
+        "windows nt" {
             catch {
                 package require registry
                 set serial_base [join {
