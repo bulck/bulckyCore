@@ -98,6 +98,13 @@ proc plugXX_load {confPath} {
                 }
             }
             close $fid
+
+            if {[file exists $plugXXConfFileName]} {
+                array set module_bulcky [::piXML::convertXMLToArray $plugXXConfFileName]
+            } else {
+                ::piLog::log [clock milliseconds] "info" "::plugXX_load  No XML conf file named [file tail $plugXXConfFileName]"
+            }
+            
             
             # On affiche les caractéristiques des prises
             ::piLog::log [clock milliseconds] "info" "Plug $i - REG,type: $::plug($i,REG,type) - REG,sens: $::plug($i,REG,sens) - REG,precision: $::plug($i,REG,precision)"

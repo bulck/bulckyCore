@@ -118,10 +118,8 @@ proc ::BULCKY::init {plugList} {
         linux {
             set ListCom [glob -nocomplain {/dev/ttyS[0-9]} {/dev/ttyUSB[0-9]}]
         }
+        openbsd -
         netbsd {
-            set ListCom [glob -nocomplain {/dev/tty0[0-9]} {/dev/ttyU[0-9]}]
-        }
-        openbsd {
             set ListCom [glob -nocomplain {/dev/tty0[0-9]} {/dev/ttyU[0-9]}]
         }
         freebsd {
