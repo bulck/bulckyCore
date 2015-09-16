@@ -19,6 +19,7 @@ source [file join $rootDir ${::moduleLocalName} src serveurMessage.tcl]
 source [file join $rootDir ${::moduleLocalName} src module_checkPing.tcl]
 source [file join $rootDir ${::moduleLocalName} src module_report.tcl]
 source [file join $rootDir ${::moduleLocalName} src module_checkSensor.tcl]
+source [file join $rootDir ${::moduleLocalName} src module_sendInfos.tcl]
 
 # Initialisation d'un compteur pour les commandes externes envoyées
 set TrameIndex 0
@@ -92,7 +93,7 @@ foreach confFileName [glob -nocomplain -directory [file dirname $confXML] *.xml]
 }
 
 # On lance le process d'envoi des infos 
-checkSensor::start "nop"
+sendInfos::start "nop"
 
 vwait forever
 

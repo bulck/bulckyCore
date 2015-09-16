@@ -17,9 +17,11 @@ proc sendInfos::start {arrayIn} {
         $processID,localIP     "0" \
         $processID,localMAC    "0" \
     ]
-    
+
+    ::piLog::log [clock milliseconds] "info" "sendInfos::start !"
+        
     # On démarre la boucle de vérification
-    set XMLprocess($processID,IDAfter) [after 1000 [list ::checkSensor::check $processID]]
+    set XMLprocess($processID,IDAfter) [after 1000 [list ::sendInfos::check $processID]]
     
     incr processID
 }
@@ -190,9 +192,9 @@ proc sendInfos::check {processID} {
     # On vient lire l'adresse IP et l'adresse MAC
     set newIP [sendInfos::getIP]
     set mac   [sendInfos::getMac]
-   
+    
     # Si l'adresse IP est différente, on envoit l'information
-    if {$newIP != $localIP} {
+    if {$newIP != $XMLprocess($processID,localIP)} {
         ::piLog::log [clock milliseconds] "info" "sendInfos::check send new IP to send"
         
         set url {http://my.bulck.fr/cpi_register.php}

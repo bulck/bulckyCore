@@ -34,7 +34,7 @@ proc checkPing::start {arrayIn} {
 
     ::piLog::log [clock milliseconds] "info" "checkPing::start ipList : $adressIP($processID) , timeMax : $timeMax($processID) , action $action($processID)"
     
-    ::checkPing::check $processID
+    set IDAfter($processID) [after 1000 ::checkPing::check $processID]
     
     incr processID
 }
