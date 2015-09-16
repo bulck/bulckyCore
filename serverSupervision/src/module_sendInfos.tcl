@@ -40,11 +40,19 @@ proc sendInfos::stop {} {
 
 proc sendInfos::getIP {} {
 
-    # find out localhost's IP address
-    # courtesy David Gravereaux, Heribert Dahms
-    set TheServer [socket -server none -myaddr [info hostname] 0]
-    set MyIP [lindex [fconfigure $TheServer -sockname] 0]
-    close $TheServer
+    if { $::tcl_platform(platform) eq "windows" } {
+        # find out localhost's IP address
+        # courtesy David Gravereaux, Heribert Dahms
+        set TheServer [socket -server none -myaddr [info hostname] 0]
+        set MyIP [lindex [fconfigure $TheServer -sockname] 0]
+        close $TheServer
+    } else {
+        # Linux
+        # On récupère l'adresse IP ethernet 
+        set MyIP [exec hostname -I]
+    }
+
+
 
     return $MyIP
 
