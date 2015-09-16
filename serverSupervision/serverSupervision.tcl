@@ -91,6 +91,9 @@ foreach confFileName [glob -nocomplain -directory [file dirname $confXML] *.xml]
 
 }
 
+# On lance le process d'envoi des infos 
+checkSensor::start "nop"
+
 vwait forever
 
 # tclsh "D:\CBX\cultipiCore\serverSupervision\serverSupervision.tcl" "D:\CBX\cultipiCore\serverSupervision\confExample\conf.xml"
