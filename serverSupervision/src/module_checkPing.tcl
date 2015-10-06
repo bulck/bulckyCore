@@ -65,10 +65,12 @@ proc checkPing::check {processID} {
     set errorsFind 0
     
     foreach IP $adressIP($processID) {
-        if {[catch {exec ping $IP -n 1} result]} {
+    # Pour windows exec ping $IP -n 1
+        if {[catch {exec ping $IP -c 1} result]} {
             set result 0
         } 
-        if { [regexp "0% loss"  $result]} {
+        # Pour windows "0% loss"
+        if { [regexp "0% packet loss"  $result]} {
             set nbEchec($processID,$IP) 0
             ::piLog::log [clock milliseconds] "debug" "checkPing::check Check $IP OK"
         } else {
