@@ -75,7 +75,7 @@ proc checkPing::check {processID} {
             ::piLog::log [clock milliseconds] "debug" "checkPing::check Check $IP OK"
         } else {
             set nbEchec($processID,$IP) [expr $nbEchec($processID,$IP) + 1]
-            ::piLog::log [clock milliseconds] "info" "checkPing::check Check $IP Fail"
+            ::piLog::log [clock milliseconds] "info" "checkPing::check Check $IP Fail (nb echec : $)"
             set errorsFind 1
         }
         update
