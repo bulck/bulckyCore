@@ -1,6 +1,36 @@
 #!/usr/bin/env python
 
-import socket, threading
+# Load lib
+import socket, threading, sys, os
+
+# Lecture des arguments : seul le path du fichier XML est donné en argument
+confXML = sys.argv[1]
+
+moduleLocalName = "serverAcqSensorUSB"
+
+# Chargement des librairies
+libPath = os.path.join(os.path.dirname(os.path.dirname(os.path.realpath(__file__))),"lib","py")
+sys.path.append(os.path.join(libPath,"piServer"))
+from piServer import *
+sys.path.append(os.path.join(libPath,"piLog"))
+from piLog import *
+sys.path.append(os.path.join(libPath,"piTools"))
+from piTools import *
+
+# On initialise la conf XML
+class configXML :
+    verbose = "debug"
+
+# Chargement de la conf XML
+
+# On initialise la connexion avec le server de log
+lg = piLog()
+lg.openLog(piServer.serverLog, moduleLocalName, configXML.verbose)
+lg.log(clock_milliseconds(), "info", "starting " + moduleLocalName + " - PID : " + str(os.getpid()))
+lg.log(clock_milliseconds(), "info", "port " + moduleLocalName + " : ") #$::piServer::portNumber(${::moduleLocalName})"
+lg.log(clock_milliseconds(), "info", "confXML : ") #$confXML")
+
+# Load server
 
 class ClientThread(threading.Thread):
 
@@ -38,3 +68,5 @@ while True:
     #pass clientsock to the ClientThread thread object being created
     newthread = ClientThread(ip, port, clientsock)
     newthread.start()
+    
+# py "D:\CBX\cultipiCore\serverAcqSensorUSB\serverAcqSensorUSB.py" "D:\CBX\cultipiCore\serverAcqSensorUSB\confExample\conf.xml"
