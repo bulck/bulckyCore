@@ -1,4 +1,5 @@
 import socket
+from time import gmtime, strftime, localtime
 
 class piLog:
 
@@ -22,41 +23,27 @@ class piLog:
         try:
             self.channel.connect(("localhost", 6028))
         except Exception: 
-            outputType = "puts"
+            self.outputType = "puts"
             return 0
             pass
 
-    # # Ouverture du socket
-    # set rc [catch { set channel [socket $host $port] } msg]
-    
-    # # S'il y a une erreur lors de l'ouverture du socket
-    # if {$rc = 1} {
-        # puts $msg
-        # set outputType puts
-        # return $msg
-    # }
-        
     def openLogAs(self, type):
         self.outputType = type
     
     def closeLog(self):
         self.channel.close()
 
-    def log(self, time, traceType, trace):
+    def log(self, timeMS, traceType, trace):
 
         if self.outputType == "none":
             return 0
 
         if self.outputType == "puts":
             TimeComputed = ""
-            try:
-                # set TimeComputed "[clock format [expr $time / 1000] -format "%d/%m/%Y %H:%M:%S."][expr $time % 1000]"
-                test = 4
-            except Exception: 
-                pass
+            TimeComputed =  strftime("%d/%m/%Y %H:%M:%S", time.localtime(timeMS / 1000)) + str(timeMS % 1000)
             StringToWrite = TimeComputed + "\t" + self.module + "\t" + traceType + "\t" + trace
         else:
-            StringToWrite  = "<" + str(time) + "><" + self.module + "><" + traceType + "><" + trace + ">"
+            StringToWrite  = "<" + str(timeMS) + "><" + self.module + "><" + traceType + "><" + trace + ">"
 
         # # En fonction du niveau de trace demandé, on envoi ou pas
         toSend = 0
@@ -76,7 +63,7 @@ class piLog:
             if traceType == "error_critic":
                 toSend = 1
         else:
-            StringToWrite = "<" + str(time) + "><" + self.module + "><error><trace level not good : " + trace + ">"
+            StringToWrite = "<" + str(timeMS) + "><" + self.module + "><error><trace level not good : " + trace + ">"
             toSend = 1
 
         if self.outputType == "puts" and toSend == 1:
@@ -110,8 +97,8 @@ class piLog:
                 try:
                     # set TimeComputed "[clock format [expr $time / 1000] -format "%d/%m/%Y %H:%M:%S."][expr $time % 1000]"
                     self.channel.send(bytes(StringToWrite, 'UTF-8'))
-                except Exception: 
-                    return e
+                except Exception as detail: 
+                    return detail
                     pass
 
     
