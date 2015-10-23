@@ -21,7 +21,7 @@ class piLog:
         # Ouverture du socket
         self.channel = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         try:
-            self.channel.connect(("localhost", 6028))
+            self.channel.connect(("localhost", self.port))
         except Exception: 
             self.outputType = "puts"
             return 0
@@ -40,7 +40,11 @@ class piLog:
 
         if self.outputType == "puts":
             TimeComputed = ""
-            TimeComputed =  strftime("%d/%m/%Y %H:%M:%S", time.localtime(timeMS / 1000)) + str(timeMS % 1000)
+            try:
+                TimeComputed =  strftime("%d/%m/%Y %H:%M:%S.", localtime(timeMS / 1000)) + str(timeMS % 1000)
+            except Exception as detail: 
+                print("Error during time conversion : " + detail)
+                pass
             StringToWrite = TimeComputed + "\t" + self.module + "\t" + traceType + "\t" + trace
         else:
             StringToWrite  = "<" + str(timeMS) + "><" + self.module + "><" + traceType + "><" + trace + ">"
