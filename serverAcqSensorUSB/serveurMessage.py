@@ -1,6 +1,10 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
 import os
 from piTools import *
 from piLog import *
+from piServer import *
 
 class messageGestion:
 
@@ -16,7 +20,7 @@ class messageGestion:
     
     def parseMsg(self, message, networkhost):
         # Trame standard : [FROM] [INDEX] [commande] [argument]
-        messageList = message.split(' ', 3) 
+        messageList = message.split(' ') 
         
         serverForResponse  = messageList[0]
         indexForResponse   = messageList[1]
@@ -28,9 +32,31 @@ class messageGestion:
             self.lg.log(clock_milliseconds(), "info", "Asked stop")
             os._exit(0)
         elif commande == "pid" :
+            # On initialise l'objet
+            piSrv = piServer()
+            
+            # On envoi la commande
+            piSrv.sendToServer(serverForResponse, str(os.getpid()), networkhost)
+            
         elif commande == "reloadXML" :
+            piSrv.sendToServer(serverForResponse, str(os.getpid()), networkhost)
         elif commande == "getRepere" :
+        
+            self.lg.log(clock_milliseconds(), "debug", "parseMsg Asked getRepere : " + message)
+            
+            for index in range(3, len(messageList))
+                self.lg.log(clock_milliseconds(), "debug", "parseMsg Asked variable : " + messageList[index])
+                if messageList[index].find("sensor(") != -1 :
+                    # On demande la valeur d'un capteur 
+                    msgSplitted = messageList[index].replace('(',' ').replace(')',' ').replace(',',' ').split()
+                    
+                    sensorIndex = msgSplitted[0]
+                    
+                    
+        
+            piSrv.sendToServer(serverForResponse, str(os.getpid()), networkhost)
         elif commande == "setRepere" :
+            piSrv.sendToServer(serverForResponse, str(os.getpid()), networkhost)
         else:
             self.lg.log(clock_milliseconds(), "error", "Command" + commande + "non reconnue")
 

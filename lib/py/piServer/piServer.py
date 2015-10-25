@@ -1,4 +1,6 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
 import socket, threading
 from piLog import *
 from piTools import *
@@ -59,6 +61,21 @@ class piServer():
             newthread.start()
         except Exception: 
             pass
+            
+    def sendToServer(portNumber, message, ip="localhost"):
+    
+        # Création de la connection
+        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
+        # Connexion vers le serveur
+        s.connect((ip, portNumber))
+
+        # Envoi de la donnée
+        s.send(bytes(message, 'UTF-8'))
+
+        # Fermeture de la connexion
+        s.close()
+        
 
 
 class ClientThread(threading.Thread):

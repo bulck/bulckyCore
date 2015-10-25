@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
 
 # Load lib
 import socket, threading, sys, os
@@ -9,10 +10,9 @@ confXML = sys.argv[1]
 moduleLocalName = "serverAcqSensorUSB"
 
 # Chargement des librairies
-libPath = os.path.join(os.path.dirname(os.path.dirname(os.path.realpath(__file__))),"lib","py")
-sys.path.append(os.path.join(libPath,"piServer"))
-sys.path.append(os.path.join(libPath,"piLog"))
-sys.path.append(os.path.join(libPath,"piTools"))
+sys.path.append(os.path.join(os.path.dirname(os.path.dirname(os.path.realpath(__file__))),"lib","py"))
+import piFramework
+import sensor
 from piServer import *
 from piLog import *
 from piTools import *
@@ -39,11 +39,27 @@ lg.log(clock_milliseconds(), "info", "starting serveur")
 
 piServ = piServer( moduleLocalName, configXML.verbose, "0.0.0.0", piServer.serverAcqSensorUSB)
 
+ssor = sensor.sensor(moduleLocalName, configXML.verbose, piServer.serverLog)
 
+readIsDone = 0
 while True:
 
     # On écoute si un client veut se connecter
     piServ.listen()
 
+    # Toute les 5 secondes on vient lire les différents capteurs
+    time.sleep(0.01)
     
-# py "D:\CBX\cultipiCore\serverAcqSensorUSB\serverAcqSensorUSB.py" "D:\CBX\cultipiCore\serverAcqSensorUSB\confExample\conf.xml"
+    epoch_time = int(time.time())
+
+    if epoch_time % 5 == 0:
+        if readIsDone == 0 :
+            ssor.readSensor(0)
+            print(str(ssor.getTemp(0)))
+            readIsDone = 1
+    else:
+        readIsDone = 0
+    
+    
+    
+# C:\Python34\python.exe "D:\CBX\cultipiCore\serverAcqSensorUSB\serverAcqSensorUSB.py" "D:\CBX\cultipiCore\serverAcqSensorUSB\confExample\conf.xml"
