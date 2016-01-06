@@ -92,4 +92,4 @@ proc stopIt {} {
 
 vwait forever
 
-# tclsh "D:\CBX\cultipiCore\serverHisto\serverHisto.tcl" "D:\CBX\cultipiCore\serverHisto\confExample\conf.xml"
+# tclsh "D:\CBX\06_bulckyCore\serverHisto\serverHisto.tcl" "D:\CBX\06_bulckyCore\serverHisto\confExample\conf.xml"

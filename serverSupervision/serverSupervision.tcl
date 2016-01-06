@@ -97,5 +97,5 @@ sendInfos::start "nop"
 
 vwait forever
 
-# tclsh "D:\CBX\cultipiCore\serverSupervision\serverSupervision.tcl" "D:\CBX\cultipiCore\serverSupervision\confExample\conf.xml"
+# tclsh "D:\CBX\06_bulckyCore\serverSupervision\serverSupervision.tcl" "D:\CBX\06_bulckyCore\serverSupervision\confExample\conf.xml"
 # tclsh /opt/cultipi/serverSupervision/serverSupervision.tcl /etc/cultipi/01_defaultConf_RPi/./serverSupervision/conf.xml

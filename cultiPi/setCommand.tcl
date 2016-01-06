@@ -24,10 +24,10 @@ set adresseIP [lindex $argv 1]
 
 
 # tclsh /opt/cultipi/cultiPi/setCommand.tcl serverPlugUpdate localhost setRepere 1 on 10
-# tclsh "D:\CBX\cultipiCore\cultiPi\setCommand.tcl" serverPlugUpdate localhost setRepere 1 on 10
+# tclsh "D:\CBX\06_bulckyCore\cultiPi\setCommand.tcl" serverPlugUpdate localhost setRepere 1 on 10
 # tclsh /opt/cultipi/cultiPi/setCommand.tcl serverMail localhost sendMail info@greenbox-botanic.com "Essai 2 " "Corps du message et contenu"
-# tclsh "D:\CBX\cultipiCore\cultiPi\setCommand.tcl" serverMail localhost sendMail gl@greenbox-botanic.com "Essai 2 " "Corps du message et contenu"
-# tclsh "D:\CBX\cultipiCore\cultiPi/setCommand.tcl" serverIrrigation localhost stop
-# tclsh "D:\CBX\cultipiCore\cultiPi/setCommand.tcl" serverIrrigation localhost fillCuve
+# tclsh "D:\CBX\06_bulckyCore\cultiPi\setCommand.tcl" serverMail localhost sendMail gl@greenbox-botanic.com "Essai 2 " "Corps du message et contenu"
+# tclsh "D:\CBX\06_bulckyCore\cultiPi/setCommand.tcl" serverIrrigation localhost stop
+# tclsh "D:\CBX\06_bulckyCore\cultiPi/setCommand.tcl" serverIrrigation localhost fillCuve
 # tclsh /opt/cultipi/cultiPi/setCommand.tcl serverMail localhost sendMail info@cultibox.fr test Body
 # tclsh /opt/cultipi/cultiPi/getCommand.tcl serverIrrigation localhost gsetRepere "::regulationActivePlateforme(2)" false

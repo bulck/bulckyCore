@@ -30,5 +30,5 @@ send:data $channel "NA 0 stop"
 # fermeture connexion
 close $channel
 puts "CultiPi is stopped"
-# tclsh "D:\CBX\cultipiCore\cultiPi\cultiPistop.tcl" 
+# tclsh "D:\CBX\06_bulckyCore\cultiPi\cultiPistop.tcl" 
 # tclsh /opt/cultipi/cultiPi/cultiPistop.tcl

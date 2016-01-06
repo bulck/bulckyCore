@@ -85,5 +85,5 @@ if {$errorList == ""} {
     exit 1
 }
 
-# tclsh D:\CBX\cultipiCore\_verif\01_test\testListe.tcl
-# tclsh D:\CBX\cultipiCore\_verif\01_test\testListe.tcl 03_serverIrrigation
+# tclsh D:\CBX\06_bulckyCore\_verif\01_test\testListe.tcl
+# tclsh D:\CBX\06_bulckyCore\_verif\01_test\testListe.tcl 03_serverIrrigation

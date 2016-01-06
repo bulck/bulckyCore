@@ -365,5 +365,5 @@ readSensors
 vwait forever
 
 # tclsh /opt/cultipi/serverAcqSensor/serverAcqSensor.tcl /etc/cultipi/01_defaultConf_RPi/serverAcqSensor/conf.xml
-# tclsh "D:\CBX\cultipiCore\serverAcqSensor\serverAcqSensor.tcl" "D:\CBX\cultipiCore\serverAcqSensor\confExample\conf.xml"
-# tclsh "D:\CBX\cultipiCore\serverAcqSensor\serverAcqSensor.tcl" "D:\CBX\cultipiCore\serverAcqSensor\confExample\conf_irrigation.xml"
+# tclsh "D:\CBX\06_bulckyCore\serverAcqSensor\serverAcqSensor.tcl" "D:\CBX\06_bulckyCore\serverAcqSensor\confExample\conf.xml"
+# tclsh "D:\CBX\06_bulckyCore\serverAcqSensor\serverAcqSensor.tcl" "D:\CBX\06_bulckyCore\serverAcqSensor\confExample\conf_irrigation.xml"

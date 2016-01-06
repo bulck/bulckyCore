@@ -119,4 +119,4 @@ proc ::01_demarrage_individuel::end {} {
 }
 
 
-# tclsh D:\CBX\cultipiCore\_verif\01_test\testListe.tcl
+# tclsh D:\CBX\06_bulckyCore\_verif\01_test\testListe.tcl

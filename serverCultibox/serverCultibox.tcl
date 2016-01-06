@@ -163,5 +163,5 @@ updateHour
 
 vwait forever
 
-# tclsh "D:\CBX\cultipiCore\serverCultibox\serverCultibox.tcl" 6004 "C:\cultibox\04_CultiPi\02_conf\00_defaultConf_Win\serverCultibox\conf.xml" 6003 6000
+# tclsh "D:\CBX\06_bulckyCore\serverCultibox\serverCultibox.tcl" 6004 "C:\cultibox\04_CultiPi\02_conf\00_defaultConf_Win\serverCultibox\conf.xml" 6003 6000
 # tclsh /opt/cultipi/serverCultibox/serverCultibox.tcl 6004 /etc/cultipi/01_defaultConf_RPi/./serverCultibox/conf.xml 6003 6000

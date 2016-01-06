@@ -109,6 +109,6 @@ proc send_email {to subject body} {
 
 vwait forever
 
-# tclsh "D:\CBX\cultipiCore\serverMail\serverMail.tcl" "D:\CBX\cultipiCore\serverMail\confExample\conf.xml"
-# tclsh "D:\CBX\cultipiCore\serverMail\serverMail.tcl" "D:\CBX\cultipiCore\serverMail\confExample\conf_gl_26.xml"
+# tclsh "D:\CBX\06_bulckyCore\serverMail\serverMail.tcl" "D:\CBX\06_bulckyCore\serverMail\confExample\conf.xml"
+# tclsh "D:\CBX\06_bulckyCore\serverMail\serverMail.tcl" "D:\CBX\06_bulckyCore\serverMail\confExample\conf_gl_26.xml"
 # tclsh /opt/cultipi/serverMail/serverMail.tcl /etc/cultipi/01_defaultConf_RPi/./serverMail/conf.xml

@@ -200,4 +200,4 @@ foreach element [lsort [array names configXML]] {
 vwait forever
 
 # tclsh "C:\cultibox\04_CultiPi\01_Software\01_cultiPi\serverLog\serverLog.tcl" 6000 "C:\cultibox\04_CultiPi"
-# tclsh D:\CBX\cultipiCore\serverLog\serverLog.tcl
+# tclsh D:\CBX\06_bulckyCore\serverLog\serverLog.tcl

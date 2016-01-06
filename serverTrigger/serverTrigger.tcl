@@ -167,5 +167,5 @@ update
 vwait forever
 
 # Lancement 
-# tclsh D:\CBX\cultipiCore\serverTrigger\serverTrigger.tcl" "D:\CBX\cultipiCore\serverTrigger\confExample\conf.xml" 
+# tclsh D:\CBX\06_bulckyCore\serverTrigger\serverTrigger.tcl" "D:\CBX\06_bulckyCore\serverTrigger\confExample\conf.xml" 
 # tclsh /home/sdf/Bureau/cultipiCore/serverIrrigation/serverIrrigation.tcl "/home/sdf/Bureau/cultipiCore/serverIrrigation/confExample/conf.xml" 

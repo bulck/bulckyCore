@@ -250,6 +250,6 @@ autoRemplissage
 vwait forever
 
 # Lancement 
-# tclsh "D:\CBX\cultipiCore\serverIrrigation\serverIrrigation.tcl" "D:\CBX\cultipiCore\serverIrrigation\confExample\conf.xml" 
+# tclsh "D:\CBX\06_bulckyCore\serverIrrigation\serverIrrigation.tcl" "D:\CBX\06_bulckyCore\serverIrrigation\confExample\conf.xml" 
 # tclsh /home/sdf/Bureau/cultipiCore/serverIrrigation/serverIrrigation.tcl "/home/sdf/Bureau/cultipiCore/serverIrrigation/confExample/conf.xml" 
 # tclsh /opt/cultipi/serverIrrigation/serverIrrigation.tcl /etc/cultipi/01_defaultConf_RPi/serverIrrigation/conf.xml
