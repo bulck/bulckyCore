@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<conf>
+    <item key="verbose" level="debug" />
+    <item key="surpresseur,ip" value="localhost" />
+    <item key="surpresseur,prise" value="17" />
+    <item key="nbzone" value="2" />
+    <item key="nettoyage" value="100" />
+    <item key="zone,0,name" value="ZONE Sud Est" />
+    <item key="zone,0,ip" value="localhost" />
+    <item key="zone,0,engrais,1,temps" value="3" />
+    <item key="zone,0,engrais,1,actif" value="false" />
+    <item key="zone,0,engrais,1,prise" value="14" />
+    <item key="zone,0,engrais,2,temps" value="3" />
+    <item key="zone,0,engrais,2,actif" value="true" />
+    <item key="zone,0,engrais,2,prise" value="15" />
+    <item key="zone,0,engrais,3,temps" value="3" />
+    <item key="zone,0,engrais,3,actif" value="true" />
+    <item key="zone,0,engrais,3,prise" value="16" />
+    <item key="plateforme,0,name" value="PF Est" />
+    <item key="plateforme,0,ip" value="localhost" />
+    <item key="plateforme,0,nbligne" value="2" />
+    <item key="plateforme,0,tempscycle" value="240" />
+    <item key="plateforme,0,pompe,prise" value="12" />
+    <item key="plateforme,0,eauclaire,prise" value="10" />
+    <item key="plateforme,0,boutonarret,prise" value="2" />
+    <item key="plateforme,0,afficheurarret,prise" value="2" />
+    <item key="plateforme,0,ligne,0,name" value="Ligne 1" />
+    <item key="plateforme,0,ligne,0,prise" value="6" />
+    <item key="plateforme,0,ligne,0,tempsOn,matin" value="111" />
+    <item key="plateforme,0,ligne,0,tempsOn,apresmidi" value="105" />
+    <item key="plateforme,0,ligne,0,tempsOn,nuit" value="114" />
+    <item key="plateforme,0,ligne,0,active" value="true" />
+    <item key="plateforme,0,ligne,0,nbCycle" value="0" />
+    <item key="plateforme,0,ligne,1,name" value="Ligne 2" />
+    <item key="plateforme,0,ligne,1,prise" value="7" />
+    <item key="plateforme,0,ligne,1,tempsOn,matin" value="96" />
+    <item key="plateforme,0,ligne,1,tempsOn,apresmidi" value="105" />
+    <item key="plateforme,0,ligne,1,tempsOn,nuit" value="114" />
+    <item key="plateforme,0,ligne,1,active" value="true" />
+    <item key="plateforme,0,ligne,1,nbCycle" value="1" />
+    <item key="plateforme,1,name" value="PF Sud" />
+    <item key="plateforme,1,ip" value="localhost" />
+    <item key="plateforme,1,nbligne" value="3" />
+    <item key="plateforme,1,tempscycle" value="240" />
+    <item key="plateforme,1,pompe,prise" value="12" />
+    <item key="plateforme,1,eauclaire,prise" value="10" />
+    <item key="plateforme,1,boutonarret,prise" value="2" />
+    <item key="plateforme,1,afficheurarret,prise" value="2" />
+    <item key="plateforme,1,ligne,0,name" value="Ligne 3" />
+    <item key="plateforme,1,ligne,0,prise" value="3" />
+    <item key="plateforme,1,ligne,0,tempsOn,matin" value="96" />
+    <item key="plateforme,1,ligne,0,tempsOn,apresmidi" value="105" />
+    <item key="plateforme,1,ligne,0,tempsOn,nuit" value="114" />
+    <item key="plateforme,1,ligne,0,active" value="true" />
+    <item key="plateforme,1,ligne,0,nbCycle" value="4" />
+    <item key="plateforme,1,ligne,1,name" value="Ligne 4" />
+    <item key="plateforme,1,ligne,1,prise" value="4" />
+    <item key="plateforme,1,ligne,1,tempsOn,matin" value="96" />
+    <item key="plateforme,1,ligne,1,tempsOn,apresmidi" value="105" />
+    <item key="plateforme,1,ligne,1,tempsOn,nuit" value="114" />
+    <item key="plateforme,1,ligne,1,active" value="true" />
+    <item key="plateforme,1,ligne,1,nbCycle" value="5" />
+    <item key="plateforme,1,ligne,2,name" value="Ligne 5" />
+    <item key="plateforme,1,ligne,2,prise" value="5" />
+    <item key="plateforme,1,ligne,2,tempsOn,matin" value="96" />
+    <item key="plateforme,1,ligne,2,tempsOn,apresmidi" value="105" />
+    <item key="plateforme,1,ligne,2,tempsOn,nuit" value="114" />
+    <item key="plateforme,1,ligne,2,active" value="true" />
+    <item key="plateforme,1,ligne,2,nbCycle" value="6" />
+    <item key="zone,1,name" value="ZONE Nord Ouest" />
+    <item key="zone,1,ip" value="localhost" />
+    <item key="zone,1,engrais,1,temps" value="7" />
+    <item key="zone,1,engrais,1,actif" value="true" />
+    <item key="zone,1,engrais,1,prise" value="3" />
+    <item key="zone,1,engrais,2,temps" value="5" />
+    <item key="zone,1,engrais,2,actif" value="true" />
+    <item key="zone,1,engrais,2,prise" value="3" />
+    <item key="zone,1,engrais,3,temps" value="4" />
+    <item key="zone,1,engrais,3,actif" value="true" />
+    <item key="zone,1,engrais,3,prise" value="3" />
+    <item key="plateforme,2,name" value="PF Nord" />
+    <item key="plateforme,2,ip" value="localhost" />
+    <item key="plateforme,2,nbligne" value="2" />
+    <item key="plateforme,2,tempscycle" value="240" />
+    <item key="plateforme,2,pompe,prise" value="12" />
+    <item key="plateforme,2,eauclaire,prise" value="10" />
+    <item key="plateforme,2,boutonarret,prise" value="2" />
+    <item key="plateforme,2,afficheurarret,prise" value="2" />
+    <item key="plateforme,2,ligne,0,name" value="Ligne 10" />
+    <item key="plateforme,2,ligne,0,prise" value="3" />
+    <item key="plateforme,2,ligne,0,tempsOn,matin" value="24" />
+    <item key="plateforme,2,ligne,0,tempsOn,apresmidi" value="21" />
+    <item key="plateforme,2,ligne,0,tempsOn,nuit" value="78" />
+    <item key="plateforme,2,ligne,0,active" value="true" />
+    <item key="plateforme,2,ligne,0,nbCycle" value="8" />
+    <item key="plateforme,2,ligne,1,name" value="Ligne 11" />
+    <item key="plateforme,2,ligne,1,prise" value="3" />
+    <item key="plateforme,2,ligne,1,tempsOn,matin" value="36" />
+    <item key="plateforme,2,ligne,1,tempsOn,apresmidi" value="39" />
+    <item key="plateforme,2,ligne,1,tempsOn,nuit" value="120" />
+    <item key="plateforme,2,ligne,1,active" value="true" />
+    <item key="plateforme,2,ligne,1,nbCycle" value="9" />
+    <item key="plateforme,3,name" value="PF Ouest" />
+    <item key="plateforme,3,ip" value="localhost" />
+    <item key="plateforme,3,nbligne" value="4" />
+    <item key="plateforme,3,tempscycle" value="240" />
+    <item key="plateforme,3,pompe,prise" value="12" />
+    <item key="plateforme,3,eauclaire,prise" value="10" />
+    <item key="plateforme,3,boutonarret,prise" value="2" />
+    <item key="plateforme,3,afficheurarret,prise" value="2" />
+    <item key="plateforme,3,ligne,0,name" value="Ligne 6" />
+    <item key="plateforme,3,ligne,0,prise" value="3" />
+    <item key="plateforme,3,ligne,0,tempsOn,matin" value="60" />
+    <item key="plateforme,3,ligne,0,tempsOn,apresmidi" value="57" />
+    <item key="plateforme,3,ligne,0,tempsOn,nuit" value="54" />
+    <item key="plateforme,3,ligne,0,active" value="true" />
+    <item key="plateforme,3,ligne,0,nbCycle" value="12" />
+    <item key="plateforme,3,ligne,1,name" value="Ligne 7" />
+    <item key="plateforme,3,ligne,1,prise" value="3" />
+    <item key="plateforme,3,ligne,1,tempsOn,matin" value="96" />
+    <item key="plateforme,3,ligne,1,tempsOn,apresmidi" value="105" />
+    <item key="plateforme,3,ligne,1,tempsOn,nuit" value="114" />
+    <item key="plateforme,3,ligne,1,active" value="true" />
+    <item key="plateforme,3,ligne,1,nbCycle" value="13" />
+    <item key="plateforme,3,ligne,2,name" value="Ligne 8" />
+    <item key="plateforme,3,ligne,2,prise" value="3" />
+    <item key="plateforme,3,ligne,2,tempsOn,matin" value="96" />
+    <item key="plateforme,3,ligne,2,tempsOn,apresmidi" value="105" />
+    <item key="plateforme,3,ligne,2,tempsOn,nuit" value="114" />
+    <item key="plateforme,3,ligne,2,active" value="true" />
+    <item key="plateforme,3,ligne,2,nbCycle" value="14" />
+    <item key="plateforme,3,ligne,3,name" value="Ligne 9" />
+    <item key="plateforme,3,ligne,3,prise" value="3" />
+    <item key="plateforme,3,ligne,3,tempsOn,matin" value="96" />
+    <item key="plateforme,3,ligne,3,tempsOn,apresmidi" value="105" />
+    <item key="plateforme,3,ligne,3,tempsOn,nuit" value="114" />
+    <item key="plateforme,3,ligne,3,active" value="true" />
+    <item key="plateforme,3,ligne,3,nbCycle" value="15" />
+    <item key="nbplateforme" value="4" />
+</conf>
