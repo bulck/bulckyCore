@@ -121,6 +121,7 @@ proc ::piServer::start {callBackMessageIn portIn} {
     if {$rc == 1} \
     {
         ::piLog::log [clock milliseconds] "error_critic" "::piServer::start erreur exiting msg: $msg"
+        puts "::piServer::start erreur exiting msg: $msg"
         exit
     }
 }

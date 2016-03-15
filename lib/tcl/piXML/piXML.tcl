@@ -119,7 +119,7 @@ proc ::piXML::searchOptionInElement {optionName element} {
 proc ::piXML::convertXMLToArray {XMLFile} {
 
     if {[file exists $XMLFile] != 1} {
-        error "::piXML::convertXMLToArray $XMLFile doesnot exists"
+        error "::piXML::convertXMLToArray file \" $XMLFile \" doesnot exists"
         return 0
     }
     

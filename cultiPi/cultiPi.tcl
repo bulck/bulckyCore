@@ -169,3 +169,4 @@ vwait ::forever
 # Linux start
 # tclsh /home/pi/cultipi/01_Software/01_cultiPi/cultiPi/cultiPi.tcl /home/pi/cultipi/02_conf
 # tclsh /opt/cultipi/cultiPi/cultiPi.tcl /etc/cultipi
+# tclsh /opt/bulckypi/cultiPi/cultiPi.tcl /etc/bulckypi

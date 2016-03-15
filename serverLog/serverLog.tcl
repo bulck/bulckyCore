@@ -19,7 +19,7 @@ set TrameIndex 0
 # On initialise la conf XML
 array set configXML {
     verbose     debug
-    logPath     "/var/log/cultipi"
+    logPath     "/var/log/bulcky"
 }
 
 # Chargement de la conf XML
@@ -37,10 +37,10 @@ if {$RC != 0} {
 #
 # ###############
 
-set logFile "/var/log/cultipi/cultipi.log"
+set logFile "/var/log/bulcky/bulckypi.log"
 
 if {$configXML(logPath) != "" && [file isdirectory $configXML(logPath)]} {
-    set logFile [file join $configXML(logPath) cultipi.log]
+    set logFile [file join $configXML(logPath) bulckypi.log]
 }
 
 set actualDay ""
@@ -201,3 +201,4 @@ vwait forever
 
 # tclsh "C:\cultibox\04_CultiPi\01_Software\01_cultiPi\serverLog\serverLog.tcl" 6000 "C:\cultibox\04_CultiPi"
 # tclsh D:\CBX\06_bulckyCore\serverLog\serverLog.tcl
+# tclsh /opt/bulckypi/serverLog/serverLog.tcl 

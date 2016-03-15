@@ -11,7 +11,7 @@ proc ::sql::query {query} {
     variable pathMySQL
     
     set RC [catch {
-        exec $pathMySQL --user=root --password=cultibox --host=127.0.0.1 --port=3891 cultibox << "$query"
+        exec $pathMySQL --user=root --password=bulcky --host=127.0.0.1 --port=3891 bulcky << "$query"
     } msg] 
 
     set ret [split $msg "\n"]
