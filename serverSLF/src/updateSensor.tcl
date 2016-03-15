@@ -12,10 +12,10 @@ proc updateSensor {zone} {
     
     set capteurNiveau $::configXML(zone,${zone},capteur,niveau)
     lappend listeVariable ::sensor(${capteurNiveau},value)
-    set capteur(${zone},niveau) "" 
+    set ::capteur(${zone},niveau) "" 
     
     for {set i 0} {$i < $::configXML(nbPlateforme)} {incr i} {
-        set capteur(${zone},bouton,${i}) "" 
+        set ::capteur(${zone},bouton,${i}) "" 
     
         set bouton $::configXML(plateforme,$i,boutonarret,prise)
         

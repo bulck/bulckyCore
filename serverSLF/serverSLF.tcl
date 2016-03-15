@@ -4,7 +4,7 @@
 # Lecture des arguments : seul le path du fichier XML est donné en argument
 set confXML                 [lindex $argv 0]
 
-set moduleLocalName serverIrrigation
+set moduleLocalName serverSLF
 
 # Load lib
 set rootDir [file dirname [file dirname [info script]]]
@@ -16,7 +16,8 @@ package require piServer
 package require piTools
 package require piXML
 
-source [file join $rootDir ${::moduleLocalName} src updateCuve.tcl]
+source [file join $rootDir ${::moduleLocalName} src checkbutton.tcl]
+source [file join $rootDir ${::moduleLocalName} src updateSensor.tcl]
 source [file join $rootDir ${::moduleLocalName} src regulCuve.tcl]
 source [file join $rootDir ${::moduleLocalName} src serveurMessage.tcl]
 
@@ -79,14 +80,14 @@ proc reload {} {
 
 }
 
-proc irrigationLoop {indexPlateforme indexLigneIrrigation} {
+proc irrigationLoop {idxZone indexPlateforme indexLigneIrrigation} {
 
     # On récupère les paramètres utiles
-    set plateformeNom       $::configXML(plateforme,${indexPlateforme},name)
-    set IP                  $::configXML(plateforme,${indexPlateforme},ip)
-    set plateformeNbLigne   $::configXML(plateforme,${indexPlateforme},nbligne)
-    set tempscycle          $::configXML(plateforme,${indexPlateforme},tempscycle)
-    set EVEau               $::configXML(plateforme,${indexPlateforme},eauclaire,prise)
+    set plateformeNom       $::configXML(zone,$idxZone,plateforme,${indexPlateforme},name)
+    set IP                  $::configXML(zone,$idxZone,plateforme,${indexPlateforme},ip)
+    set plateformeNbLigne   $::configXML(zone,$idxZone,plateforme,${indexPlateforme},nbligne)
+    set tempscycle          $::configXML(zone,$idxZone,plateforme,${indexPlateforme},tempscycle)
+    set EVEau               $::configXML(zone,$idxZone,plateforme,${indexPlateforme},eauclaire,prise)
     set IPsurpresseur       $::configXML(surpresseur,ip)
     set Prisesurpresseur    $::configXML(surpresseur,prise)
     
@@ -95,15 +96,15 @@ proc irrigationLoop {indexPlateforme indexLigneIrrigation} {
         $indexLigneIrrigation = 0
     }
     
-    set EVLigne             $::configXML(plateforme,${indexPlateforme},ligne,${indexLigneIrrigation},prise)
-    set active              $::configXML(plateforme,${indexPlateforme},ligne,${indexLigneIrrigation},active)
+    set EVLigne             $::configXML(zone,$idxZone,plateforme,${indexPlateforme},ligne,${indexLigneIrrigation},prise)
+    set active              $::configXML(zone,$idxZone,plateforme,${indexPlateforme},ligne,${indexLigneIrrigation},active)
     
     # Utilisé pour faire le nettoyage des gouteurs
-    set nbCycle             $::configXML(plateforme,${indexPlateforme},ligne,${indexLigneIrrigation},nbCycle)
+    set nbCycle             $::configXML(zone,$idxZone,plateforme,${indexPlateforme},ligne,${indexLigneIrrigation},nbCycle)
     if {$nbCycle >= $::configXML(nettoyage)} {
-        set ::configXML(plateforme,${indexPlateforme},ligne,${indexLigneIrrigation},nbCycle) 0
+        set ::configXML(zone,$idxZone,plateforme,${indexPlateforme},ligne,${indexLigneIrrigation},nbCycle) 0
     } else {
-        incr  ::configXML(plateforme,${indexPlateforme},ligne,${indexLigneIrrigation},nbCycle)
+        incr  ::configXML(zone,$idxZone,plateforme,${indexPlateforme},ligne,${indexLigneIrrigation},nbCycle)
     }
     
     # Si on est entre 6h et 22h -> utilisation des temps de jour
@@ -111,13 +112,13 @@ proc irrigationLoop {indexPlateforme indexLigneIrrigation} {
     if {$hour == ""} {set hour 0}
     if {$hour >= 6 && $hour < 14} {
         set JourOuNuit matin
-        set TempsOnEV   $::configXML(plateforme,${indexPlateforme},ligne,${indexLigneIrrigation},tempsOn,matin)
+        set TempsOnEV   $::configXML(zone,$idxZone,plateforme,${indexPlateforme},ligne,${indexLigneIrrigation},tempsOn,matin)
     } elseif {$hour >= 14 && $hour <= 22} {
         set JourOuNuit apres_midi
-        set TempsOnEV   $::configXML(plateforme,${indexPlateforme},ligne,${indexLigneIrrigation},tempsOn,apresmidi)
+        set TempsOnEV   $::configXML(zone,$idxZone,plateforme,${indexPlateforme},ligne,${indexLigneIrrigation},tempsOn,apresmidi)
     } else {
         set JourOuNuit nuit
-        set TempsOnEV   $::configXML(plateforme,${indexPlateforme},ligne,${indexLigneIrrigation},tempsOn,nuit)
+        set TempsOnEV   $::configXML(zone,$idxZone,plateforme,${indexPlateforme},ligne,${indexLigneIrrigation},tempsOn,nuit)
     }
     
     # 4 cas :
@@ -164,7 +165,7 @@ proc irrigationLoop {indexPlateforme indexLigneIrrigation} {
     incr indexLigneIrrigation
 
     # On lance l'iteration suivante 
-    after [expr 1000 * $tempscycle] [list after idle irrigationLoop $indexPlateforme $indexLigneIrrigation]
+    after [expr 1000 * $tempscycle] [list after idle irrigationLoop $idxZone $indexPlateforme $indexLigneIrrigation]
 }
 
 
@@ -175,8 +176,7 @@ proc irrigationLoop {indexPlateforme indexLigneIrrigation} {
 ::piServer::start messageGestion $::piServer::portNumber(${::moduleLocalName})
 
 
-
-# Pour chaque plateforme, on démarre la régulation de la cuve :
+# Pour chaque zone, 
 # Remplissage automatique & chargement d'engrais 
 for {set i 0} {$i < $::configXML(nbzone)} {incr i} {
 
@@ -186,21 +186,19 @@ for {set i 0} {$i < $::configXML(nbzone)} {incr i} {
     # On lance la mise à jour des capteurs
     updateSensor $i
     
+    # on démarre la régulation de la cuve :
     cuveLoop $i
-}
-
-
-# Pour chaque plateforme on démarre l'irrigation
-for {set i 0} {$i < $::configXML(nbplateforme)} {incr i} {
-
-    # *************  Irrigation
-    # On démarre avec un numéro de zone aléatoire
-    irrigationLoop $i [expr int(rand() * $::configXML(plateforme,$i,nbligne))]
-
-}
     
-# On lance la vérification des boutons
-checkbutton
+    # On active l'irrigation 
+    for {set j 0} {$j < $::configXML(zone,$i,nbplateforme)} {incr i} {
+        irrigationLoop $i $j [expr int(rand() * $::configXML(zone,$i,plateforme,$j,nbligne))]
+    }
+    
+    # On vérifie les bouttons
+    checkbutton $i
+    
+}
+
 
 
 vwait forever
