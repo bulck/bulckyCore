@@ -31,13 +31,13 @@ namespace eval ::address {
     # ORP_3     0x1E    0x3C
     # ORP_4     0x1F    0x3E
     # MCP230XX  0x20    0x40
-    # MCP230XX  0x21    0x42
+    # NOT_USED  0x21    0x42
     # MCP230XX  0x22    0x44
-    # NOT_USED  0x23    0x46    (RESERVED FOR MCP230XX)
-    # NOT_USED  0x24    0x48    (RESERVED FOR MCP230XX)
-    # NOT_USED  0x25    0x4A    (RESERVED FOR MCP230XX)
+    # NOT_USED  0x23    0x46
+    # MCP230XX  0x24    0x48    (RESERVED FOR MCP230XX)
+    # NOT_USED  0x25    0x4A
     # NOT_USED  0x26    0x4C    (RESERVED FOR MCP230XX)
-    # NOT_USED  0x27    0x4E    (RESERVED FOR MCP230XX)
+    # NOT_USED  0x27    0x4E
     # ORP_5     0x28    0x50
     # ORP_6     0x29    0x52
     # OD_2      0x2A    0x54
@@ -138,7 +138,7 @@ namespace eval ::address {
     set val(67) MCP230XX
     set val(68) MCP230XX
     
-    # @0x21 cultibox : 0x42
+    # @0x22 cultibox : 0x44
     set val(70) MCP230XX
     set val(71) MCP230XX
     set val(72) MCP230XX
@@ -149,7 +149,7 @@ namespace eval ::address {
     set val(77) MCP230XX
     set val(78) MCP230XX
     
-    # @0x22 cultibox : 0x44
+    # @0x21 cultibox : 0x48
     set val(80) MCP230XX
     set val(81) MCP230XX
     set val(82) MCP230XX

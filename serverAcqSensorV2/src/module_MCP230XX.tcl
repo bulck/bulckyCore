@@ -74,7 +74,8 @@ namespace eval ::MCP230XX {
     set adresse_I2C(2) 0x24
     
     # Définition des registres
-    set register(IODIR)     0x00
+    set register(IODIR1)     0x00
+    set register(IODIR2)     0x00
     set register(IPOL)      0x01
     set register(GPINTEN)   0x02
     set register(DEFVAL)    0x03
@@ -99,47 +100,45 @@ namespace eval ::MCP230XX {
 }
 
 # Cette proc est utilisée pour initialiser les modules
-proc ::MCP230XX::init {plugList} {
+proc ::MCP230XX::init {index} {
     variable adresse_module
+    variable adresse_I2C
     variable register
 
-    # Pour chaque adresse, on cherche le module et on l'initialise
-    foreach plug $plugList {
-    
-        set address $::plug($plug,adress)
-    
-        # On cherche le nom du module correspondant
-        set moduleAdresse "NA"
-        set outputPin "NA"
-        # Il faut que la clé existe
-        if {[array get adresse_module $address] != ""} {
-            set moduleAdresse $adresse_module($address)
-            set outputPin     $adresse_module($address,out)
-        }        
-        
-        if {$moduleAdresse == "NA"} {
-            ::piLog::log [clock milliseconds] "error" "::MCP230XX::init Adress $address does not exists "
-            return
-        }
-        
-        # On vérifie que l module est initialisé
-        if {$register(${moduleAdresse},init_done) == 0} {
-            # On définit chaque pin en sortie
-            # /usr/local/sbin/i2cset -y 1 0x20 0x00 0x00
-            # lecture de l'état des sorties
-            # /usr/local/sbin/i2cget -y 1 0x20 0x00
-            set RC [catch {
-                exec /usr/local/sbin/i2cset -y 1 $moduleAdresse $register(IODIR) 0x00
-            } msg]
-            if {$RC != 0} {
-                ::piLog::log [clock milliseconds] "error" "::MCP230XX::init Module $moduleAdresse does not respond :$msg "
-            } else {
-                ::piLog::log [clock milliseconds] "info" "::MCP230XX::init init IODIR to 0x00 OK"
-                set register(${moduleAdresse},init_done) 1
-            }
-        }
-    
+    set moduleAdresse "NA"
+    if {[array get adresse_I2C $index] != ""} {
+        set moduleAdresse $adresse_I2C($index)
     }
+    
+    if {$moduleAdresse == "NA"} {
+        ::piLog::log [clock milliseconds] "error" "::MCP230XX::init Adress $address does not exists "
+        return
+    }
+    
+    # On vérifie que l module est initialisé
+    if {$register(${moduleAdresse},init_done) == 0} {
+        # On définit chaque pin en entrée
+        # /usr/local/sbin/i2cset -y 1 0x20 0x00 0xff
+        # /usr/local/sbin/i2cset -y 1 0x20 0x01 0xff
+        # lecture de l'état des sorties
+        # /usr/local/sbin/i2cget -y 1 0x20 0x00
+        set RC [catch {
+            exec /usr/local/sbin/i2cset -y 1 $moduleAdresse $register(IODIR1) 0xff
+            exec /usr/local/sbin/i2cset -y 1 $moduleAdresse $register(IODIR2) 0xff
+        } msg]
+        if {$RC != 0} {
+            ::piLog::log [clock milliseconds] "error" "::MCP230XX::init Module $moduleAdresse does not respond :$msg "
+        } else {
+            ::piLog::log [clock milliseconds] "info" "::MCP230XX::init Module $moduleAdresse init IODIR1 & IODIR2 to 0xFF OK"
+            set register(${moduleAdresse},init_done) 1
+        }
+    } else {
+        ::piLog::log [clock milliseconds] "debug" "::MCP230XX::init Module $moduleAdresse already initialized"
+    }
+}
+
+proc ::MCP230XX::read {index} {
+    return "NA"
 }
 
 proc ::MCP230XX::setValue {plugNumber value address} {

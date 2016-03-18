@@ -12,7 +12,7 @@ proc messageGestion {message networkhost} {
 
     switch ${commande} {
         "stop" {
-            ::piLog::log [clock milliseconds] "info" "Demande Arret de Culti Pi"
+            ::piLog::log [clock milliseconds] "info" "Demande Arret de Culti Pi by $serverForResponse"
             stopCultiPi
         }
         "_pid" {
