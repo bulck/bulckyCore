@@ -28,7 +28,7 @@ namespace eval ::piServer {
     set portNumber(serverTrigger)     6026
     
     set portNumber(serverPHP)         6027
-    set portNumber(serverAcqSensorUSB)   6028
+    set portNumber(serverAcqSensorUSB)  6028
     set portNumber(serverAcqSensorV2)   6029
     set portNumber(serverSLF)           6030
     
