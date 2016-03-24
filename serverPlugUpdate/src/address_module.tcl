@@ -31,13 +31,13 @@ namespace eval ::address {
     # ORP_3     0x1E    0x3C
     # ORP_4     0x1F    0x3E
     # MCP230XX  0x20    0x40
-    # NOT_USED  0x21    0x42
+    # MCP230XX  0x21    0x42
     # MCP230XX  0x22    0x44
-    # NOT_USED  0x23    0x46
-    # MCP230XX  0x24    0x48    (RESERVED FOR MCP230XX)
-    # NOT_USED  0x25    0x4A
-    # NOT_USED  0x26    0x4C    (RESERVED FOR MCP230XX)
-    # NOT_USED  0x27    0x4E
+    # MCP230XX  0x23    0x46
+    # MCP230XX  0x24    0x48
+    # MCP230XX  0x25    0x4A
+    # MCP230XX  0x26    0x4C
+    # MCP230XX  0x27    0x4E
     # ORP_5     0x28    0x50
     # ORP_6     0x29    0x52
     # OD_2      0x2A    0x54
@@ -128,37 +128,14 @@ namespace eval ::address {
     
     # Adresse pour la commande en utilisant MCP23008 (optionnel-ment MCP23017)
     # @0x20 cultibox : 0x40
-    set val(60) MCP230XX
-    set val(61) MCP230XX
-    set val(62) MCP230XX
-    set val(63) MCP230XX
-    set val(64) MCP230XX
-    set val(65) MCP230XX
-    set val(66) MCP230XX
-    set val(67) MCP230XX
-    set val(68) MCP230XX
-    
     # @0x22 cultibox : 0x44
-    set val(70) MCP230XX
-    set val(71) MCP230XX
-    set val(72) MCP230XX
-    set val(73) MCP230XX
-    set val(74) MCP230XX
-    set val(75) MCP230XX
-    set val(76) MCP230XX
-    set val(77) MCP230XX
-    set val(78) MCP230XX
-    
     # @0x21 cultibox : 0x48
-    set val(80) MCP230XX
-    set val(81) MCP230XX
-    set val(82) MCP230XX
-    set val(83) MCP230XX
-    set val(84) MCP230XX
-    set val(85) MCP230XX
-    set val(86) MCP230XX
-    set val(87) MCP230XX
-    set val(88) MCP230XX
+    for {set i 60} {$i < 90} {incr i} {
+        set val($i) MCP230XX
+    }
+    for {set i 3000} {$i < 3080} {incr i} {
+        set val($i) MCP230XX
+    }
     
     # Adresse pour la commande en utilisant le vario
     # @0x10 cultibox : 0x20

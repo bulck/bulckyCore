@@ -19,7 +19,7 @@
     <item key="sensor,2,input,4" value="4" />
     <item key="sensor,2,value,4" value="5" />
     <item key="sensor,3,nom" value="EC_cuve" />
-    <item key="sensor,3,type" value="USB" />
+    <item key="sensor,3,type" value="USBSERIAL" />
     <item key="sensor,3,index" value="1" />
     <item key="sensor,4,nom" value="tor_boutonarret" />
     <item key="sensor,4,type" value="MCP230XX" />

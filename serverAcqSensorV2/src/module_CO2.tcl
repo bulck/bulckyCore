@@ -65,7 +65,7 @@ proc ::sensor_co2::init {nb_maxSensor} {
 }
 
 
-proc ::sensor_co2::read_value {} {
+proc ::sensor_co2::read {index sensor} {
     variable init
     variable sensorCO2Num
     variable errorMessage
@@ -98,11 +98,11 @@ proc ::sensor_co2::read_value {} {
     
     if {$RC != 0} {
         if {$errorMessage == ""} {
-            ::piLog::log [clock milliseconds] "error" "::sensor_co2::read_value default when reading value of CO² sensor  message:-$msg-"
+            ::piLog::log [clock milliseconds] "error" "::sensor_co2::read default when reading value of CO² sensor  message:-$msg-"
         }
         set errorMessage "error is already send"
     } else {
-        ::piLog::log [clock milliseconds] "debug" "::sensor_co2::read_value CO² sensor value $value"
+        ::piLog::log [clock milliseconds] "debug" "::sensor_co2::read CO² sensor value $value"
         set errorMessage ""
     }
     

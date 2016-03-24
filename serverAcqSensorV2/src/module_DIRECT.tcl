@@ -76,11 +76,11 @@ proc ::DIRECT::read {index sensor} {
 
     if {$RC != 0} {
         if {$register($index,errormessage) == ""} {
-            ::piLog::log [clock milliseconds] "error" "::DIRECT::read_value default when reading value of input $index (GPIO : $pin($index,GPIO)) message:-$msg-"
+            ::piLog::log [clock milliseconds] "error" "::DIRECT::read default when reading value of input $index (GPIO : $pin($index,GPIO)) message:-$msg-"
         }
         set register($index,errormessage) "error is already send"
     } else {
-        ::piLog::log [clock milliseconds] "debug" "::DIRECT::read_value input $index (GPIO : $pin($index,GPIO)) value $value"
+        ::piLog::log [clock milliseconds] "debug" "::DIRECT::read input $index (GPIO : $pin($index,GPIO)) value $value"
         set register($index,errormessage) ""
     }
     

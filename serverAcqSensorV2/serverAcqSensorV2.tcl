@@ -18,8 +18,13 @@ package require piXML
 
 # Source extern files
 source [file join $rootDir ${::moduleLocalName} src serveurMessage.tcl]
-source [file join $rootDir ${::moduleLocalName} src module_USBSERIAL.tcl]
+source [file join $rootDir ${::moduleLocalName} src module_ADS1015.tcl]
+source [file join $rootDir ${::moduleLocalName} src module_CO2.tcl]
+source [file join $rootDir ${::moduleLocalName} src module_DIRECT.tcl]
+source [file join $rootDir ${::moduleLocalName} src module_I2C.tcl]
 source [file join $rootDir ${::moduleLocalName} src module_MCP230XX.tcl]
+source [file join $rootDir ${::moduleLocalName} src module_NETWORK.tcl]
+source [file join $rootDir ${::moduleLocalName} src module_USBSERIAL.tcl]
 
 # Initialisation d'un compteur pour les commandes externes envoyées
 set TrameIndex 0
@@ -82,7 +87,7 @@ for {set i 1} {$i <= $configXML(nbSensor)} {incr i} {
     set indexModule     $configXML(sensor,$i,index)
     
     ::piLog::log [clock milliseconds] "info" "Module $module is used. So init it"
-    ::$module::init $indexModule  
+    ::${module}::init $indexModule  
         
 }
 
@@ -99,21 +104,8 @@ if {$configXML(simulator) != "off"} {
 # Initialisation pour tous les capteurs des valeurs
 set sensorTypeList [list SHT DS18B20 WATER_LEVEL PH EC OD ORP]
 
-for {set index 1} {$index <= $configXML(nbSensor)} {incr index} {
+for {set index 1} {$index <= $::configXML(nbSensor)} {incr index} {
 
-    # Si ce capteur peut exister
-    if {[array names ::sensor -exact "${sensorType},$index,adress"] != ""} {
-    
-        set ::sensor($sensorType,$index,value,1) ""
-        set ::sensor($sensorType,$index,value,2) ""
-        set ::sensor($sensorType,$index,updateStatus) "INIT"
-        set ::sensor($sensorType,$index,commStatus) "DEFCOM"
-        set ::sensor($sensorType,$index,majorVersion) ""
-        set ::sensor($sensorType,$index,minorVersion) ""
-        set ::sensor($sensorType,$index,connected) 0
-        set ::sensor($sensorType,$index,nbProblemRead) 0
-    }
-    
     # On ajoute un repère pour factoriser par numéro de capteur
     set ::sensor($index,value,1) "" ;# Valeur de la premiere donnée du capteur
     set ::sensor($index,value,2) "" ;# Valeur de la deuxième donnée du capteur
@@ -128,13 +120,13 @@ set indexForSearchingSensor 0
 proc readSensors {} {
 
     # On vient lire chaque capteur 
-    for {set i 1} {$i <= $configXML(nbSensor)} {incr i} {
+    for {set i 1} {$i <= $::configXML(nbSensor)} {incr i} {
     
-        set module          $configXML(sensor,$i,type)
-        set indexModule     $configXML(sensor,$i,index)
+        set module          $::configXML(sensor,$i,type)
+        set indexModule     $::configXML(sensor,$i,index)
         
         # On vient lire le capteur
-        set value [::$module::read $indexModule $i]
+        set value [::${module}::read $indexModule $i]
         
         
         if {$value == "NA"} {

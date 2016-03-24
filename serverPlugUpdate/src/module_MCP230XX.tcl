@@ -9,69 +9,41 @@ namespace eval ::MCP230XX {
     variable register
     
     # @0x20 cultibox : 0x40
-    set adresse_module(60) 0x20
-    set adresse_module(60,out) 0
-    set adresse_module(61) 0x20
-    set adresse_module(61,out) 1
-    set adresse_module(62) 0x20
-    set adresse_module(62,out) 2
-    set adresse_module(63) 0x20
-    set adresse_module(63,out) 3
-    set adresse_module(64) 0x20
-    set adresse_module(64,out) 4
-    set adresse_module(65) 0x20
-    set adresse_module(65,out) 5
-    set adresse_module(66) 0x20
-    set adresse_module(66,out) 6
-    set adresse_module(67) 0x20
-    set adresse_module(67,out) 7
-    set adresse_module(68) 0x20
-    set adresse_module(68,out) "all"
-
-    # @0x22 cultibox : 0x42
-    set adresse_module(70) 0x22
-    set adresse_module(70,out) 0
-    set adresse_module(71) 0x22
-    set adresse_module(71,out) 1
-    set adresse_module(72) 0x22
-    set adresse_module(72,out) 2
-    set adresse_module(73) 0x22
-    set adresse_module(73,out) 3
-    set adresse_module(74) 0x22
-    set adresse_module(74,out) 4
-    set adresse_module(75) 0x22
-    set adresse_module(75,out) 5
-    set adresse_module(76) 0x22
-    set adresse_module(76,out) 6
-    set adresse_module(77) 0x22
-    set adresse_module(77,out) 7
-    set adresse_module(78) 0x22
-    set adresse_module(78,out) "all"
-
+    #   60 --> 68
+    # @0x21 cultibox : 0x42
+    #   70 --> 78
     # @0x24 cultibox : 0x44
-    set adresse_module(80) 0x24
-    set adresse_module(80,out) 0
-    set adresse_module(81) 0x24
-    set adresse_module(81,out) 1
-    set adresse_module(82) 0x24
-    set adresse_module(82,out) 2
-    set adresse_module(83) 0x24
-    set adresse_module(83,out) 3
-    set adresse_module(84) 0x24
-    set adresse_module(84,out) 4
-    set adresse_module(85) 0x24
-    set adresse_module(85,out) 5
-    set adresse_module(86) 0x24
-    set adresse_module(86,out) 6
-    set adresse_module(87) 0x24
-    set adresse_module(87,out) 7
-    set adresse_module(88) 0x24
-    set adresse_module(88,out) "all"
+    #   80 --> 88
+    foreach adressI2C [list 0x20 0x21 0x22] startAdress [list 60 70 80] {
+        for {set i 0} {$i < 8} {incr i} {
+            set adresse_module([expr $startAdress + $i])     $adressI2C
+            set adresse_module([expr $startAdress + $i],out) 0
+        }
+        set adresse_module([expr $startAdress + 8])     $adressI2C
+        set adresse_module([expr $startAdress + 8],out) "all"
+    }
+
+    # Adresse : 
+    #   0x20 --> 3000 - 3008
+    #   0x21 --> 3010 - 3018
+    foreach adressI2C [list 0x20 0x21 0x22 0x23 0x24 0x25 0x26 0x27] startAdress [list 3000 3010 3020 3030 3040 3050 3060 3070] {
+        for {set i 0} {$i < 8} {incr i} {
+            set adresse_module([expr $startAdress + $i])     $adressI2C
+            set adresse_module([expr $startAdress + $i],out) 0
+        }
+        set adresse_module([expr $startAdress + 8])     $adressI2C
+        set adresse_module([expr $startAdress + 8],out) "all"
+    }
 
     # Adresse des modules
     set adresse_I2C(0) 0x20
-    set adresse_I2C(1) 0x22
-    set adresse_I2C(2) 0x24
+    set adresse_I2C(1) 0x21
+    set adresse_I2C(2) 0x22
+    set adresse_I2C(3) 0x23
+    set adresse_I2C(4) 0x24
+    set adresse_I2C(5) 0x25
+    set adresse_I2C(6) 0x26
+    set adresse_I2C(7) 0x27
     
     # Définition des registres
     set register(IODIR)     0x00
@@ -85,17 +57,13 @@ namespace eval ::MCP230XX {
     set register(INTCAP)    0x08
     set register(GPIO)      0x09
     set register(OLAT)      0x0A
-    
-    # Dernière valeur de GPIO
-    set register($adresse_I2C(0),GPIO_LAST) 0x00
-    set register($adresse_I2C(1),GPIO_LAST) 0x00
-    set register($adresse_I2C(2),GPIO_LAST) 0x00
 
-    # Initialisation réalisée
-    set register($adresse_I2C(0),init_done) 0
-    set register($adresse_I2C(1),init_done) 0
-    set register($adresse_I2C(2),init_done) 0
-    
+    for {set i 0} {$i < 7} {incr i} {
+        # Dernière valeur de GPIO
+        set register($adresse_I2C($i),GPIO_LAST) 0x00
+        # Initialisation réalisée
+        set register($adresse_I2C($i),init_done) 0
+    }
 }
 
 # Cette proc est utilisée pour initialiser les modules
