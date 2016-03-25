@@ -270,8 +270,8 @@ proc readSensors {} {
                     
                     # On demande un reboot du logiciel dans ce cas au bout du cinquième problème
                     if {$::sensor($sensorType,$index,nbProblemRead) > 5} {
-                        ::piLog::log [clock milliseconds] "error" "Ask software cultipi reboot"
-                        ::piServer::sendToServer $::piServer::portNumber(serverCultipi) "$::piServer::portNumber(${::moduleLocalName}) [incr ::TrameIndex] stop"
+                        ::piLog::log [clock milliseconds] "error" "Ask software bulckypi reboot"
+                        ::piServer::sendToServer $::piServer::portNumber(serverBulckypi) "$::piServer::portNumber(${::moduleLocalName}) [incr ::TrameIndex] stop"
                         set ::sensor($sensorType,$index,nbProblemRead) 0
                     }
                 }

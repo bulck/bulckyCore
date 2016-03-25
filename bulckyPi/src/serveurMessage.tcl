@@ -1,9 +1,9 @@
 
 proc messageGestion {message networkhost} {
 
-    global statusInitialisation cultipiActualHour
+    global statusInitialisation bulckypiActualHour
     
-    set ::cultipiActualHour [clock format [clock seconds] -format "%d/%m/%Y %H:%M"]
+    set ::bulckypiActualHour [clock format [clock seconds] -format "%d/%m/%Y %H:%M"]
 
     # Trame standard : [FROM] [INDEX] [commande] [argument]
     set serverForResponse   [::piTools::lindexRobust $message 0]
@@ -12,8 +12,8 @@ proc messageGestion {message networkhost} {
 
     switch ${commande} {
         "stop" {
-            ::piLog::log [clock milliseconds] "info" "Demande Arret de Culti Pi by $serverForResponse"
-            stopCultiPi
+            ::piLog::log [clock milliseconds] "info" "Demande Arret de BulckyPi by $serverForResponse"
+            stopBulckyPi
         }
         "_pid" {
             set module [::piTools::lindexRobust $message 3]

@@ -164,7 +164,7 @@ proc ::wireless::init {plugList} {
         set status [::wireless::outFromBootloader]
         
         if {$status == "restart_needed"} {
-            ::piServer::sendToServer $::piServer::portNumber(serverCultipi) "$::piServer::portNumber(serverCultipi) [incr ::TrameIndex] stop"
+            ::piServer::sendToServer $::piServer::portNumber(serverBulckypi) "$::piServer::portNumber(serverBulckypi) [incr ::TrameIndex] stop"
         }
         
         after 100
@@ -221,7 +221,7 @@ proc ::wireless::setValue {plugNumber value address} {
     # Si on y arrive pas, on demande le reboot des esclaves
     if {$errorDuringSend == 1} {
         ::piLog::log [clock milliseconds] "error" "::wireless::setValue So ask reboot"
-        ::piServer::sendToServer $::piServer::portNumber(serverCultipi) "$::piServer::portNumber(serverCultipi) [incr ::TrameIndex] stop"
+        ::piServer::sendToServer $::piServer::portNumber(serverBulckypi) "$::piServer::portNumber(serverBulckypi) [incr ::TrameIndex] stop"
     }
 
     return $errorDuringSend

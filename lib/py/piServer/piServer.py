@@ -8,7 +8,7 @@ from serveurMessage import *
 
 class piServer():
 
-    serverCultipi =    6000
+    serverBulckypi =    6000
     serverLog =        6003
     serverPlugUpdate = 6004
     serverAcqSensor =  6006

@@ -4,11 +4,11 @@
 set rootDir [file dirname [file dirname [info script]]]
 set logFile [file join $rootDir log.txt]
 
-puts "Stoping cultiPi"
+puts "Stoping bulckyPi"
 set rc [catch { set channel [socket localhost 6000] } msg]
 
 if {$rc != 0} {
-    puts "Can not connect to CultiPi socket (port 6000)"
+    puts "Can not connect to BulckyPi socket (port 6000)"
     puts "Maybe already closed...."
     exit
 }
@@ -29,6 +29,6 @@ send:data $channel "NA 0 stop"
 
 # fermeture connexion
 close $channel
-puts "CultiPi is stopped"
-# tclsh "D:\CBX\06_bulckyCore\cultiPi\cultiPistop.tcl" 
-# tclsh /opt/cultipi/cultiPi/cultiPistop.tcl
+puts "BulckyPi is stopped"
+# tclsh "D:\CBX\06_bulckyCore\bulckyPi\bulckyPistop.tcl" 
+# tclsh /opt/bulckypi/bulckyPi/bulckyPistop.tcl

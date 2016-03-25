@@ -143,9 +143,9 @@ proc log {msg} {
     #puts $fid "$::($channel:host):$::($channel:port): $msg"
     puts $fid "${Time}\t[lindex $Splitted 3]\t[lindex $Splitted 5]\t[lindex $Splitted 7]"
 
-    # Cas spécial dans le cas ou c'est cultipi qui demande l'arret du serveur log
-    if {[lindex $Splitted 3] == "cultipi" && [lindex $Splitted 5] == "debug" && [lindex $Splitted 7] == "stop"} {
-        puts $fid "${Time}\tserverLog\tinfo\tAsk to close serverLog by cultipi"
+    # Cas spécial dans le cas ou c'est bulckypi qui demande l'arret du serveur log
+    if {[lindex $Splitted 3] == "bulckypi" && [lindex $Splitted 5] == "debug" && [lindex $Splitted 7] == "stop"} {
+        puts $fid "${Time}\tserverLog\tinfo\tAsk to close serverLog by bulckypi"
         set ::forever 1
     }
     
