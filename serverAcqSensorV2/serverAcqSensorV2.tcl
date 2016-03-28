@@ -18,6 +18,7 @@ package require piXML
 
 # Source extern files
 source [file join $rootDir ${::moduleLocalName} src serveurMessage.tcl]
+source [file join $rootDir ${::moduleLocalName} src simulator.tcl]
 source [file join $rootDir ${::moduleLocalName} src module_ADS1015.tcl]
 source [file join $rootDir ${::moduleLocalName} src module_CO2.tcl]
 source [file join $rootDir ${::moduleLocalName} src module_DIRECT.tcl]

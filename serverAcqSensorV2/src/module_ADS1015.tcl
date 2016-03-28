@@ -142,9 +142,9 @@ namespace eval ::ADS1015 {
     
     # Définition des registres
     set register(CONVERSION) 0x00
-    set register(CONFIG)     0x00
-    set register(LO_THRESH)  0x01
-    set register(HI_THRESH)  0x02
+    set register(CONFIG)     0x01
+    set register(LO_THRESH)  0x02
+    set register(HI_THRESH)  0x03
 
     # Initialisation réalisée
     set register($adresse_I2C(0),init_done) 0
@@ -181,6 +181,8 @@ proc ::ADS1015::init {index} {
 }
 
 
+# Lecture continue
+# /usr/local/sbin/i2cset -y 1 0x48 0x01 0x04 0x83 i
 proc ::ADS1015::read {index sensor} {
     variable adresse_module
     variable adresse_I2C
@@ -199,6 +201,12 @@ proc ::ADS1015::read {index sensor} {
     }
     
     # On construit la config 
+    # CONFIG_CQUE_NONE      0x0003
+    # CONFIG_CLAT_NONLAT    0x0000
+    # CONFIG_CPOL_ACTVLOW   0x0000
+    # CONFIG_CMODE_TRAD     0x0000
+    # CONFIG_MODE_SINGLE    0x0100
+    #                       0x0103 (259)
     set config [expr $register(CONFIG_CQUE_NONE)    | \
                      $register(CONFIG_CLAT_NONLAT)  | \
                      $register(CONFIG_CPOL_ACTVLOW) | \
@@ -206,56 +214,77 @@ proc ::ADS1015::read {index sensor} {
                      $register(CONFIG_MODE_SINGLE)]
                      
     # Sélection de la vitesse
+    # CONFIG_DR_1600SPS     0x0080
+    #                       0x0183
     set config [expr $config | $register(CONFIG_DR_1600SPS)]
     
     # Set PGA/voltage range, defaults to +-6.144V
-    set config [expr $config | $register(CONFIG_PGA_6_144V)]
+    # CONFIG_PGA_4_096V     0x0200
+    #                       0x0383
+    # CONFIG_PGA_6_144V     0x0000
+    #                       0x0103
+    set config [expr $config | $register(CONFIG_PGA_4_096V)]
     
     # Select channel
+    # CONFIG_MUX_SINGLE_0   0x4000
+    #               4.096   0x4383
+    #               6.144   0x4183
+    # CONFIG_MUX_SINGLE_1   0x5000
+    # CONFIG_MUX_SINGLE_2   0x6000
+    # CONFIG_MUX_SINGLE_3   0x7000
     set config [expr $config | $register(CONFIG_MUX_SINGLE_0)]
     
     # Start acquisition
+    # CONFIG_OS_SINGLE      0x8000
+    #               4.096   0xC383 (50051)
+    #               6.144   0xC183
+    # 4.096 Voie 1 : 0xC383
+    # 4.096 Voie 2 : 0xD383
+    # 4.096 Voie 3 : 0xE383
+    # 4.096 Voie 4 : 0xF383
     set config [expr $config | $register(CONFIG_OS_SINGLE)]
     
     # Exriture des registres 
+    # On calcul les deux octets 
+    set lsb [expr $config % 256]
+    set msb [expr $config / 256]
     set RC [catch {
-        exec /usr/local/sbin/i2cset -y 1 $moduleAdresse $register(CONFIG) 
+        # 4.096 
+        # Voie 1  /usr/local/sbin/i2cset -y 1 0x48 0x01 0xC3 0x83 i
+        # Voie 2  /usr/local/sbin/i2cset -y 1 0x48 0x01 0xD3 0x83 i
+        # Voie 3  /usr/local/sbin/i2cset -y 1 0x48 0x01 0xE3 0x83 i
+        # Voie 4  /usr/local/sbin/i2cset -y 1 0x48 0x01 0xF3 0x83 i
+        exec /usr/local/sbin/i2cset -y 1 $moduleAdresse $register(CONFIG) $msb $lsb i
     } msg]
+    
+    # On attend le temps de conversion 
+    after 10
+    
+    # Tension   Valeure attendue
+    # 2V        
+    
     if {$RC != 0} {
         ::piLog::log [clock milliseconds] "error" "::ADS1015::read Module $moduleAdresse does not respond to setting config :$msg "
     } else {
         # lecture de l'état des entrées
-        # /usr/local/sbin/i2cget -y 1 0x20 0x12
+        # /usr/local/sbin/i2cget -y 1 0x48 0x00 w
         set RC [catch {
-            set registerA [exec /usr/local/sbin/i2cget -y 1 $moduleAdresse $register(GPIOA)]
-            # Petite tempo au cas ou
-            after 10
-            set registerB [exec /usr/local/sbin/i2cget -y 1 $moduleAdresse $register(GPIOB)]
+            set value [exec /usr/local/sbin/i2cget -y 1 $moduleAdresse $register(CONVERSION) w ]
         } msg]
         if {$RC != 0} {
             ::piLog::log [clock milliseconds] "error" "::ADS1015::read Module $moduleAdresse does not respond :$msg "
         } else {
 
-            # On calcul la valeur
-            set value 0
-            for {set $j 1} {$j <= $::configXML(sensor,${sensor},nbinput)} {incr j} {
+            # On remet dans le bon ordre
+            set valueOrdre "0x[string range $value 4 5][string range $value 2 3]"
             
-                set input       $::configXML(sensor,${sensor},input,$j)
-                set incrValue   $::configXML(sensor,${sensor},value,$j)
+            # On applique les coefficients
+            set max $::configXML(sensor,${sensor},max)
+            set min $::configXML(sensor,${sensor},min)
             
-                # Registre A
-                if {$input <= 8} {
-                    if {[expr $registerB & 1 << ($input - 1)] != 0} {
-                        set value [expr $value + $incrValue] 
-                    }
-                } else {
-                    # Registre B
-                    if {[expr $registerB & 1 << ($input - 1 - 8)] != 0} {
-                        set value [expr $value + $incrValue] 
-                    }
-                }
-            }
-        
+            set tension [expr ($valueOrdre / 32768.0) * (4.096)]
+            
+            set goodValue [expr ($tension / 4.096) * ($max - $min) + $min ]
         }
     }
  

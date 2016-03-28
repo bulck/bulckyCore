@@ -14,6 +14,7 @@ namespace eval ::piServer {
     set portNumber(serverLog)         6003
     set portNumber(serverPlugUpdate)  6004
     set portNumber(serverAcqSensor)   6006
+    set portNumber(serverAcqSensorV2) 6006
     set portNumber(serverHisto)       6009
     set portNumber(serverIrrigation)  6011
     set portNumber(serverCultibox)    6013
@@ -29,7 +30,6 @@ namespace eval ::piServer {
     
     set portNumber(serverPHP)         6027
     set portNumber(serverAcqSensorUSB)  6028
-    set portNumber(serverAcqSensorV2)   6029
     set portNumber(serverSLF)           6030
     
     foreach name [array names portNumber] {

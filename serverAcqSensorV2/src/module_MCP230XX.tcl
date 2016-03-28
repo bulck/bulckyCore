@@ -18,19 +18,12 @@ namespace eval ::MCP230XX {
     set adresse_I2C(7) 0x27
     
     # Définition des registres
-    set register(IODIRA)     0x00
-    set register(IODIRB)     0x00
-    set register(IPOL)      0x01
-    set register(GPINTEN)   0x02
-    set register(DEFVAL)    0x03
-    set register(INTCON)    0x04
-    set register(IOCON)     0x05
-    set register(GPPU)      0x06
-    set register(INTF)      0x07
-    set register(INTCAP)    0x08
+    set register(IODIRA)    0x00
+    set register(IODIRB)    0x01
+    set register(GPPUA)     0x0C
+    set register(GPPUB)     0x0D
     set register(GPIOA)     0x12
     set register(GPIOB)     0x13
-    set register(OLAT)      0x0A
 
 
     # Initialisation réalisée
@@ -58,15 +51,18 @@ proc ::MCP230XX::init {index} {
     # On vérifie que l module est initialisé
     if {$register(${index},init_done) == 0} {
         # On définit chaque pin en entrée
-        # /usr/local/sbin/i2cset -y 1 0x20 0x00 0xff
-        # /usr/local/sbin/i2cset -y 1 0x20 0x01 0xff
+        # /usr/local/sbin/i2cset -y 1 0x27 0x00 0xff 0xff i
+        # On définit met les pull up 
+        # /usr/local/sbin/i2cset -y 1 0x27 0x0C 0xff 0xff i
         # lecture de l'état des sorties
-        # /usr/local/sbin/i2cget -y 1 0x20 0x00
+        # /usr/local/sbin/i2cget -y 1 0x27 0x00 w
         set RC [catch {
-            exec /usr/local/sbin/i2cset -y 1 $moduleAdresse $register(IODIRA) 0xff
-            # Petite tempo au cas ou
+            exec /usr/local/sbin/i2cset -y 1 $moduleAdresse $register(IODIRA) 0xff 0xff i
+            
+            # On met les pull up
             after 10
-            exec /usr/local/sbin/i2cset -y 1 $moduleAdresse $register(IODIRB) 0xff
+            exec /usr/local/sbin/i2cset -y 1 $moduleAdresse $register(GPPUA) 0xff 0xff i
+            
         } msg]
         if {$RC != 0} {
             ::piLog::log [clock milliseconds] "error" "::MCP230XX::init Module $moduleAdresse does not respond :$msg "
@@ -101,12 +97,9 @@ proc ::MCP230XX::read {index sensor} {
         ::MCP230XX::init $index
     } else {
         # lecture de l'état des entrées
-        # /usr/local/sbin/i2cget -y 1 0x20 0x12
+        # /usr/local/sbin/i2cget -y 1 0x27 0x12 w
         set RC [catch {
-            set registerA [exec /usr/local/sbin/i2cget -y 1 $moduleAdresse $register(GPIOA)]
-            # Petite tempo au cas ou
-            after 10
-            set registerB [exec /usr/local/sbin/i2cget -y 1 $moduleAdresse $register(GPIOB)]
+            set registerVal [exec /usr/local/sbin/i2cget -y 1 $moduleAdresse $register(GPIOA) w]
         } msg]
         if {$RC != 0} {
             ::piLog::log [clock milliseconds] "error" "::MCP230XX::init Module $moduleAdresse does not respond :$msg "
@@ -119,17 +112,11 @@ proc ::MCP230XX::read {index sensor} {
                 set input       $::configXML(sensor,${sensor},input,$j)
                 set incrValue   $::configXML(sensor,${sensor},value,$j)
             
-                # Registre A
-                if {$input <= 8} {
-                    if {[expr $registerB & 1 << ($input - 1)] != 0} {
-                        set value [expr $value + $incrValue] 
-                    }
-                } else {
-                    # Registre B
-                    if {[expr $registerB & 1 << ($input - 1 - 8)] != 0} {
-                        set value [expr $value + $incrValue] 
-                    }
+                # Registre
+                if {[expr $registerVal & 1 << ($input - 1)] == 0} {
+                    set value [expr $value + $incrValue] 
                 }
+
             }
         
         }
