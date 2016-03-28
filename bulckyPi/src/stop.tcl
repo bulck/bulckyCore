@@ -1,13 +1,13 @@
 
-proc stopCultiPi {} {
-    ::piLog::log [clock milliseconds] "info" "Debut arret Culti Pi"
+proc stopBulckyPi {} {
+    ::piLog::log [clock milliseconds] "info" "Debut arret BulckyPi"
     
     ::piLog::log [clock milliseconds] "info" "Extinction des alimentations"
     set RC [catch {
         exec gpio -g write 18 0
     } msg]
     if {$RC != 0} {
-        ::piLog::log [clock milliseconds] "error" "stopCultiPi : error $msg"
+        ::piLog::log [clock milliseconds] "error" "stopBulckyPi : error $msg"
     }
 
     # On attends 10 secondes que tous les modules ai le temps d'envoyer leur message
@@ -48,10 +48,10 @@ proc stopCultiPi {} {
         
     }
 
-    ::piLog::log [clock milliseconds] "info" "Fin arret Culti Pi"
+    ::piLog::log [clock milliseconds] "info" "Fin arret BulckyPi"
     
     # Arrêt du serveur de log (forcement en dernier)
-    ::piServer::sendToServer $::piServer::portNumber(serverLog) "<[clock milliseconds]><cultipi><debug><stop>"
+    ::piServer::sendToServer $::piServer::portNumber(serverLog) "<[clock milliseconds]><bulckypi><debug><stop>"
     ::piLog::closeLog
     catch {
         fconfigure $::confStart(serverLog,pipeID) -blocking 0
@@ -59,7 +59,7 @@ proc stopCultiPi {} {
         close $::confStart(serverLog,pipeID)
     }
     after 500 {
-        puts "[clock format [clock seconds] -format "%b %d %H:%M:%S"] : cultiPi : Bye Bye ! "
+        puts "[clock format [clock seconds] -format "%b %d %H:%M:%S"] : bulckyPi : Bye Bye ! "
         set ::forever 1
         exit
     }
@@ -77,7 +77,7 @@ proc restartSlave {outPutStyle} {
     } msg]
     if {$RC != 0} {
         if {$outPutStyle == "puts"} {
-            puts "[clock format [clock seconds] -format "%b %d %H:%M:%S"] : CultiPi : GPIO : error $msg"
+            puts "[clock format [clock seconds] -format "%b %d %H:%M:%S"] : BulckyPi : GPIO : error $msg"
         } else {
             ::piLog::log [clock milliseconds] "error" "restartSlave : GPIO 1 : error $msg"
         }
@@ -96,7 +96,7 @@ proc restartSlave {outPutStyle} {
     } msg]
     if {$RC != 0} {
         if {$outPutStyle == "puts"} {
-            puts "[clock format [clock seconds] -format "%b %d %H:%M:%S"] : CultiPi : GPIO : error $msg"
+            puts "[clock format [clock seconds] -format "%b %d %H:%M:%S"] : BulckyPi : GPIO : error $msg"
         } else {
             ::piLog::log [clock milliseconds] "error" "restartSlave : GPIO 2 : error $msg"
         }
@@ -107,7 +107,7 @@ proc restartSlave {outPutStyle} {
     set ::statusInitialisation "wait_20s"
     set nbSeconds 5
     if {$outPutStyle == "puts"} {
-        puts "[clock format [clock seconds] -format "%b %d %H:%M:%S"] : CultiPi : Waiting $nbSeconds seconds"
+        puts "[clock format [clock seconds] -format "%b %d %H:%M:%S"] : BulckyPi : Waiting $nbSeconds seconds"
     } else {
          ::piLog::log [clock milliseconds] "info" "restartSlave : Waiting $nbSeconds seconds"
     }
@@ -116,7 +116,7 @@ proc restartSlave {outPutStyle} {
         if {[expr $i % 10] == 0} {
             
             if {$outPutStyle == "puts"} {
-                puts "[clock format [clock seconds] -format "%b %d %H:%M:%S"] : CultiPi : [expr $nbSeconds - $i / 10] seconds remaining"
+                puts "[clock format [clock seconds] -format "%b %d %H:%M:%S"] : BulckyPi : [expr $nbSeconds - $i / 10] seconds remaining"
             } else {
                 ::piLog::log [clock milliseconds] "info" "restartSlave : [expr $nbSeconds - $i / 10] seconds remaining"
             }
@@ -127,7 +127,7 @@ proc restartSlave {outPutStyle} {
     }
 
     if {$outPutStyle == "puts"} {
-        puts "[clock format [clock seconds] -format "%b %d %H:%M:%S"] : CultiPi : End of restart slave"
+        puts "[clock format [clock seconds] -format "%b %d %H:%M:%S"] : BulckyPi : End of restart slave"
     } else {
         ::piLog::log [clock milliseconds] "info" "restartSlave : End of restart slave"
     }

@@ -10,7 +10,7 @@ namespace eval ::piServer {
     variable portNumber
     variable portNumberReverse
     
-    set portNumber(serverCultipi)     6000
+    set portNumber(serverBulckypi)     6000
     set portNumber(serverLog)         6003
     set portNumber(serverPlugUpdate)  6004
     set portNumber(serverAcqSensor)   6006
@@ -38,7 +38,7 @@ namespace eval ::piServer {
     
 }
 
-# Load Cultipi server
+# Load Bulckypi server
 proc ::piServer::server {channel host port} \
 {
     variable debug
