@@ -17,7 +17,7 @@ namespace eval ::MCP230XX {
     foreach adressI2C [list 0x20 0x21 0x22] startAdress [list 60 70 80] {
         for {set i 0} {$i < 8} {incr i} {
             set adresse_module([expr $startAdress + $i])     $adressI2C
-            set adresse_module([expr $startAdress + $i],out) 0
+            set adresse_module([expr $startAdress + $i],out) $i
         }
         set adresse_module([expr $startAdress + 8])     $adressI2C
         set adresse_module([expr $startAdress + 8],out) "all"
@@ -29,7 +29,7 @@ namespace eval ::MCP230XX {
     foreach adressI2C [list 0x20 0x21 0x22 0x23 0x24 0x25 0x26 0x27] startAdress [list 3000 3010 3020 3030 3040 3050 3060 3070] {
         for {set i 0} {$i < 8} {incr i} {
             set adresse_module([expr $startAdress + $i])     $adressI2C
-            set adresse_module([expr $startAdress + $i],out) 0
+            set adresse_module([expr $startAdress + $i],out) $i
         }
         set adresse_module([expr $startAdress + 8])     $adressI2C
         set adresse_module([expr $startAdress + 8],out) "all"
@@ -156,10 +156,10 @@ proc ::MCP230XX::setValue {plugNumber value address} {
         after 10
     } msg]
     if {$RC != 0} {
-        ::piLog::log [clock milliseconds] "error" "::MCP230XX::init Module $moduleAdresse does not respond :$msg "
+        ::piLog::log [clock milliseconds] "error" "::MCP230XX::setValue Module $moduleAdresse does not respond :$msg "
         set errorDuringSend 1
     } else {
-        ::piLog::log [clock milliseconds] "info" "::MCP230XX::init init IODIR to 0x00 OK"
+        ::piLog::log [clock milliseconds] "info" "::MCP230XX::setValue set IODIR to 0x00 OK"
         set register(${moduleAdresse},init_done) 1
     }
     
