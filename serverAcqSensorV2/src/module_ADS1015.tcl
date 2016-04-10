@@ -4,69 +4,8 @@
 # Pilotage pin0 : /usr/local/sbin/i2cset -y 1 0x20 0x09 0x01
 
 namespace eval ::ADS1015 {
-    variable adresse_module
     variable adresse_I2C
     variable register
-    
-    # @0x20 cultibox : 0x40
-    set adresse_module(60) 0x20
-    set adresse_module(60,out) 0
-    set adresse_module(61) 0x20
-    set adresse_module(61,out) 1
-    set adresse_module(62) 0x20
-    set adresse_module(62,out) 2
-    set adresse_module(63) 0x20
-    set adresse_module(63,out) 3
-    set adresse_module(64) 0x20
-    set adresse_module(64,out) 4
-    set adresse_module(65) 0x20
-    set adresse_module(65,out) 5
-    set adresse_module(66) 0x20
-    set adresse_module(66,out) 6
-    set adresse_module(67) 0x20
-    set adresse_module(67,out) 7
-    set adresse_module(68) 0x20
-    set adresse_module(68,out) "all"
-
-    # @0x22 cultibox : 0x42
-    set adresse_module(70) 0x22
-    set adresse_module(70,out) 0
-    set adresse_module(71) 0x22
-    set adresse_module(71,out) 1
-    set adresse_module(72) 0x22
-    set adresse_module(72,out) 2
-    set adresse_module(73) 0x22
-    set adresse_module(73,out) 3
-    set adresse_module(74) 0x22
-    set adresse_module(74,out) 4
-    set adresse_module(75) 0x22
-    set adresse_module(75,out) 5
-    set adresse_module(76) 0x22
-    set adresse_module(76,out) 6
-    set adresse_module(77) 0x22
-    set adresse_module(77,out) 7
-    set adresse_module(78) 0x22
-    set adresse_module(78,out) "all"
-
-    # @0x24 cultibox : 0x44
-    set adresse_module(80) 0x24
-    set adresse_module(80,out) 0
-    set adresse_module(81) 0x24
-    set adresse_module(81,out) 1
-    set adresse_module(82) 0x24
-    set adresse_module(82,out) 2
-    set adresse_module(83) 0x24
-    set adresse_module(83,out) 3
-    set adresse_module(84) 0x24
-    set adresse_module(84,out) 4
-    set adresse_module(85) 0x24
-    set adresse_module(85,out) 5
-    set adresse_module(86) 0x24
-    set adresse_module(86,out) 6
-    set adresse_module(87) 0x24
-    set adresse_module(87,out) 7
-    set adresse_module(88) 0x24
-    set adresse_module(88,out) "all"
 
     # Pointer Register
     set register(POINTER_MASK) 0x03
@@ -156,7 +95,6 @@ namespace eval ::ADS1015 {
 
 # Cette proc est utilisée pour initialiser les modules
 proc ::ADS1015::init {index} {
-    variable adresse_module
     variable adresse_I2C
     variable register
 
@@ -184,7 +122,6 @@ proc ::ADS1015::init {index} {
 # Lecture continue
 # /usr/local/sbin/i2cset -y 1 0x48 0x01 0x04 0x83 i
 proc ::ADS1015::read {index sensor} {
-    variable adresse_module
     variable adresse_I2C
     variable register
     
@@ -288,5 +225,5 @@ proc ::ADS1015::read {index sensor} {
         }
     }
  
-    return $value
+    return $goodValue
 }

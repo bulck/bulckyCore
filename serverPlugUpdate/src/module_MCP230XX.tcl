@@ -138,13 +138,13 @@ proc ::MCP230XX::setValue {plugNumber value address} {
     # On met à jour le registre
     # Si c'est la dernière adresse, c'est un pilotage générale
     if {$outputPin == "all"} {
-        if {$value == "on"} {
+        if {$value == "on" || $value == 1} {
             set register(${moduleAdresse},GPIO_LAST) [expr 0xff] 
         } else {
             set register(${moduleAdresse},GPIO_LAST) [expr 0x00]
         }
     } else {
-        if {$value == "on"} {
+        if {$value == "on" || $value == 1} {
             set register(${moduleAdresse},GPIO_LAST) [expr $register(${moduleAdresse},GPIO_LAST) | (1 << $outputPin)] 
         } else {
             set register(${moduleAdresse},GPIO_LAST) [expr $register(${moduleAdresse},GPIO_LAST) & ~(1 << $outputPin)]
