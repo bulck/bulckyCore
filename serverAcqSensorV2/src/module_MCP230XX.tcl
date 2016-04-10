@@ -27,7 +27,7 @@ namespace eval ::MCP230XX {
 
 
     # Initialisation réalisée
-    for {set i 0} {$i < 7} {incr i} {
+    for {set i 0} {$i < 8} {incr i} {
         # Initialisation réalisée
         set register($i,init_done) 0
     }
@@ -44,7 +44,7 @@ proc ::MCP230XX::init {index} {
     }
     
     if {$moduleAdresse == "NA"} {
-        ::piLog::log [clock milliseconds] "error" "::MCP230XX::init Adress $address does not exists "
+        ::piLog::log [clock milliseconds] "error" "::MCP230XX::init index $index does not exists "
         return
     }
     
@@ -88,7 +88,7 @@ proc ::MCP230XX::read {index sensor} {
     }
     
     if {$moduleAdresse == "NA"} {
-        ::piLog::log [clock milliseconds] "error" "::MCP230XX::read Adress $address does not exists "
+        ::piLog::log [clock milliseconds] "error" "::MCP230XX::read index $index does not exists "
         return
     }
     
@@ -107,7 +107,7 @@ proc ::MCP230XX::read {index sensor} {
 
             # On calcul la valeur
             set value 0
-            for {set $j 1} {$j <= $::configXML(sensor,${sensor},nbinput)} {incr j} {
+            for {set j 1} {$j <= $::configXML(sensor,${sensor},nbinput)} {incr j} {
             
                 set input       $::configXML(sensor,${sensor},input,$j)
                 set incrValue   $::configXML(sensor,${sensor},value,$j)

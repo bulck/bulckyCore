@@ -18,7 +18,6 @@ package require piXML
 
 # Source extern files
 source [file join $rootDir ${::moduleLocalName} src serveurMessage.tcl]
-source [file join $rootDir ${::moduleLocalName} src simulator.tcl]
 source [file join $rootDir ${::moduleLocalName} src module_ADS1015.tcl]
 source [file join $rootDir ${::moduleLocalName} src module_CO2.tcl]
 source [file join $rootDir ${::moduleLocalName} src module_DIRECT.tcl]
@@ -154,5 +153,5 @@ readSensors
 
 vwait forever
 
-# tclsh /opt/cultipi/serverAcqSensorV2/serverAcqSensorV2.tcl /etc/cultipi/01_defaultConf_RPi/serverAcqSensorV2/conf.xml
+# tclsh /opt/bulckypi/serverAcqSensorV2/serverAcqSensorV2.tcl /etc/bulckypi/01_defaultConf_RPi/serverAcqSensorV2/conf.xml
 # tclsh "D:\CBX\06_bulckyCore\serverAcqSensorV2\serverAcqSensorV2.tcl" "D:\CBX\06_bulckyCore\serverAcqSensorV2\confExample\conf.xml"
