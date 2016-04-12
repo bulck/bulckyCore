@@ -128,6 +128,7 @@ proc getsProgramm {rtc_readSecondsOfTheDay {updateNextTimeToChange 0}} {
 }
 
 proc emeteur_update_loop {} {
+
         
     # Read actual hour
     set uc24_seconds [::piTime::readSecondsOfTheDay]

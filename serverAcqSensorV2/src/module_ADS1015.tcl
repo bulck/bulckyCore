@@ -104,7 +104,7 @@ proc ::ADS1015::init {index} {
     }
     
     if {$moduleAdresse == "NA"} {
-        ::piLog::log [clock milliseconds] "error" "::ADS1015::init Adress $address does not exists "
+        ::piLog::log [clock milliseconds] "error" "::ADS1015::init index $index Adress $address does not exists "
         return
     }
     
@@ -114,7 +114,7 @@ proc ::ADS1015::init {index} {
         # Il n'y a pas d'initilisation a faire
 
     } else {
-        ::piLog::log [clock milliseconds] "debug" "::ADS1015::init Module $moduleAdresse already initialized"
+        ::piLog::log [clock milliseconds] "debug" "::ADS1015::init index $index Module $moduleAdresse already initialized"
     }
 }
 
@@ -199,7 +199,7 @@ proc ::ADS1015::read {index sensor} {
     
     # Tension   Valeure attendue
     # 2V        
-    
+    set goodValue ""
     if {$RC != 0} {
         ::piLog::log [clock milliseconds] "error" "::ADS1015::read Module $moduleAdresse does not respond to setting config :$msg "
     } else {

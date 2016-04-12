@@ -42,6 +42,7 @@ set logFile "/var/log/bulcky/bulckypi.log"
 if {$configXML(logPath) != "" && [file isdirectory $configXML(logPath)]} {
     set logFile [file join $configXML(logPath) bulckypi.log]
 }
+puts "Serveur Log , log file : $logFile"
 
 set actualDay ""
 

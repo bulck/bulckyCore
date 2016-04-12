@@ -16,7 +16,6 @@ package require piServer
 package require piTools
 package require piXML
 
-source [file join $rootDir ${::moduleLocalName} src checkbutton.tcl]
 source [file join $rootDir ${::moduleLocalName} src updateSensor.tcl]
 source [file join $rootDir ${::moduleLocalName} src regulCuve.tcl]
 source [file join $rootDir ${::moduleLocalName} src serveurMessage.tcl]
@@ -87,13 +86,15 @@ proc irrigationLoop {idxZone indexPlateforme indexLigneIrrigation} {
     set IP                  $::configXML(zone,$idxZone,plateforme,${indexPlateforme},ip)
     set plateformeNbLigne   $::configXML(zone,$idxZone,plateforme,${indexPlateforme},nbligne)
     set tempscycle          $::configXML(zone,$idxZone,plateforme,${indexPlateforme},tempscycle)
+    set Pompe               $::configXML(zone,$idxZone,plateforme,${indexPlateforme},pompe,prise)
     set EVEau               $::configXML(zone,$idxZone,plateforme,${indexPlateforme},eauclaire,prise)
     set IPsurpresseur       $::configXML(surpresseur,ip)
     set Prisesurpresseur    $::configXML(surpresseur,prise)
+    set nettoyageactif      $::configXML(nettoyageactif)
     
     # On vérifie que le numéro de ligne est correcte
     if {$indexLigneIrrigation >= $plateformeNbLigne} {
-        $indexLigneIrrigation = 0
+        set indexLigneIrrigation 0
     }
     
     set EVLigne             $::configXML(zone,$idxZone,plateforme,${indexPlateforme},ligne,${indexLigneIrrigation},prise)
@@ -124,7 +125,7 @@ proc irrigationLoop {idxZone indexPlateforme indexLigneIrrigation} {
     # 4 cas :
     # - la plateforme est désactivée avec le bouton ou avec l'interface web
     # - le temps est nul
-    # - Nettoyage
+    # - Nettoyage (Et que le nettoyage est activé)
     # - Irrigation
     # On allume l'électrovanne 1 pour 2min30 secondes
     if {$active == "false"} {
@@ -132,7 +133,7 @@ proc irrigationLoop {idxZone indexPlateforme indexLigneIrrigation} {
     } elseif {$TempsOnEV < 1} {
         # Le temps est nul
         ::piLog::log [clock milliseconds] "info" "irrigation : $plateformeNom : ligne $indexLigneIrrigation : Temps trop petit"; update
-    } elseif {$nbCycle == 0} {
+    } elseif {$nbCycle == 0 && $nettoyageactif == "true"} {
         # On active le nettoyage :
         # Mise en route de la ligne d'électrovanne + 1s
         # Mise en route de l'arrivée d'eau
@@ -190,13 +191,10 @@ for {set i 0} {$i < $::configXML(nbzone)} {incr i} {
     cuveLoop $i
     
     # On active l'irrigation 
-    for {set j 0} {$j < $::configXML(zone,$i,nbplateforme)} {incr i} {
+    for {set j 0} {$j < $::configXML(zone,$i,nbplateforme)} {incr j} {
         irrigationLoop $i $j [expr int(rand() * $::configXML(zone,$i,plateforme,$j,nbligne))]
     }
-    
-    # On vérifie les bouttons
-    checkbutton $i
-    
+
 }
 
 

@@ -15,7 +15,11 @@ proc cuveLoop {idxCuve} {
     #---------------  Aplication des engrais
     # Au début de chaque heure, on charge en engrais
     set heure  [expr [clock format [clock seconds] -format "%H"] + 0]
+    set heure  [string trimleft $heure "0"]
+    if {$heure == ""} {set heure 0}
     set minute [expr [clock format [clock seconds] -format "%M"] + 0]
+    set minute  [string trimleft $minute "0"]
+    if {$minute == ""} {set minute 0}
     
     if {$heure != $::configXML(zone,${idxCuve},engraisappliquee) && $minute < 10 } {
         # On applique les engrais
@@ -35,7 +39,6 @@ proc cuveLoop {idxCuve} {
 
         # On sauvegarde la dernière heure 
         set ::configXML(zone,${idxCuve},engraisappliquee) $heure
-    
     }
     
 

@@ -37,7 +37,7 @@ set ::sensor(firsReadDone) 0
 array set configXML {
     verbose         debug
     simulator       off
-    nb_maxSensor    10
+    nbSensor        10
 }
 
 # Chargement de la conf XML
@@ -68,7 +68,7 @@ proc bgerror {message} {
 }
 
 # Load server
-::piLog::log [clock millisecond] "info" "starting serveur"
+::piLog::log [clock millisecond] "info" "starting serveur port $::piServer::portNumber(${::moduleLocalName})"
 ::piServer::start messageGestion $::piServer::portNumber(${::moduleLocalName})
 ::piLog::log [clock millisecond] "info" "serveur is started"
 
@@ -86,7 +86,7 @@ for {set i 1} {$i <= $configXML(nbSensor)} {incr i} {
     set module          $configXML(sensor,$i,type)
     set indexModule     $configXML(sensor,$i,index)
     
-    ::piLog::log [clock milliseconds] "info" "Module $module is used. So init it"
+    ::piLog::log [clock milliseconds] "info" "Sensor $i : Module $module is used (index $indexModule) . So init it"
     ::${module}::init $indexModule  
         
 }
@@ -155,3 +155,4 @@ vwait forever
 
 # tclsh /opt/bulckypi/serverAcqSensorV2/serverAcqSensorV2.tcl /etc/bulckypi/01_defaultConf_RPi/serverAcqSensorV2/conf.xml
 # tclsh "D:\CBX\06_bulckyCore\serverAcqSensorV2\serverAcqSensorV2.tcl" "D:\CBX\06_bulckyCore\serverAcqSensorV2\confExample\conf.xml"
+# tclsh "D:\CBX\06_bulckyCore\serverAcqSensorV2\serverAcqSensorV2.tcl" "D:\CBX\06_bulckyCore\_conf\00_defaultConf_Win\serverAcqSensorV2\conf.xml"

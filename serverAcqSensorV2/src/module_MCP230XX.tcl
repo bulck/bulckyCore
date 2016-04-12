@@ -65,13 +65,13 @@ proc ::MCP230XX::init {index} {
             
         } msg]
         if {$RC != 0} {
-            ::piLog::log [clock milliseconds] "error" "::MCP230XX::init Module $moduleAdresse does not respond :$msg "
+            ::piLog::log [clock milliseconds] "error" "::MCP230XX::init index $index Module $moduleAdresse does not respond :$msg "
         } else {
-            ::piLog::log [clock milliseconds] "info" "::MCP230XX::init Module $moduleAdresse init IODIRA & IODIRB to 0xFF OK"
+            ::piLog::log [clock milliseconds] "info" "::MCP230XX::init index $index Module $moduleAdresse init IODIRA & IODIRB to 0xFF OK"
             set register(${index},init_done) 1
         }
     } else {
-        ::piLog::log [clock milliseconds] "debug" "::MCP230XX::init Module $moduleAdresse already initialized"
+        ::piLog::log [clock milliseconds] "debug" "::MCP230XX::init index $index Module $moduleAdresse already initialized"
     }
 }
 

@@ -108,22 +108,28 @@ foreach module [array names ::moduleSlaveUsed] {
     }
 }
 
+        
+# Si le programme est déactivé
+if {[::piTools::readArrayElem [array get ::configXML] programm_activ "on"] == "off"} {
+    ::piLog::log [clock milliseconds] "info" "Programme desactive"
+} else {
+    # initialisation de la partie émetteur
+    ::piLog::log [clock milliseconds] "info" "emeteur_init"
+    emeteur_init
 
-# initialisation de la partie émetteur
-::piLog::log [clock milliseconds] "info" "emeteur_init"
-emeteur_init
+    # Initialisation de la partie lecture capteur
+    ::piLog::log [clock milliseconds] "info" "::sensor::init"
+    ::sensor::init
 
-# Initialisation de la partie lecture capteur
-::piLog::log [clock milliseconds] "info" "::sensor::init"
-::sensor::init
+    # Boucle de régulation
+    ::piLog::log [clock milliseconds] "info" "emeteur_update_loop"
+    emeteur_update_loop
 
-# Boucle de régulation
-::piLog::log [clock milliseconds] "info" "emeteur_update_loop"
-emeteur_update_loop
+    # Boucle de lecture des capteurs
+    ::piLog::log [clock milliseconds] "info" "::sensor::loop"
+    ::sensor::loop
+}
 
-# Boucle de lecture des capteurs
-::piLog::log [clock milliseconds] "info" "::sensor::loop"
-::sensor::loop
 
 # Une fois la boucle de régulation démarrée , on peut activer le pilotage des prises (seulement si des prises wireless sont configurées)
 if {[array names moduleSlaveUsed -exact wireless] != ""} {
