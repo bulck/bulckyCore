@@ -185,9 +185,11 @@ for {set i 0} {$i < $::configXML(nbzone)} {incr i} {
     set ::configXML(zone,${i},engraisappliquee) -1
     
     # On lance la mise à jour des capteurs
+    init_updateSensor $i
     updateSensor $i
     
     # on démarre la régulation de la cuve :
+    init_cuveLoop $i
     cuveLoop $i
     
     # On active l'irrigation 
@@ -202,6 +204,7 @@ for {set i 0} {$i < $::configXML(nbzone)} {incr i} {
 vwait forever
 
 # Lancement 
+# tclsh "D:\CBX\06_bulckyCore\serverSLF\serverSLF.tcl" "D:\CBX\06_bulckyCore\_conf\00_defaultConf_Win\serverSLF\conf.xml" 
 # tclsh "D:\CBX\06_bulckyCore\serverSLF\serverSLF.tcl" "D:\CBX\06_bulckyCore\serverSLF\confExample\conf.xml" 
 # tclsh /home/sdf/Bureau/cultipiCore/serverSLF/serverSLF.tcl "/home/sdf/Bureau/cultipiCore/serverSLF/confExample/conf.xml" 
 # tclsh /opt/cultipi/serverSLF/serverSLF.tcl /etc/cultipi/01_defaultConf_RPi/serverSLF/conf.xml

@@ -79,21 +79,15 @@ proc messageGestion {message networkhost} {
         
             set value [lindex $message 3 0]
             
-            if {$::cuveIndex != "" && $value != ""} {
-                ::piLog::log [clock milliseconds] "debug" "messageGestion : Reception hauteur cuve $plateformeNom , [lindex $message 3 0] cm "
-                set ::cuve($::cuveIndex) $value
-                
-                
-                # Si le message est compréhensible
-                if {$value != "" &&
-                    $value != "DEFCOM" &&
-                    $value != "NA"} {
-                    set ::cuve($::cuveIndex,heureDernierPlein) 0
-                }
-
-                
-            } else {
+            if {$value == ""} {
                 ::piLog::log [clock milliseconds] "error" "Message pas compris $message"
+            } else {
+                ::piLog::log [clock milliseconds] "debug" "messageGestion : Reception capteur $networkhost "
+                
+                for {set i 3} {$i < [llength $message]} {incr i} {
+                    set ::sensor(${adresseIP},${i}) [lindex $message $i]
+                
+                }
             }
         }
     }
