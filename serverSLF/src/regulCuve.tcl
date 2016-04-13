@@ -34,6 +34,7 @@ proc cuveLoop {idxZone} {
     
     # On vérifie que l'information de niveau de cuve est valide 
     set hauteurCuve $::sensor(${IP},${num_cap_niveau})
+    
     if {[string is double $hauteurCuve]} {
         # On vérifie toute les 10 secondes le niveau d'eau
         # Si il est inférieur au niveau bas on remplie
@@ -55,7 +56,7 @@ proc cuveLoop {idxZone} {
         
         }
     } else {
-        ::piLog::log [clock milliseconds] "info" "cuve : ZONE $zoneNom : la hauteur de cuve n'est pas connue (hauteur : $hauteurCuve ) "; update
+        ::piLog::log [clock milliseconds] "info" "cuve : ZONE $zoneNom : la hauteur de cuve n'est pas connue (hauteur : $hauteurCuve ) ::sensor(${IP},${num_cap_niveau})"; update
     }
 
     #---------------  Aplication des engrais

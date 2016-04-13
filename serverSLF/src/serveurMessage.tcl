@@ -5,8 +5,11 @@ proc messageGestion {message networkhost} {
     set serverForResponse   [::piTools::lindexRobust $message 0]
     set indexForResponse    [::piTools::lindexRobust $message 1]
     set commande            [::piTools::lindexRobust $message 2]
+    if {$networkhost == "127.0.0.1"} {
+        set networkhost "localhost"
+    }
 
-    switch ${commande} {
+    switch -nocase ${commande} {
         "stop" {
             ::piLog::log [clock milliseconds] "info" "messageGestion : Asked stop"
             stopIt
@@ -73,22 +76,24 @@ proc messageGestion {message networkhost} {
             ::piServer::sendToServer $serverForResponse "$serverForResponse $indexForResponse _getRepere $returnList" $networkhost
 
         }
-        default {
-        
-            set plateformeNom     $::configXML(plateforme,$::cuveIndex,name)
-        
-            set value [lindex $message 3 0]
-            
+        "_getRepere" {
+       
+            set value [lrange $message 3 end]
+            # ::piLog::log [clock milliseconds] "debug" "message recu : value $value from $networkhost"
             if {$value == ""} {
                 ::piLog::log [clock milliseconds] "error" "Message pas compris $message"
             } else {
                 ::piLog::log [clock milliseconds] "debug" "messageGestion : Reception capteur $networkhost "
                 
-                for {set i 3} {$i < [llength $message]} {incr i} {
-                    set ::sensor(${adresseIP},${i}) [lindex $message $i]
-                
+                for {set i 1} {$i < [llength [lrange $message 3 end]]} {incr i} {
+                    # ::piLog::log [clock milliseconds] "debug" "messageGestion : Capteur $i Valeur [lindex [lrange $message 3 end] [expr $i - 1]] "
+                    set ::sensor(${networkhost},${i}) [lindex [lrange $message 3 end] [expr $i - 1]]
                 }
             }
+        }
+        default {
+            ::piLog::log [clock milliseconds] "error" "Message pas compris $message"
+
         }
     }
 }
