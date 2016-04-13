@@ -55,7 +55,7 @@ if {$RC != 0} {
 ::piLog::log [clock milliseconds] "info" "confXML : $confXML"
 # On affiche les infos dans le fichier de debug
 foreach element [array names configXML] {
-    ::piLog::log [clock milliseconds] "info" "$element : $configXML($element)"
+    ::piLog::log [clock milliseconds] "debug" "$element : $configXML($element)"
 }
 
 

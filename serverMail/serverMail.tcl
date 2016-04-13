@@ -50,7 +50,7 @@ if {$RC != 0} {
 # On affiche les infos dans le fichier de debug
 foreach element [array names configXML] {
     if {$element != "password"} {
-        ::piLog::log [clock milliseconds] "info" "$element : $configXML($element)"
+        ::piLog::log [clock milliseconds] "debug" "$element : $configXML($element)"
     }
 }
 

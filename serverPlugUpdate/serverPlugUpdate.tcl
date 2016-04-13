@@ -63,7 +63,7 @@ if {$RC != 0} {
 ::piLog::log [clock milliseconds] "info" "confXML : $confXML"
 # On affiche les infos dans le fichier de debug
 foreach element [array names configXML] {
-    ::piLog::log [clock milliseconds] "info" "$element : $configXML($element)"
+    ::piLog::log [clock milliseconds] "debug" "$element : $configXML($element)"
 }
 
 # Cette procédure permet d'afficher dans le fichier de log les erreurs qui sont apparues
@@ -108,14 +108,15 @@ foreach module [array names ::moduleSlaveUsed] {
     }
 }
 
-        
+# initialisation de la partie émetteur
+::piLog::log [clock milliseconds] "info" "emeteur_init"
+emeteur_init
+    
 # Si le programme est déactivé
 if {[::piTools::readArrayElem [array get ::configXML] programm_activ "on"] == "off"} {
     ::piLog::log [clock milliseconds] "info" "Programme desactive"
 } else {
-    # initialisation de la partie émetteur
-    ::piLog::log [clock milliseconds] "info" "emeteur_init"
-    emeteur_init
+
 
     # Initialisation de la partie lecture capteur
     ::piLog::log [clock milliseconds] "info" "::sensor::init"

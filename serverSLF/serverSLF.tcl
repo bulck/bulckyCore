@@ -49,7 +49,7 @@ if {$RC != 0} {
 ::piLog::log [clock milliseconds] "info" "confXML : $confXML"
 # On affiche les infos dans le fichier de debug
 foreach element [lsort [array names configXML]] {
-    ::piLog::log [clock milliseconds] "info" "$element : $configXML($element)"
+    ::piLog::log [clock milliseconds] "debug" "$element : $configXML($element)"
 }
 
 
@@ -203,5 +203,5 @@ vwait forever
 
 # Lancement 
 # tclsh "D:\CBX\06_bulckyCore\serverSLF\serverSLF.tcl" "D:\CBX\06_bulckyCore\serverSLF\confExample\conf.xml" 
-# tclsh /home/sdf/Bureau/cultipiCore/serverIrrigation/serverIrrigation.tcl "/home/sdf/Bureau/cultipiCore/serverIrrigation/confExample/conf.xml" 
-# tclsh /opt/cultipi/serverIrrigation/serverIrrigation.tcl /etc/cultipi/01_defaultConf_RPi/serverIrrigation/conf.xml
+# tclsh /home/sdf/Bureau/cultipiCore/serverSLF/serverSLF.tcl "/home/sdf/Bureau/cultipiCore/serverSLF/confExample/conf.xml" 
+# tclsh /opt/cultipi/serverSLF/serverSLF.tcl /etc/cultipi/01_defaultConf_RPi/serverSLF/conf.xml

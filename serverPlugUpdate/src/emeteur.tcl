@@ -253,9 +253,14 @@ proc updatePlug {plugNumber} {
         
     } elseif {$plgPrgm == ""} {
     
-        ::piLog::log [clock milliseconds] "error" "Plug $plugNumber programme is empty"
-        set statusError 1
+        ::piLog::log [clock milliseconds] "error" "Plug $plugNumber programme is empty, on passe la prise a 0"
         
+        # On envoi la commande au module
+        set statusError [::${module}::setValue $plugNumber "off" $::plug($plugNumber,adress)]
+        
+        # On sauvegarde le fait qu'on n'est plus en régulation
+        set ::plug($plugNumber,inRegulation) "NONE"
+
     } elseif {$plgPrgm != "off" && 
               $plgPrgm != "on" && 
               ${module} != "XMAX" && 
