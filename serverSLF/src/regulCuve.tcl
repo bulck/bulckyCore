@@ -51,12 +51,14 @@ proc cuveLoop {idxZone} {
             set ::cuve(${idxZone},hauteurMini) 35
             
         } else {
+        
+            ::piLog::log [clock milliseconds] "debug" "cuve : ZONE $zoneNom : niveau bon on remet le seuil a 15 (hauteur : $hauteurCuve ) "; update
+        
             # On réinitialise la hauteur mini 
             set ::cuve(${idxZone},hauteurMini) 15
-        
         }
     } else {
-        ::piLog::log [clock milliseconds] "info" "cuve : ZONE $zoneNom : la hauteur de cuve n'est pas connue (hauteur : $hauteurCuve ) ::sensor(${IP},${num_cap_niveau})"; update
+        ::piLog::log [clock milliseconds] "info" "cuve : ZONE $zoneNom : la hauteur de cuve n'est pas connue (hauteur : $hauteurCuve )"; update
     }
 
     #---------------  Aplication des engrais
@@ -64,11 +66,8 @@ proc cuveLoop {idxZone} {
     set heure  [expr [clock format [clock seconds] -format "%H"] + 0]
     set heure  [string trimleft $heure "0"]
     if {$heure == ""} {set heure 0}
-    set minute [expr [clock format [clock seconds] -format "%M"] + 0]
-    set minute  [string trimleft $minute "0"]
-    if {$minute == ""} {set minute 0}
-    
-    if {$heure != $::configXML(zone,${idxZone},engraisappliquee) && $minute < 10 } {
+
+    if {$heure != $::cuve(${idxZone},engraisappliquee)} {
         # On applique les engrais
         for {set i 1} {$i < 4} {incr i} {
         
@@ -83,11 +82,9 @@ proc cuveLoop {idxZone} {
             }
         }
 
-
         # On sauvegarde la dernière heure 
-        set ::configXML(zone,${idxZone},engraisappliquee) $heure
+        set ::cuve(${idxZone},engraisappliquee) $heure
     }
-    
 
     # On lance l'iteration suivante 
     after [expr 1000 * 10] [list after idle cuveLoop $idxZone]
