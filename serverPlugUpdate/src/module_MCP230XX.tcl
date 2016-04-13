@@ -159,7 +159,7 @@ proc ::MCP230XX::setValue {plugNumber value address} {
         ::piLog::log [clock milliseconds] "error" "::MCP230XX::setValue Module $moduleAdresse does not respond :$msg "
         set errorDuringSend 1
     } else {
-        ::piLog::log [clock milliseconds] "info" "::MCP230XX::setValue set IODIR to 0x00 OK"
+        ::piLog::log [clock milliseconds] "debug" "::MCP230XX::setValue set IODIR to 0x00 OK"
         set register(${moduleAdresse},init_done) 1
     }
     
@@ -179,7 +179,7 @@ proc ::MCP230XX::setValue {plugNumber value address} {
         ::piLog::log [clock milliseconds] "error" "::MCP230XX::setValue Module $moduleAdresse does not respond :$msg "
         set errorDuringSend 1
     } else {
-        ::piLog::log [clock milliseconds] "info" "::MCP230XX::setValue Output GPIO  $moduleAdresse to $register(${moduleAdresse},GPIO_LAST) OK (output pin $outputPin)"
+        ::piLog::log [clock milliseconds] "debug" "::MCP230XX::setValue Output GPIO  $moduleAdresse to $register(${moduleAdresse},GPIO_LAST) OK (output pin $outputPin)"
     }
     
     return $errorDuringSend

@@ -52,6 +52,13 @@ foreach element [lsort [array names configXML]] {
     ::piLog::log [clock milliseconds] "debug" "$element : $configXML($element)"
 }
 
+# Cette procédure permet d'afficher dans le fichier de log les erreurs qui sont apparues
+proc bgerror {message} {
+    ::piLog::log [clock milliseconds] error_critic "bgerror in [info script] $::argv -$message- "
+    foreach elem [split $::errorInfo "\n"] {
+        ::piLog::log [clock milliseconds] error_critic " * $elem"
+    }
+}
 
 proc stopIt {} {
     ::piLog::log [clock milliseconds] "info" "Start stopping ${::moduleLocalName}"
@@ -65,11 +72,6 @@ proc stopIt {} {
 }
 
 
-proc startIrrigation {} {
-
-
-
-}
 
 proc reload {} {
 
@@ -79,6 +81,7 @@ proc reload {} {
 
 }
 
+set ::etatLDV(irrigationLoop) ""
 proc irrigationLoop {idxZone indexPlateforme indexLigneIrrigation} {
 
     # On récupère les paramètres utiles
@@ -91,6 +94,8 @@ proc irrigationLoop {idxZone indexPlateforme indexLigneIrrigation} {
     set IPsurpresseur       $::configXML(surpresseur,ip)
     set Prisesurpresseur    $::configXML(surpresseur,prise)
     set nettoyageactif      $::configXML(nettoyageactif)
+    
+    set ::etatLDV(irrigationLoop) ""
     
     # On vérifie que le numéro de ligne est correcte
     if {$indexLigneIrrigation >= $plateformeNbLigne} {
@@ -149,10 +154,10 @@ proc irrigationLoop {idxZone indexPlateforme indexLigneIrrigation} {
         ::piServer::sendToServer $::piServer::portNumber(serverPlugUpdate) "$::piServer::portNumber(${::moduleLocalName}) 0 setRepere $Prisesurpresseur on $TempsOnEV" $IPsurpresseur
         
         # Dans X secondes, on indique que la Ligne n'est plus pilotée
-        after [expr $tempscycle * 1000] [list ::piLog::log [expr [clock milliseconds] + $tempscycle * 1000] "info" "nettoyage: $plateformeNom : ligne $indexLigneIrrigation : Fin Nettoyage"]
+        after [expr $tempscycle * 1000] [list ::piLog::log [expr [clock milliseconds] + $tempscycle * 1000] "info" "nettoyage : $plateformeNom : ligne $indexLigneIrrigation : Fin Nettoyage"]
         
     } else {
-        ::piLog::log [clock milliseconds] "info" "irrigation : $plateformeNom : ligne $indexLigneIrrigation : ON EV pendant [expr $TempsOnEV + 1] s (t$JourOuNuit)"; update
+        ::piLog::log [clock milliseconds] "info" "irrigation : $plateformeNom : ligne $indexLigneIrrigation : ON EV pendant [expr $TempsOnEV + 1] s ($JourOuNuit)"; update
         ::piServer::sendToServer $::piServer::portNumber(serverPlugUpdate) "$::piServer::portNumber(${::moduleLocalName}) 0 setRepere $EVLigne on [expr $TempsOnEV + 1]" $IP
 
         # On allume la pompe
@@ -160,13 +165,13 @@ proc irrigationLoop {idxZone indexPlateforme indexLigneIrrigation} {
         ::piServer::sendToServer $::piServer::portNumber(serverPlugUpdate) "$::piServer::portNumber(${::moduleLocalName}) 0 setRepere $Pompe on $TempsOnEV" $IP
 
         # Dans X secondes, on indique que la Ligne n'est plus pilotée
-        after [expr $tempscycle * 1000] [list ::piLog::log [expr [clock milliseconds] + $tempscycle * 1000] "info" "irrigation: $plateformeNom : ligne $indexLigneIrrigation : Fin Irrigation"]
+        after [expr $tempscycle * 1000] [list ::piLog::log [expr [clock milliseconds] + $tempscycle * 1000] "info" "irrigation : $plateformeNom : ligne $indexLigneIrrigation : Fin Irrigation"]
     }
 
     incr indexLigneIrrigation
 
     # On lance l'iteration suivante 
-    after [expr 1000 * $tempscycle] [list after idle irrigationLoop $idxZone $indexPlateforme $indexLigneIrrigation]
+    set ::etatLDV(irrigationLoop) [after [expr 1000 * $tempscycle] [list after idle irrigationLoop $idxZone $indexPlateforme $indexLigneIrrigation]]
 }
 
 
@@ -193,7 +198,12 @@ for {set i 0} {$i < $::configXML(nbzone)} {incr i} {
 
 }
 
-
+proc ligneDeVie {} {
+    ::piLog::log [clock milliseconds] "info" "Ligne de vie : cuveLoop : $::etatLDV(cuveLoop) - updateSensor : $::etatLDV(updateSensor) - irrigationLoop $::etatLDV(irrigationLoop)"; update
+    after [expr 1000 * 10] ligneDeVie
+}
+# On lance la ligne de vie
+ligneDeVie
 
 vwait forever
 

@@ -6,15 +6,16 @@ proc init_updateSensor {zone} {
     for {set i 1} {$i <= $nbSensor} { incr i} {
         set ::sensor(${adresseIP},${i}) "INIT"
     }
-   
+    
+    set ::etatLDV(updateSensor) ""
 }
 
 proc updateSensor {zone} {
 
 
-   set adresseIP    $::configXML(zone,${zone},ip)
-   set nbSensor     $::configXML(zone,${zone},nbsensor)
-
+    set adresseIP    $::configXML(zone,${zone},ip)
+    set nbSensor     $::configXML(zone,${zone},nbsensor)
+    set ::etatLDV(updateSensor) ""
     # Il nous faut : 
     # La hauteur de la cuve 
     # L'état des bouttons
@@ -29,7 +30,7 @@ proc updateSensor {zone} {
     ::piLog::log [clock milliseconds] "debug" "Demande capteur $zone ($adresseIP : $::piServer::portNumber(serverAcqSensorV2))"
     ::piServer::sendToServer $::piServer::portNumber(serverAcqSensorV2) "$::piServer::portNumber(${::moduleLocalName}) 0 getRepere [join $listeVariable " "]" $adresseIP
 
-    after [expr 5000] [list after idle updateSensor $zone]
+    set ::etatLDV(updateSensor) [after [expr 5000] [list after idle updateSensor $zone]]
     
     return
 }
