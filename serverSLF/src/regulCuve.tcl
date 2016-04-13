@@ -6,7 +6,13 @@ proc init_cuveLoop {idxZone} {
     # Capteur bas + milieu : 15
     # Capteur bas + milieu + haut : 35
     set ::cuve(${idxZone},hauteurMini) 15
-
+    
+    # On désactive le pilotage des pompes la première heure
+    set heure  [expr [clock format [clock seconds] -format "%H"] + 0]
+    set heure  [string trimleft $heure "0"]
+    if {$heure == ""} {set heure 0}
+    set ::configXML(zone,${idxZone},engraisappliquee) $heure
+    
 }
 
 

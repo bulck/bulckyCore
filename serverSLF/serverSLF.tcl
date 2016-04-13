@@ -170,9 +170,6 @@ proc irrigationLoop {idxZone indexPlateforme indexLigneIrrigation} {
 }
 
 
-# *************  Update des cuves 
-# Initialisation des variable 
-
 # On met en route le serveur de message
 ::piServer::start messageGestion $::piServer::portNumber(${::moduleLocalName})
 
@@ -181,9 +178,6 @@ proc irrigationLoop {idxZone indexPlateforme indexLigneIrrigation} {
 # Remplissage automatique & chargement d'engrais 
 for {set i 0} {$i < $::configXML(nbzone)} {incr i} {
 
-    # On initialise les variable
-    set ::configXML(zone,${i},engraisappliquee) -1
-    
     # On lance la mise à jour des capteurs
     init_updateSensor $i
     updateSensor $i
