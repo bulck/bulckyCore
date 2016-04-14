@@ -101,7 +101,7 @@ proc irrigationLoop {idxZone indexPlateforme indexLigneIrrigation} {
     set num_cap_niveau      $::configXML(zone,${idxZone},capteur,niveau)
     set hauteurCuve         $::sensor(${IP},${num_cap_niveau})
     set cuveVide            0
-    if {[string is double $hauteurCuve] == 0} {
+    if {[string is double $hauteurCuve]} {
         if {$hauteurCuve == 0} {
             set cuveVide    1
         }
@@ -224,7 +224,7 @@ for {set i 0} {$i < $::configXML(nbzone)} {incr i} {
 
 proc ligneDeVie {} {
     ::piLog::log [clock milliseconds] "info" "Ligne de vie : cuveLoop : $::etatLDV(cuveLoop) - updateSensor : $::etatLDV(updateSensor) - irrigationLoop $::etatLDV(irrigationLoop) - purgeCuve $::etatLDV(purgeCuve)"; update
-    after [expr 1000 * 10] ligneDeVie
+    after [expr 1000 * 60] ligneDeVie
 }
 # On lance la ligne de vie
 ligneDeVie
