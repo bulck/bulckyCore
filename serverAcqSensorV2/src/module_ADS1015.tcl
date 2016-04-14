@@ -221,7 +221,7 @@ proc ::ADS1015::read {index sensor} {
             
             set tension [expr ($valueOrdre / 32768.0) * (4.096)]
             
-            set goodValue [expr ($tension / 4.096) * ($max - $min) + $min ]
+            set goodValue  [format "%.2f" [expr ($tension / 4.096) * ($max - $min) + $min ]]
         }
     }
  
