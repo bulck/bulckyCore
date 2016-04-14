@@ -98,6 +98,16 @@ proc irrigationLoop {idxZone indexPlateforme indexLigneIrrigation} {
     
     set nettoyageactif      $::configXML(nettoyageactif)
     
+    set num_cap_niveau      $::configXML(zone,${idxZone},capteur,niveau)
+    set hauteurCuve         $::sensor(${IP},${num_cap_niveau})
+    set cuveVide            0
+    if {[string is double $hauteurCuve] == 0} {
+        if {$hauteurCuve == 0} {
+            set cuveVide    1
+        }
+    } else {
+        set cuveVide        1
+    }
     
     set ::etatLDV(irrigationLoop) ""
     
@@ -134,6 +144,7 @@ proc irrigationLoop {idxZone indexPlateforme indexLigneIrrigation} {
     # 4 cas :
     # - la plateforme est désactivée avec le bouton ou avec l'interface web
     # - le temps est nul
+    # - La cuve est vide
     # - Nettoyage (Et que le nettoyage est activé)
     # - Irrigation
     # On allume l'électrovanne 1 pour 2min30 secondes
@@ -142,6 +153,9 @@ proc irrigationLoop {idxZone indexPlateforme indexLigneIrrigation} {
     } elseif {$TempsOnEV < 1} {
         # Le temps est nul
         ::piLog::log [clock milliseconds] "info" "irrigation : $plateformeNom : ligne $indexLigneIrrigation : Temps trop petit"; update
+    } elseif {$cuveVide == 1} {
+        # La cuve est vide
+        ::piLog::log [clock milliseconds] "info" "irrigation : $plateformeNom : ligne $indexLigneIrrigation : Cuve pas assez remplie ou donnée non disponible (hauteurCuve $hauteurCuve) "; update
     } elseif {$nbCycle == 0 && $nettoyageactif == "true"} {
         # On active le nettoyage :
         # Mise en route de la ligne d'électrovanne + 1s
