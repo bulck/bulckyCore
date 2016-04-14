@@ -91,6 +91,13 @@ proc messageGestion {message networkhost} {
                 }
             }
         }
+        "purgeCuve" {
+            set zone [::piTools::lindexRobust $message 3]
+            ::piLog::log [clock milliseconds] "info" "messageGestion : Demande de purge de la cuve zone $zone"
+            
+            purgeCuve $zone
+            
+        }
         default {
             ::piLog::log [clock milliseconds] "error" "Message pas compris $message"
 

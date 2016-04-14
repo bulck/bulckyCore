@@ -14,8 +14,8 @@ proc ::simulateur::init {} {
     for {set i 1} {$i < 7} {incr i} {
 
         set sensorSimu($i,type) [::piTools::readArrayElem [array get ::configXML] "simulator,${i},type" "NA"]
-        set sensorSimu($i,min) [::piTools::readArrayElem [array get ::configXML] "simulator,${i},min" "10"]
-        set sensorSimu($i,max) [::piTools::readArrayElem [array get ::configXML] "simulator,${i},max" "40"]
+        set sensorSimu($i,min)  [::piTools::readArrayElem [array get ::configXML] "simulator,${i},min" "10"]
+        set sensorSimu($i,max)  [::piTools::readArrayElem [array get ::configXML] "simulator,${i},max" "40"]
 
     }
 

@@ -91,9 +91,13 @@ proc irrigationLoop {idxZone indexPlateforme indexLigneIrrigation} {
     set tempscycle          $::configXML(zone,$idxZone,plateforme,${indexPlateforme},tempscycle)
     set Pompe               $::configXML(zone,$idxZone,plateforme,${indexPlateforme},pompe,prise)
     set EVEau               $::configXML(zone,$idxZone,plateforme,${indexPlateforme},eauclaire,prise)
+    
     set IPsurpresseur       $::configXML(surpresseur,ip)
     set Prisesurpresseur    $::configXML(surpresseur,prise)
+    set surpresseurActif    [::piTools::readArrayElem [array get ::configXML] "surpresseur,actif" "false"]
+    
     set nettoyageactif      $::configXML(nettoyageactif)
+    
     
     set ::etatLDV(irrigationLoop) ""
     
@@ -150,8 +154,14 @@ proc irrigationLoop {idxZone indexPlateforme indexLigneIrrigation} {
         ::piLog::log [clock milliseconds] "info" "nettoyage : $plateformeNom : ligne $indexLigneIrrigation : ON EV EAU pendant $TempsOnEV s ($JourOuNuit)"; update
         ::piServer::sendToServer $::piServer::portNumber(serverPlugUpdate) "$::piServer::portNumber(${::moduleLocalName}) 0 setRepere $EVEau on $TempsOnEV" $IP 
         
-        ::piLog::log [clock milliseconds] "info" "nettoyage : $plateformeNom : ligne $indexLigneIrrigation : ON Supresseur pendant $TempsOnEV s ($JourOuNuit)"; update
-        ::piServer::sendToServer $::piServer::portNumber(serverPlugUpdate) "$::piServer::portNumber(${::moduleLocalName}) 0 setRepere $Prisesurpresseur on $TempsOnEV" $IPsurpresseur
+        # On vérifie qu'il faille piloter le surpresseur
+        if {$surpresseurActif != "false"} {
+            ::piLog::log [clock milliseconds] "info" "nettoyage : $plateformeNom : ligne $indexLigneIrrigation : ON Supresseur pendant $TempsOnEV s ($JourOuNuit)"; update
+            ::piServer::sendToServer $::piServer::portNumber(serverPlugUpdate) "$::piServer::portNumber(${::moduleLocalName}) 0 setRepere $Prisesurpresseur on $TempsOnEV" $IPsurpresseur
+        } else {
+            ::piLog::log [clock milliseconds] "debug" "nettoyage : $plateformeNom : ligne $indexLigneIrrigation : Surpresseur desactive"; update
+        }
+
         
         # Dans X secondes, on indique que la Ligne n'est plus pilotée
         after [expr $tempscycle * 1000] [list ::piLog::log [expr [clock milliseconds] + $tempscycle * 1000] "info" "nettoyage : $plateformeNom : ligne $indexLigneIrrigation : Fin Nettoyage"]
@@ -199,7 +209,7 @@ for {set i 0} {$i < $::configXML(nbzone)} {incr i} {
 }
 
 proc ligneDeVie {} {
-    ::piLog::log [clock milliseconds] "info" "Ligne de vie : cuveLoop : $::etatLDV(cuveLoop) - updateSensor : $::etatLDV(updateSensor) - irrigationLoop $::etatLDV(irrigationLoop)"; update
+    ::piLog::log [clock milliseconds] "info" "Ligne de vie : cuveLoop : $::etatLDV(cuveLoop) - updateSensor : $::etatLDV(updateSensor) - irrigationLoop $::etatLDV(irrigationLoop) - purgeCuve $::etatLDV(purgeCuve)"; update
     after [expr 1000 * 10] ligneDeVie
 }
 # On lance la ligne de vie

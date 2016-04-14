@@ -112,8 +112,7 @@ proc irrigationLoop {indexPlateforme indexZone} {
     set IP      $::configXML(plateforme,${indexPlateforme},ip)
     set EVZone  $::configXML(plateforme,${indexPlateforme},zone,${indexZone},prise)
     set Pompe   $::configXML(plateforme,${indexPlateforme},pompePrise)
-    
-    
+
     # Si on est entre 6h et 22h -> utilisation des temps de jour
     set hour [string trimleft [clock format [clock seconds] -format %H] "0"]
     if {$hour == ""} {set hour 0}
