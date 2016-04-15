@@ -100,7 +100,7 @@ proc cuveLoop {idxZone} {
     }
 
     # On lance l'iteration suivante 
-    set ::etatLDV(cuveLoop) [after [expr 1000 * 10] [list after idle cuveLoop $idxZone]]
+    set ::etatLDV(cuveLoop) [after [expr 1000 * 30] [list after idle cuveLoop $idxZone]]
 }
 
 proc purgeCuve {idxZone} {
