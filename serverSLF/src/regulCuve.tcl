@@ -45,18 +45,18 @@ proc cuveLoop {idxZone} {
         # On vérifie toute les 10 secondes le niveau d'eau
         # Si il est inférieur au niveau bas on remplie
         if {$hauteurCuve < $::cuve(${idxZone},hauteurMini)} {
-            ::piLog::log [clock milliseconds] "info" "cuve : ZONE $zoneNom : niveau trop bas (hauteur : $hauteurCuve / $::cuve(${idxZone},hauteurMini) ) "; update
+            ::piLog::log [clock milliseconds] "info" "cuve : $zoneNom : niveau trop bas (hauteur : $hauteurCuve / $::cuve(${idxZone},hauteurMini) ) "; update
             
             # On met en route le remplissage pour 30 s 
-            ::piLog::log [clock milliseconds] "info" "cuve : ZONE $zoneNom : ON EV Remplissage pendant 31s"; update
+            ::piLog::log [clock milliseconds] "info" "cuve : $zoneNom : ON EV Remplissage pendant 31s"; update
             ::piServer::sendToServer $::piServer::portNumber(serverPlugUpdate) "$::piServer::portNumber(${::moduleLocalName}) 0 setRepere $priseremplissagecuve on 31" $IP
             
             # On vérifie qu'il faille piloter le surpresseur
             if {$surpresseurActif != "false"} {
-                ::piLog::log [clock milliseconds] "info" "cuve : ZONE $zoneNom : ON Supresseur pendant 30s"; update
+                ::piLog::log [clock milliseconds] "info" "cuve : $zoneNom : ON Supresseur pendant 30s"; update
                 ::piServer::sendToServer $::piServer::portNumber(serverPlugUpdate) "$::piServer::portNumber(${::moduleLocalName}) 0 setRepere $Prisesurpresseur on 30" $IPsurpresseur
             } else {
-                ::piLog::log [clock milliseconds] "debug" "cuve : ZONE $zoneNom : Surpresseur desactive"; update
+                ::piLog::log [clock milliseconds] "debug" "cuve : $zoneNom : Surpresseur desactive"; update
             }
 
             
@@ -65,13 +65,13 @@ proc cuveLoop {idxZone} {
             
         } else {
         
-            ::piLog::log [clock milliseconds] "debug" "cuve : ZONE $zoneNom : niveau bon on remet le seuil a $::cuve(min) (hauteur : $hauteurCuve  / $::cuve(${idxZone},hauteurMini) ) "; update
+            ::piLog::log [clock milliseconds] "debug" "cuve : $zoneNom : niveau bon on remet le seuil a $::cuve(min) (hauteur : $hauteurCuve  / $::cuve(${idxZone},hauteurMini) ) "; update
         
             # On réinitialise la hauteur mini 
             set ::cuve(${idxZone},hauteurMini) $::cuve(min)
         }
     } else {
-        ::piLog::log [clock milliseconds] "info" "cuve : ZONE $zoneNom : la hauteur de cuve n'est pas connue (hauteur : $hauteurCuve )"; update
+        ::piLog::log [clock milliseconds] "info" "cuve : $zoneNom : la hauteur de cuve n'est pas connue (hauteur : $hauteurCuve )"; update
     }
 
     #---------------  Aplication des engrais
@@ -90,7 +90,7 @@ proc cuveLoop {idxZone} {
                 set engraistmps   $::configXML(zone,${idxZone},engrais,${i},temps)
                 set engraisprise  $::configXML(zone,${idxZone},engrais,${i},prise)
                 
-                ::piLog::log [clock milliseconds] "info" "engrais : ZONE $zoneNom : ON ENGRAIS ${i} pendant $engraistmps s "; update
+                ::piLog::log [clock milliseconds] "info" "engrais : $zoneNom : ON ENGRAIS ${i} pendant $engraistmps s "; update
                 ::piServer::sendToServer $::piServer::portNumber(serverPlugUpdate) "$::piServer::portNumber(${::moduleLocalName}) 0 setRepere $engraisprise on $engraistmps" $IP 
             }
         }
@@ -111,7 +111,7 @@ proc purgeCuve {idxZone} {
     # On cherche la prise pour purger 
     set prisePurge  [::piTools::readArrayElem [array get ::configXML] "zone,${idxZone},prise,purge" "false"]
     if {$prisePurge == "false"} {
-        ::piLog::log [clock milliseconds] "error" "purgeCuve : ZONE $zoneNom : La prise pour purger n'est pas définie "; update
+        ::piLog::log [clock milliseconds] "error" "purgeCuve : $zoneNom : La prise pour purger n'est pas définie "; update
         return
     }
     
@@ -124,14 +124,14 @@ proc purgeCuve {idxZone} {
     if {[string is double $hauteurCuve]} {
         if {$hauteurCuve != $::cuve(purge)} {
             # on active la prise de purge 
-            ::piLog::log [clock milliseconds] "info" "purgeCuve : ZONE $zoneNom : ON EV Purge pendant 30s"; update
+            ::piLog::log [clock milliseconds] "info" "purgeCuve : $zoneNom : ON EV Purge pendant 30s"; update
             ::piServer::sendToServer $::piServer::portNumber(serverPlugUpdate) "$::piServer::portNumber(${::moduleLocalName}) 0 setRepere $prisePurge on 30" $IP
         } else {
-            ::piLog::log [clock milliseconds] "info" "purgeCuve : ZONE $zoneNom : la cuve est vide"; update
+            ::piLog::log [clock milliseconds] "info" "purgeCuve : $zoneNom : la cuve est vide"; update
             return
         }
     } else {
-        ::piLog::log [clock milliseconds] "info" "purgeCuve : ZONE $zoneNom : la hauteur de cuve n'est pas connue (hauteur : $hauteurCuve )"; update
+        ::piLog::log [clock milliseconds] "info" "purgeCuve : $zoneNom : la hauteur de cuve n'est pas connue (hauteur : $hauteurCuve )"; update
     }
     
     # On lance l'iteration suivante 
