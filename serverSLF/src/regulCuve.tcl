@@ -35,44 +35,52 @@ proc cuveLoop {idxZone} {
     set surpresseurActif    [::piTools::readArrayElem [array get ::configXML] "surpresseur,actif" "false"]
     
     set priseremplissagecuve $::configXML(zone,${idxZone},prise,remplissagecuve)
+    set remplissageActif    [::piTools::readArrayElem [array get ::configXML] "zone,${idxZone},remplissage,actif" "true"]
     
     set ::etatLDV(cuveLoop) ""
     
-    # On vérifie que l'information de niveau de cuve est valide 
-    set hauteurCuve $::sensor(${IP},${num_cap_niveau})
-    
-    if {[string is double $hauteurCuve]} {
-        # On vérifie toute les 10 secondes le niveau d'eau
-        # Si il est inférieur au niveau bas on remplie
-        if {$hauteurCuve < $::cuve(${idxZone},hauteurMini)} {
-            ::piLog::log [clock milliseconds] "info" "cuve : $zoneNom : niveau trop bas (hauteur : $hauteurCuve / $::cuve(${idxZone},hauteurMini) ) "; update
-            
-            # On met en route le remplissage pour 30 s 
-            ::piLog::log [clock milliseconds] "info" "cuve : $zoneNom : ON EV Remplissage pendant 31s"; update
-            ::piServer::sendToServer $::piServer::portNumber(serverPlugUpdate) "$::piServer::portNumber(${::moduleLocalName}) 0 setRepere $priseremplissagecuve on 31" $IP
-            
-            # On vérifie qu'il faille piloter le surpresseur
-            if {$surpresseurActif != "false"} {
-                ::piLog::log [clock milliseconds] "info" "cuve : $zoneNom : ON Supresseur pendant 30s"; update
-                ::piServer::sendToServer $::piServer::portNumber(serverPlugUpdate) "$::piServer::portNumber(${::moduleLocalName}) 0 setRepere $Prisesurpresseur on 30" $IPsurpresseur
-            } else {
-                ::piLog::log [clock milliseconds] "debug" "cuve : $zoneNom : Surpresseur desactive"; update
-            }
+    # On vérifie que la régulation de cuve n'est pas désactivée
+    if {$remplissageActif != "false"} {
 
+        # On vérifie que l'information de niveau de cuve est valide 
+        set hauteurCuve $::sensor(${IP},${num_cap_niveau})
+        
+        if {[string is double $hauteurCuve]} {
+            # On vérifie toute les 10 secondes le niveau d'eau
+            # Si il est inférieur au niveau bas on remplie
+            if {$hauteurCuve < $::cuve(${idxZone},hauteurMini)} {
+                ::piLog::log [clock milliseconds] "info" "cuve : $zoneNom : niveau trop bas (hauteur : $hauteurCuve / $::cuve(${idxZone},hauteurMini) ) "; update
+                
+                # On met en route le remplissage pour 30 s 
+                ::piLog::log [clock milliseconds] "info" "cuve : $zoneNom : ON EV Remplissage pendant 31s"; update
+                ::piServer::sendToServer $::piServer::portNumber(serverPlugUpdate) "$::piServer::portNumber(${::moduleLocalName}) 0 setRepere $priseremplissagecuve on 31" $IP
+                
+                # On vérifie qu'il faille piloter le surpresseur
+                if {$surpresseurActif != "false"} {
+                    ::piLog::log [clock milliseconds] "info" "cuve : $zoneNom : ON Supresseur pendant 30s"; update
+                    ::piServer::sendToServer $::piServer::portNumber(serverPlugUpdate) "$::piServer::portNumber(${::moduleLocalName}) 0 setRepere $Prisesurpresseur on 30" $IPsurpresseur
+                } else {
+                    ::piLog::log [clock milliseconds] "debug" "cuve : $zoneNom : Surpresseur desactive"; update
+                }
+
+                
+                # On indique que la hauteur mini doit être le capteur du dessus
+                set ::cuve(${idxZone},hauteurMini) $::cuve(max)
+                
+            } else {
             
-            # On indique que la hauteur mini doit être le capteur du dessus
-            set ::cuve(${idxZone},hauteurMini) $::cuve(max)
+                ::piLog::log [clock milliseconds] "debug" "cuve : $zoneNom : niveau bon on remet le seuil a $::cuve(min) (hauteur : $hauteurCuve  / $::cuve(${idxZone},hauteurMini) ) "; update
             
+                # On réinitialise la hauteur mini 
+                set ::cuve(${idxZone},hauteurMini) $::cuve(min)
+            }
         } else {
-        
-            ::piLog::log [clock milliseconds] "debug" "cuve : $zoneNom : niveau bon on remet le seuil a $::cuve(min) (hauteur : $hauteurCuve  / $::cuve(${idxZone},hauteurMini) ) "; update
-        
-            # On réinitialise la hauteur mini 
-            set ::cuve(${idxZone},hauteurMini) $::cuve(min)
+            ::piLog::log [clock milliseconds] "info" "cuve : $zoneNom : la hauteur de cuve n'est pas connue (hauteur : $hauteurCuve )"; update
         }
     } else {
-        ::piLog::log [clock milliseconds] "info" "cuve : $zoneNom : la hauteur de cuve n'est pas connue (hauteur : $hauteurCuve )"; update
+        ::piLog::log [clock milliseconds] "debug" "cuve : $zoneNom : Remplissage desactive"; update
     }
+    
 
     #---------------  Aplication des engrais
     # Au début de chaque heure, on charge en engrais
