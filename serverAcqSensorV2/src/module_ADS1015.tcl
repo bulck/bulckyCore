@@ -134,7 +134,7 @@ proc ::ADS1015::read {index sensor} {
     
     if {$moduleAdresse == "NA"} {
         ::piLog::log [clock milliseconds] "error" "::ADS1015::read Adress $address does not exists "
-        return
+        return $value
     }
     
     # On construit la config 

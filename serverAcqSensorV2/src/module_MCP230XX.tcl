@@ -89,7 +89,7 @@ proc ::MCP230XX::read {index sensor} {
     
     if {$moduleAdresse == "NA"} {
         ::piLog::log [clock milliseconds] "error" "::MCP230XX::read index $index does not exists "
-        return
+        return $value
     }
     
     # Si l'initialisation n'est pas faite, on l'a fait 

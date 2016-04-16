@@ -71,7 +71,7 @@ proc ::sensor_co2::read {index sensor} {
     variable errorMessage
 
     if {$init == 0 || $sensorCO2Num == ""} {
-        return ""
+        return "NA"
     }
     
     set value "NA"
