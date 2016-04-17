@@ -89,6 +89,10 @@ proc ::sensorAcq::saveType {index type} {
         "co2" {
             set type "10"
         }
+        11 - 
+        "pression" {
+            set type "11"
+        }
         "DEFCOM" {
             set toNotRegister 1
             ::piLog::log [clock milliseconds] "debug" "_subscription response : type $type index $index not registered (DEFCOM)"

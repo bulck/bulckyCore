@@ -86,7 +86,7 @@ proc ::I2C::read {index sensor} {
     set RC [catch {
         exec /usr/local/sbin/i2cset -y 1 $moduleAdresse $moduleRegistreHP
         set valueHP [exec /usr/local/sbin/i2cget -y 1 $moduleAdresse]
-        
+        after 10
         exec /usr/local/sbin/i2cset -y 1 $moduleAdresse $moduleRegistreLP
         set valueLP [exec /usr/local/sbin/i2cget -y 1 $moduleAdresse]
     } msg]
