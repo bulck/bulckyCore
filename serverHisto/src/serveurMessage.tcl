@@ -102,7 +102,7 @@ proc messageGestion {message networkhost} {
                             
                                 # SI le dernier parametre n'est aps définit c'est qu'il n'y a qu'une seule valeur envoyée
                                 if {$time == ""} {
-                                    ::sql::AddSensorValue [lindex $splitted 1] $valeur1 "NA" $time
+                                    ::sql::AddSensorValue [lindex $splitted 1] $valeur1 "NA" $valeur2
                                 } else {
                                     ::sql::AddSensorValue [lindex $splitted 1] $valeur1 $valeur2 $time
                                 }

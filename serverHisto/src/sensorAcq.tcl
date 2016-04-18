@@ -62,6 +62,7 @@ proc ::sensorAcq::saveType {index type} {
     set toNotRegister 0
 
     switch $type {
+        "temperature"
         2 -
         SHT {
             set type 2
