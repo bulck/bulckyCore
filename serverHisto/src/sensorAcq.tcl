@@ -71,6 +71,7 @@ proc ::sensorAcq::saveType {index type} {
             set type 3
         }
         6 -
+        "niveau_cuve" -
         WATER_LEVEL {
             set type 6
         }
@@ -95,6 +96,7 @@ proc ::sensorAcq::saveType {index type} {
             set type "10"
         }
         11 - 
+        "pression_pompe" -
         "pression" {
             set type "11"
         }

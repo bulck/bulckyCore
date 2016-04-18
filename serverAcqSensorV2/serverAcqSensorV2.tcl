@@ -111,7 +111,7 @@ for {set index 1} {$index <= $::configXML(nbSensor)} {incr index} {
     set ::sensor($index,value,2) "DEFCOM"   ;# Valeur de la deuxième donnée du capteur
     set ::sensor($index,value)   "DEFCOM"   ;# Assemblage des deux valeurs du capteurs
     set ::sensor($index,value,time) ""      ;# Heure de lecture de la donnée
-    set ::sensor($index,type) ""            ;# Type du capteur (SHT, DS18B20 ...)
+    set ::sensor($index,type)    ""         ;# Type du capteur (SHT, DS18B20 ...)
 }
 
 
@@ -124,6 +124,7 @@ proc readSensors {} {
     
         set module          $::configXML(sensor,$i,type)
         set indexModule     $::configXML(sensor,$i,index)
+        set nom             $::configXML(sensor,$i,nom)
         
         # On vient lire le capteur
         set value [::${module}::read $indexModule $i]
@@ -135,7 +136,7 @@ proc readSensors {} {
         } else {
             set ::sensor($i,value)      $value
             set ::sensor($i,value,1)    $value
-            set ::sensor($i,type)       $module
+            set ::sensor($i,type)       $nom
             set ::sensor($i,value,time) [clock milliseconds]
         }
     

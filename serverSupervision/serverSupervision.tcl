@@ -87,7 +87,9 @@ foreach confFileName [glob -nocomplain -directory [file dirname $confXML] *.xml]
         array unset process_xml
         
     } else {
-        ::piLog::log [clock milliseconds] "error" "Can not create supervision process : file - $confFileName - doesnot exists or it's conf.xml"
+        if {[file tail $confFileName] !=  "conf.xml"} {
+            ::piLog::log [clock milliseconds] "error" "Can not create supervision process : file - $confFileName - doesnot exists"
+        }
     }
 
 }
