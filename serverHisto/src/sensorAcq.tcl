@@ -9,7 +9,7 @@ namespace eval ::sensorAcq {
 proc ::sensorAcq::init {logPeriode} {
     variable periodeAcq 
 
-    for {set i 1} {$i < 7} {incr i} {
+    for {set i 1} {$i < 32} {incr i} {
         set ::sensor(${i},value,1) ""
         set ::sensor(${i},value,2) ""
         set ::sensor(${i},type) ""
@@ -30,7 +30,7 @@ proc ::sensorAcq::loop {} {
     # Le numéro du port est disponible
     # On lui demande les repères nécessaires (les 6 premiers) par abonnement
     set retErr 0
-    for {set i 1} {$i < 7} {incr i} {
+    for {set i 1} {$i < 32} {incr i} {
         incr retErr [::piServer::sendToServer $::piServer::portNumber(serverAcqSensor) "$::piServer::portNumber(serverHisto) [incr ::TrameIndex] subscription ${i},value $periodeAcq $bandeMorteAcq"]
         incr retErr [::piServer::sendToServer $::piServer::portNumber(serverAcqSensor) "$::piServer::portNumber(serverHisto) [incr ::TrameIndex] subscription ${i},type $periodeAcq"]
         
