@@ -107,11 +107,11 @@ set sensorTypeList [list SHT DS18B20 WATER_LEVEL PH EC OD ORP]
 for {set index 1} {$index <= $::configXML(nbSensor)} {incr index} {
 
     # On ajoute un repère pour factoriser par numéro de capteur
-    set ::sensor($index,value,1) ""     ;# Valeur de la premiere donnée du capteur
-    set ::sensor($index,value,2) ""     ;# Valeur de la deuxième donnée du capteur
-    set ::sensor($index,value) ""       ;# Assemblage des deux valeurs du capteurs
-    set ::sensor($index,value,time) ""  ;# Heure de lecture de la donnée
-    set ::sensor($index,type) ""        ;# Type du capteur (SHT, DS18B20 ...)
+    set ::sensor($index,value,1) "DEFCOM"   ;# Valeur de la premiere donnée du capteur
+    set ::sensor($index,value,2) "DEFCOM"   ;# Valeur de la deuxième donnée du capteur
+    set ::sensor($index,value)   "DEFCOM"   ;# Assemblage des deux valeurs du capteurs
+    set ::sensor($index,value,time) ""      ;# Heure de lecture de la donnée
+    set ::sensor($index,type) ""            ;# Type du capteur (SHT, DS18B20 ...)
 }
 
 

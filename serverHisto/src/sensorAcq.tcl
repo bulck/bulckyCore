@@ -37,6 +37,11 @@ proc ::sensorAcq::loop {} {
         # Les lignes suivantes marchent aussi !
         #::piServer::sendToServer $::piServer::portNumber(serverAcqSensor) "$::piServer::portNumber(serverHisto) [incr ::TrameIndex] getRepere ${i},value,1"
         #::piServer::sendToServer $::piServer::portNumber(serverAcqSensor) "$::piServer::portNumber(serverHisto) [incr ::TrameIndex] getRepere ${i},value,2"
+        
+        if {$retErr != 0} {
+            break
+        }
+        
     }
 
     if {$retErr == 0} {
@@ -92,6 +97,10 @@ proc ::sensorAcq::saveType {index type} {
         11 - 
         "pression" {
             set type "11"
+        }
+        12 - 
+        "humidite" {
+            set type "12"
         }
         "DEFCOM" {
             set toNotRegister 1

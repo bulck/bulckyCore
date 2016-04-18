@@ -99,7 +99,13 @@ proc messageGestion {message networkhost} {
                             if {$valeur1 == "DEFCOM"} {
                                 ::piLog::log [clock milliseconds] "debug" "_subscription response : save sensor value : DEFCOM so not saved - msg : $message"
                             } else {
-                                ::sql::AddSensorValue [lindex $splitted 1] $valeur1 $valeur2 $time
+                            
+                                # SI le dernier parametre n'est aps définit c'est qu'il n'y a qu'une seule valeur envoyée
+                                if {$time == ""} {
+                                    ::sql::AddSensorValue [lindex $splitted 1] $valeur1 "NA" $time
+                                } else {
+                                    ::sql::AddSensorValue [lindex $splitted 1] $valeur1 $valeur2 $time
+                                }
                             }
                             
                         } 
