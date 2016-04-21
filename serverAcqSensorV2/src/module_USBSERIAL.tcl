@@ -1,4 +1,10 @@
 
+# set fh [open //./COM23  RDWR]
+# fconfigure $fh -blocking 0 -mode 38400,n,8,1
+# puts $fh "i"
+# flush $fh 
+# read $fh
+# close $fh
 
 namespace eval ::USBSERIAL {
 

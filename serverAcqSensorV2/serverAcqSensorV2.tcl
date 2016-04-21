@@ -25,6 +25,7 @@ source [file join $rootDir ${::moduleLocalName} src module_I2C.tcl]
 source [file join $rootDir ${::moduleLocalName} src module_MCP230XX.tcl]
 source [file join $rootDir ${::moduleLocalName} src module_NETWORK.tcl]
 source [file join $rootDir ${::moduleLocalName} src module_USBSERIAL.tcl]
+source [file join $rootDir ${::moduleLocalName} src module_EC.tcl]
 
 # Initialisation d'un compteur pour les commandes externes envoyées
 set TrameIndex 0
