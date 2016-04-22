@@ -73,7 +73,7 @@ proc messageGestion {message networkhost} {
             }
             
             # On appel la proc
-            set ::plug($plugNumber,force,idAfterProc) [after [expr $time * 1000] unForcePlug $plugNumber]
+            set ::plug($plugNumber,force,idAfterProc) [after [expr int($time * 1000)] unForcePlug $plugNumber]
             
         }
         "setGetRepere" {
@@ -113,7 +113,7 @@ proc messageGestion {message networkhost} {
             }
             
             # On appel la proc
-            set ::plug($plugNumber,force,idAfterProc) [after [expr $time * 1000] unForcePlug $plugNumber]
+            set ::plug($plugNumber,force,idAfterProc) [after [expr int($time * 1000)] unForcePlug $plugNumber]
             
         }
         "subscriptionEvenement" {
