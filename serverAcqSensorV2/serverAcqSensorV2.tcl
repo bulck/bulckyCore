@@ -129,9 +129,9 @@ proc readSensors {} {
         
         # On vient lire le capteur
         set value [::${module}::read $indexModule $i]
-        
-        
-        if {$value == "NA"} {
+
+        if {$value == "OK"} {
+        } elseif {$value == "NA"} {
             set ::sensor($i,value)   ""
             set ::sensor($i,value,1) ""
         } else {

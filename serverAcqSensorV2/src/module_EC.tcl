@@ -1,10 +1,13 @@
 
 # set fh [open //./COM23  RDWR]
+# set fh [open /dev/ttyUSB0  RDWR]
 # fconfigure $fh -blocking 0 -mode 38400,n,8,1
-# puts $fh "i"
+# puts -nonewline $serial "i\r"
+# puts -nonewline $serial "r\r"
 # flush $fh 
 # read $fh
 # close $fh
+
 
 namespace eval ::EC {
 
@@ -14,6 +17,30 @@ namespace eval ::EC {
 proc ::EC::init {index} {
 
     # P,2 for a K1.0 E.C Sensor
+}
+
+proc ::EC::serial_receiver {chan sensorIdx} {
+    if { [eof $chan] } {
+        ::piLog::log [clock milliseconds] "error" "::EC::serial_receiver Fermeture port "
+        catch {close $chan}
+        return
+    }
+    set data [string trim [::read $chan]]
+    
+    ::piLog::log [clock milliseconds] "debug" "::EC::serial_receiver recu $data "
+    
+    # On parse le résultat
+    set result [split [string map {"?" ""} $data] ","]
+    set goodValue [lindex $result 0]
+    
+    if {[string is double $goodValue]} {
+        set ::sensor($sensorIdx,value)      $goodValue
+        set ::sensor($sensorIdx,value,1)    $goodValue
+        set ::sensor($sensorIdx,type)       $::configXML(sensor,$sensorIdx,nom)
+        set ::sensor($sensorIdx,value,time) [clock milliseconds]
+    }
+    
+    close $chan
 }
 
 proc ::EC::read {index sensor} {
@@ -35,42 +62,22 @@ proc ::EC::read {index sensor} {
     set err [catch {
         set fh [open $comPort RDWR]
         fconfigure $fh -blocking 0 -mode $speedComPort,n,8,1
+        fileevent $fh readable [list ::EC::serial_receiver $fh $sensor]
     } msg]
 
-    if {$RC != 0} {
+    if {$err != 0} {
         ::piLog::log [clock milliseconds] "error" "::EC::read Ouverture port $comPort $index erreur :$msg "
         return "NA"
     }
     
-    # Lecture de la valeur précédente
-    set err [catch {
-        set value [read $fh]
-    } msg]
-    if {$RC != 0} {
-        ::piLog::log [clock milliseconds] "error" "::EC::read Lecture valeure $comPort $index erreur :$msg "
-        return "NA"
-    }
-
     # demande de la prochaine la valeur
     set err [catch {
-        puts $fh "r"
-        flush $fh 
+        puts -nonewline $fh "r\r";flush $fh
     } msg]
-    if {$RC != 0} {
+    if {$err != 0} {
         ::piLog::log [clock milliseconds] "error" "::EC::read Envoie commande $comPort $index erreur :$msg "
         return "NA"
     }
     
-    close $fh
-
-    # On parse le résultat
-    set result [split [string map {"?" ""} $value] ","]
-    set goodValue [lindex $result 0]
-    
-    if {[string is double $goodValue]} {
-        return $goodValue
-    } else {
-        return "NA"
-    }
-
+    return "OK"
 }
