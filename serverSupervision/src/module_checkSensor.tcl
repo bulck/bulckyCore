@@ -32,8 +32,8 @@ proc checkSensor::start {arrayIn} {
     }
 
     # On prend un abonnement sur la donnée à monitorer
-    set ::sensor($XMLprocess($processID,sensor),value,$XMLprocess($processID,sensorOutput)) ""
-    checkSensor::takeAbonnement $XMLprocess($processID,sensor) $XMLprocess($processID,sensorOutput)
+    set ::sensor($XMLprocess($processID,sensor),value) ""
+    checkSensor::takeAbonnement $XMLprocess($processID,sensor)
 
     # On démarre la boucle de vérification
     set XMLprocess($processID,IDAfter) [after 1000 [list ::checkSensor::check $processID]]
@@ -41,12 +41,12 @@ proc checkSensor::start {arrayIn} {
     incr processID
 }
 
-proc checkSensor::takeAbonnement {sensor output} {
-    set retErr [::piServer::sendToServer $::piServer::portNumber(serverAcqSensor) "$::piServer::portNumber(serverSupervision) [incr ::TrameIndex] subscription ${sensor},value,${output} 2000"]
+proc checkSensor::takeAbonnement {sensor} {
+    set retErr [::piServer::sendToServer $::piServer::portNumber(serverAcqSensor) "$::piServer::portNumber(serverSupervision) [incr ::TrameIndex] subscription ${sensor},value 2000"]
 
     if {$retErr != 0} {
         ::piLog::log [clock milliseconds] "warning" "::checkSensor::start : subscription is not done"
-        after 1500 "checkSensor::takeAbonnement $sensor $output"
+        after 1500 "checkSensor::takeAbonnement $sensor"
     }
 
 }
@@ -66,11 +66,11 @@ proc checkSensor::stop {} {
 proc checkSensor::check {processID} {
     variable XMLprocess
    
-    set sensorValue $::sensor($XMLprocess($processID,sensor),value,$XMLprocess($processID,sensorOutput))
+    set sensorValue $::sensor($XMLprocess($processID,sensor),value)
     set noValue 0
    
     if {$sensorValue == "" || $sensorValue == "NULL" || $sensorValue == "DEFCOM" || $sensorValue == "NA" } {
-        ::piLog::log [clock milliseconds] "warning" "::checkSensor::check : No value for sensor ::sensor($XMLprocess($processID,sensor),value,$XMLprocess($processID,sensorOutput)) value : $sensorValue"
+        ::piLog::log [clock milliseconds] "warning" "::checkSensor::check : No value for sensor ::sensor($XMLprocess($processID,sensor),value) value : $sensorValue"
         
         set noValue 1
     }
@@ -94,7 +94,7 @@ proc checkSensor::check {processID} {
                 # Si on a pas envoyé déjà un message 
                 if {$XMLprocess($processID,messageSend) == 0} {
                     # Si on a pas envoyé déjà un message 
-                    ::piLog::log [clock milliseconds] "info" "checkSensor::check sensor value is too high, send mail (sensor : $XMLprocess($processID,sensor),value,$XMLprocess($processID,sensorOutput) , value $sensorValue , time $nbSecAlert)"
+                    ::piLog::log [clock milliseconds] "info" "checkSensor::check sensor value is too high, send mail (sensor : $XMLprocess($processID,sensor),value , value $sensorValue , time $nbSecAlert)"
                     
                     # On envoi une alerte
                     ::checkSensor::sendAlert $processID

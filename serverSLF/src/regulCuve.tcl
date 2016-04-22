@@ -69,8 +69,11 @@ proc cuveLoop {idxZone} {
                 
             } else {
             
-                ::piLog::log [clock milliseconds] "debug" "cuve : $zoneNom : niveau bon on remet le seuil a $::cuve(min) (hauteur : $hauteurCuve  / $::cuve(${idxZone},hauteurMini) ) "; update
-            
+                # On affiche le message qu'une seule fois
+                if {$::cuve(${idxZone},hauteurMini) != $::cuve(min)} {
+                    ::piLog::log [clock milliseconds] "info" "cuve : $zoneNom : niveau bon on remet le seuil a $::cuve(min) (hauteur : $hauteurCuve  / $::cuve(${idxZone},hauteurMini) ) "; update
+                }
+
                 # On réinitialise la hauteur mini 
                 set ::cuve(${idxZone},hauteurMini) $::cuve(min)
             }
