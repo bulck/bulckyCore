@@ -90,28 +90,30 @@ proc messageGestion {message networkhost} {
             # On cré la proc associée
             proc subscription${::SubscriptionIndex} {repere frequency SubscriptionIndex serverForResponse BandeMorteAcquisition networkhost} {
             
-                set reponse [::piTools::readArrayElem [array get ::sensor] "$repere" "DEFCOM"]
-
-                if {$reponse == ""} {
+                if {[info exists ::sensor($repere)] == 1} {
+                    set reponse $::sensor($repere)
+                } else {
                     set reponse "DEFCOM"
                 }
                 
+
                 set time [clock milliseconds]
                 if {[array name ::sensor -exact $repere,time] != ""} {
                     set time    $::sensor($repere,time)
                 }
             
+                set oldValue $::subscriptionVariable($SubscriptionIndex)
                 # On envoi la nouvelle valeur uniquement si la valeur a changée
-                if {$::subscriptionVariable($SubscriptionIndex) != $reponse} {
+                if {$oldValue != $reponse} {
                 
                     # Dans le cas d'un double, on vérifie la bande morte
                     if {[string is double $reponse] == 1} {
                         # Réponse doit être > à l'ancienne valeur + BMA ou < à l'ancienne valeur - BMA
-                        set oldValue $::subscriptionVariable($SubscriptionIndex)
+                        
                         if {[string is double $oldValue] != 1} {
                             set oldValue -100
                         }
-                        if {$reponse >= [expr $oldValue + $BandeMorteAcquisition] || $reponse <= [expr $oldValue - $BandeMorteAcquisition]} {
+                        if {$reponse >= [expr $oldValue + $BandeMorteAcquisition] || $reponse <= [expr $oldValue - $BandeMorteAcquisition] } {
                             ::piServer::sendToServer $serverForResponse "$serverForResponse [incr ::TrameIndex] _subscription ::sensor($repere) $reponse $time" $networkhost
                             set ::subscriptionVariable($SubscriptionIndex) $reponse
                         } else {

@@ -59,8 +59,8 @@ if {$RC != 0} {
 ::piLog::openLog $::piServer::portNumber(serverLog) ${::moduleLocalName} $configXML(verbose)
 
 ::piLog::log [clock milliseconds] "info" "starting ${::moduleLocalName} - PID : [pid]"
-::piLog::log [clock milliseconds] "info" "port ${::moduleLocalName} : $::piServer::portNumber(${::moduleLocalName})"
-::piLog::log [clock milliseconds] "info" "confXML : $confXML"
+::piLog::log [clock milliseconds] "debug" "port ${::moduleLocalName} : $::piServer::portNumber(${::moduleLocalName})"
+::piLog::log [clock milliseconds] "debug" "confXML : $confXML"
 # On affiche les infos dans le fichier de debug
 foreach element [array names configXML] {
     ::piLog::log [clock milliseconds] "debug" "$element : $configXML($element)"
@@ -76,12 +76,12 @@ proc bgerror {message} {
 
 
 # Load server
-::piLog::log [clock millisecond] "info" "starting serveur"
+::piLog::log [clock millisecond] "debug" "starting serveur"
 ::piServer::start messageGestion $::piServer::portNumber(${::moduleLocalName})
-::piLog::log [clock millisecond] "info" "serveur is started"
+::piLog::log [clock millisecond] "debug" "serveur is started"
 
 proc stopIt {} {
-    ::piLog::log [clock milliseconds] "info" "Start stopping ${::moduleLocalName}"
+    ::piLog::log [clock milliseconds] "debug" "Start stopping ${::moduleLocalName}"
     set ::forever 0
     ::piLog::log [clock milliseconds] "info" "End stopping ${::moduleLocalName}"
     
