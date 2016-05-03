@@ -89,8 +89,10 @@ proc messageGestion {message networkhost} {
             
             # On cré la proc associée
             proc subscription${::SubscriptionIndex} {repere frequency SubscriptionIndex serverForResponse BandeMorteAcquisition networkhost} {
-                set reponse $::sensor($repere)
-                if {$reponse == ""} {
+            
+                if {[info exists ::sensor($repere)] == 1} {
+                    set reponse $::sensor($repere)
+                } else {
                     set reponse "DEFCOM"
                 }
                 
