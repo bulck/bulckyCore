@@ -85,3 +85,36 @@ proc ::sql::AddSensorValue {sensor val1 val2 time} {
         ::piLog::log [clock milliseconds] "warning" "::sql::AddSensorValue : val1 $val1 and val2 $val2 are not correct"
     }
 }
+
+proc ::sql::saveSensorsValues {} {
+
+    set nbSensor 24
+    set formattedTime [clock format [clock seconds] -format "%Y-%m-%d %H:%M:%S"]
+
+    # On prépare la commande
+    set colName "INSERT INTO bpilogs (timestamp "
+    set colVals ") VALUES (\"${formattedTime}\" "
+    
+    set valueFind 0
+    for {set i 1} {$i <= $nbSensor} {incr i} {
+
+        if {$::sensor($i,value) != "" && $::sensor($i,value) != "DEFCOM"} {
+
+
+            set colName "${colName} , sensor$i"
+            set colVals "${colVals} , [format %4.f [expr $::sensor($i,value)]]"
+
+            set valueFind 1
+        } 
+    }
+    
+    set colVals "${colVals} )"
+    
+    if {$valueFind == 1} {
+        ::piLog::log [clock milliseconds] "debug" "::sql::saveSensorsValues : query : $colName $colVals ;"
+        ::sql::query "$colName $colVals ;"
+    } else {
+        ::piLog::log [clock milliseconds] "warning" "::sql::saveSensorsValues : pas de valeur a sauvegarder"
+    }
+    
+}

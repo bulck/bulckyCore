@@ -92,4 +92,5 @@ proc stopIt {} {
 
 vwait forever
 
-# tclsh "D:\CBX\06_bulckyCore\serverHisto\serverHisto.tcl" "D:\CBX\06_bulckyCore\serverHisto\confExample\conf.xml"
+# tclsh "D:\Perso\06_bulckyCore\serverHisto\serverHisto.tcl" "D:\Perso\06_bulckyCore\serverHisto\confExample\conf.xml"
+# tclsh /opt/bulckypi/serverHisto/serverHisto.tcl /etc/bulckypi/01_defaultConf_RPi/./serverHisto/
