@@ -100,7 +100,6 @@ proc ::sql::saveSensorsValues {} {
 
         if {$::sensor($i,value) != "" && $::sensor($i,value) != "DEFCOM"} {
 
-
             set colName "${colName} , sensor$i"
             set colVals "${colVals} , [format %.2f $::sensor($i,value)]"
 

@@ -88,7 +88,7 @@ proc irrigationLoop {idxZone indexPlateforme indexLigneIrrigation} {
     set plateformeNom       $::configXML(zone,$idxZone,plateforme,${indexPlateforme},name)
     set IP                  $::configXML(zone,$idxZone,plateforme,${indexPlateforme},ip)
     set plateformeNbLigne   $::configXML(zone,$idxZone,plateforme,${indexPlateforme},nbligne)
-    set tempscycle          $::configXML(zone,$idxZone,plateforme,${indexPlateforme},tempscycle)
+    set tempscycle          [expr round($::configXML(zone,$idxZone,plateforme,${indexPlateforme},tempscycle) / $plateformeNbLigne)]
     set Pompe               $::configXML(zone,$idxZone,plateforme,${indexPlateforme},pompe,prise)
     set EVEau               $::configXML(zone,$idxZone,plateforme,${indexPlateforme},eauclaire,prise)
     
@@ -148,6 +148,7 @@ proc irrigationLoop {idxZone indexPlateforme indexLigneIrrigation} {
     # - Nettoyage (Et que le nettoyage est activé)
     # - Irrigation
     # On allume l'électrovanne 1 pour 2min30 secondes
+    set tempsToRemove 0
     if {$active == "false"} {
         ::piLog::log [clock milliseconds] "info" "irrigation : $plateformeNom : Ligne $indexLigneIrrigation : désactivée web"; update
     } elseif {$TempsOnEV < 1} {
@@ -178,7 +179,8 @@ proc irrigationLoop {idxZone indexPlateforme indexLigneIrrigation} {
 
         
         # Dans X secondes, on indique que la Ligne n'est plus pilotée
-        after [expr $tempscycle * 1000] [list ::piLog::log [expr [clock milliseconds] + $tempscycle * 1000] "info" "nettoyage : $plateformeNom : ligne $indexLigneIrrigation : Fin Nettoyage"]
+        set tempsToRemove $TempsOnEV
+        after [expr ($tempscycle - $tempsToRemove) * 1000] [list ::piLog::log [expr [clock milliseconds] + $tempscycle * 1000] "info" "nettoyage : $plateformeNom : ligne $indexLigneIrrigation : Fin Nettoyage"]
         
     } else {
         ::piLog::log [clock milliseconds] "info" "irrigation : $plateformeNom : ligne $indexLigneIrrigation : ON EV pendant [expr $TempsOnEV + 1] s ($JourOuNuit)"; update
@@ -189,13 +191,17 @@ proc irrigationLoop {idxZone indexPlateforme indexLigneIrrigation} {
         ::piServer::sendToServer $::piServer::portNumber(serverPlugUpdate) "$::piServer::portNumber(${::moduleLocalName}) 0 setRepere $Pompe on $TempsOnEV" $IP
 
         # Dans X secondes, on indique que la Ligne n'est plus pilotée
-        after [expr $tempscycle * 1000] [list ::piLog::log [expr [clock milliseconds] + $tempscycle * 1000] "info" "irrigation : $plateformeNom : ligne $indexLigneIrrigation : Fin Irrigation"]
+        set tempsToRemove $TempsOnEV
+        after [expr ($tempscycle - $tempsToRemove) * 1000] [list ::piLog::log [expr [clock milliseconds] + $tempscycle * 1000] "info" "irrigation : $plateformeNom : ligne $indexLigneIrrigation : Fin Irrigation"]
     }
 
     incr indexLigneIrrigation
 
     # On lance l'iteration suivante 
-    set ::etatLDV(irrigationLoop) [after [expr 1000 * $tempscycle] [list after idle irrigationLoop $idxZone $indexPlateforme $indexLigneIrrigation]]
+    if ([expr ($tempscycle - $tempsToRemove) * 1000 ] < 100) {
+         ::piLog::log [clock milliseconds] "warning" "irrigation : $plateformeNom : ligne $indexLigneIrrigation : Temps de repos trop court"
+    }
+    set ::etatLDV(irrigationLoop) [after [expr ($tempscycle - tempsToRemove) * 1000 ] [list after idle irrigationLoop $idxZone $indexPlateforme $indexLigneIrrigation]]
 }
 
 
