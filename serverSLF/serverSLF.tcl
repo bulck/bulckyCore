@@ -198,10 +198,10 @@ proc irrigationLoop {idxZone indexPlateforme indexLigneIrrigation} {
     incr indexLigneIrrigation
 
     # On lance l'iteration suivante 
-    if ([expr ($tempscycle - $tempsToRemove) * 1000 ] < 100) {
+    if {[expr ($tempscycle - $tempsToRemove) * 1000 ] < 100} {
          ::piLog::log [clock milliseconds] "warning" "irrigation : $plateformeNom : ligne $indexLigneIrrigation : Temps de repos trop court"
     }
-    set ::etatLDV(irrigationLoop) [after [expr ($tempscycle - tempsToRemove) * 1000 ] [list after idle irrigationLoop $idxZone $indexPlateforme $indexLigneIrrigation]]
+    set ::etatLDV(irrigationLoop) [after [expr ($tempscycle - $tempsToRemove) * 1000 ] [list after idle irrigationLoop $idxZone $indexPlateforme $indexLigneIrrigation]]
 }
 
 
@@ -241,4 +241,4 @@ vwait forever
 # tclsh "D:\CBX\06_bulckyCore\serverSLF\serverSLF.tcl" "D:\CBX\06_bulckyCore\_conf\00_defaultConf_Win\serverSLF\conf.xml" 
 # tclsh "D:\CBX\06_bulckyCore\serverSLF\serverSLF.tcl" "D:\CBX\06_bulckyCore\serverSLF\confExample\conf.xml" 
 # tclsh /home/sdf/Bureau/cultipiCore/serverSLF/serverSLF.tcl "/home/sdf/Bureau/cultipiCore/serverSLF/confExample/conf.xml" 
-# tclsh /opt/cultipi/serverSLF/serverSLF.tcl /etc/cultipi/01_defaultConf_RPi/serverSLF/conf.xml
+# tclsh /opt/bulckypi/serverSLF/serverSLF.tcl /etc/bulckypi/01_defaultConf_RPi/serverSLF/conf.xml
