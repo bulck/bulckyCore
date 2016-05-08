@@ -52,8 +52,8 @@ proc ::sensorAcq::loop {} {
             # On calcul le temps pour relancer la commande la minute d'après
             set seconds [string trimleft [clock format [clock seconds] -format "%S"] "0"]
             if {$seconds == ""} {set seconds 0}
-            ::piLog::log [clock milliseconds] "debug" "::sensorAcq::loop : Premiere sauvegarde dans [expr (61 - $seconds)] secondes"
-            after [expr (61 - $seconds) * 1000] ::sensorAcq::loop
+            ::piLog::log [clock milliseconds] "debug" "::sensorAcq::loop : Premiere sauvegarde dans [expr (60 - $seconds)] secondes"
+            after [expr (60 - $seconds) * 1000 + 100] ::sensorAcq::loop
             return 0
             
         } else {
@@ -74,9 +74,9 @@ proc ::sensorAcq::loop {} {
         set seconds [string trimleft [clock format [clock seconds] -format "%S"] "0"]
         if {$seconds == ""} {set seconds 0}
         
-        ::piLog::log [clock milliseconds] "debug" "::sensorAcq::loop : Prochaine sauvegarde dans [expr (61 - $seconds)] secondes"
+        ::piLog::log [clock milliseconds] "debug" "::sensorAcq::loop : Prochaine sauvegarde dans [expr (60 - $seconds)] secondes"
         
-        after [expr (61 - $seconds) * 1000] ::sensorAcq::loop
+        after [expr (60 - $seconds) * 1000 + 100] ::sensorAcq::loop
         
         
     }

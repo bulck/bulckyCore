@@ -102,7 +102,7 @@ proc ::sql::saveSensorsValues {} {
 
 
             set colName "${colName} , sensor$i"
-            set colVals "${colVals} , [format %4.f [expr 100 * $::sensor($i,value)]]"
+            set colVals "${colVals} , [format %.2f $::sensor($i,value)]"
 
             set valueFind 1
         } 
