@@ -11,7 +11,7 @@ proc init_cuveLoop {idxZone} {
     set ::cuve(${idxZone},hauteurMini) $::cuve(min)
     
     # On désactive le pilotage des pompes la première heure
-    set heure  [expr [clock format [clock seconds] -format "%H"] + 0]
+    set heure  [clock format [clock seconds] -format "%H"]
     set heure  [string trimleft $heure "0"]
     if {$heure == ""} {set heure 0}
     set ::cuve(${idxZone},engraisappliquee) $heure
@@ -87,7 +87,7 @@ proc cuveLoop {idxZone} {
 
     #---------------  Aplication des engrais
     # Au début de chaque heure, on charge en engrais
-    set heure  [expr [clock format [clock seconds] -format "%H"] + 0]
+    set heure  [clock format [clock seconds] -format "%H"]
     set heure  [string trimleft $heure "0"]
     if {$heure == ""} {set heure 0}
 
