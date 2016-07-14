@@ -1,0 +1,4 @@
+#!/bin/bash
+wget http://10.5.5.9/gp/gpControl/command/mode?p=1 -O -
+wget http://10.5.5.9/gp/gpControl/command/shutter?p=1 -O -
+exit 0

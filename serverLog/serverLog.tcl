@@ -202,4 +202,4 @@ vwait forever
 
 # tclsh "C:\cultibox\04_CultiPi\01_Software\01_cultiPi\serverLog\serverLog.tcl" 6000 "C:\cultibox\04_CultiPi"
 # tclsh D:\CBX\06_bulckyCore\serverLog\serverLog.tcl
-# tclsh /opt/bulckypi/serverLog/serverLog.tcl 
+# tclsh /opt/bulckypi/serverLog/serverLog.tcl "/etc/bulckypi/01_defaultConf_RPi/./serverLog/conf.xml"
