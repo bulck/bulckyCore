@@ -143,4 +143,4 @@ emeteur_subscriptionEvenement
 vwait forever
 
 # tclsh "D:\CBX\06_bulckyCore\serverPlugUpdate\serverPlugUpdate.tcl" "D:\CBX\06_bulckyCore\serverPlugUpdate\confExample\conf.xml"
-# tclsh /opt/cultipi/serverPlugUpdate/serverPlugUpdate.tcl /etc/cultipi/01_defaultConf_RPi/./serverPlugUpdate/conf.xml
+# tclsh /opt/bulckypi/serverPlugUpdate/serverPlugUpdate.tcl /etc/bulckypi/01_defaultConf_RPi/./serverPlugUpdate/conf.xml

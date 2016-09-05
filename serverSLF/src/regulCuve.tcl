@@ -32,7 +32,8 @@ proc cuveLoop {idxZone} {
     
     set IPsurpresseur       $::configXML(surpresseur,ip)
     set Prisesurpresseur    $::configXML(surpresseur,prise)
-    set surpresseurActif    [::piTools::readArrayElem [array get ::configXML] "surpresseur,actif" "false"]
+    # set surpresseurActif    [::piTools::readArrayElem [array get ::configXML] "surpresseur,actif" "false"]
+    set surpresseurActif    "false"
     
     set priseremplissagecuve $::configXML(zone,${idxZone},prise,remplissagecuve)
     set remplissageActif    [::piTools::readArrayElem [array get ::configXML] "zone,${idxZone},remplissage,actif" "true"]

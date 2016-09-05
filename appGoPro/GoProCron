@@ -1,4 +1,18 @@
 #!/bin/bash
+
+/bin/ping -c 1 10.5.5.9 >/dev/null 2>&1
+if [ $? -ne 0 ]; then
+    /sbin/ifdown wlan0
+    sleep 10
+    /sbin/ifup wlan0
+    sleep 10
+fi
+
 wget http://10.5.5.9/gp/gpControl/command/mode?p=1 -O -
+
+sleep 2
+
 wget http://10.5.5.9/gp/gpControl/command/shutter?p=1 -O -
+
+
 exit 0
