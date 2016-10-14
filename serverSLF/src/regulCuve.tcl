@@ -73,6 +73,9 @@ proc cuveLoop {idxZone} {
                 # On affiche le message qu'une seule fois
                 if {$::cuve(${idxZone},hauteurMini) != $::cuve(min)} {
                     ::piLog::log [clock milliseconds] "info" "cuve : $zoneNom : niveau bon on remet le seuil a $::cuve(min) (hauteur : $hauteurCuve  / $::cuve(${idxZone},hauteurMini) ) "; update
+                    ::piServer::sendToServer $::piServer::portNumber(serverPlugUpdate) "$::piServer::portNumber(${::moduleLocalName}) 0 setRepere $priseremplissagecuve off 31" $IP
+                } else {
+                    ::piLog::log [clock milliseconds] "debug" "cuve : $zoneNom : niveau OK"; update
                 }
 
                 # On réinitialise la hauteur mini 

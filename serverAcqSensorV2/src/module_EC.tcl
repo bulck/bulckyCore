@@ -2,8 +2,8 @@
 # set fh [open //./COM23  RDWR]
 # set fh [open /dev/ttyUSB0  RDWR]
 # fconfigure $fh -blocking 0 -mode 38400,n,8,1
-# puts -nonewline $serial "i\r"
-# puts -nonewline $serial "r\r"
+# puts -nonewline $fh "i\r"
+# puts -nonewline $fh "r\r"
 # flush $fh 
 # read $fh
 # close $fh
@@ -25,6 +25,7 @@ proc ::EC::serial_receiver {chan sensorIdx} {
         catch {close $chan}
         return
     }
+    after 200
     set data [string trim [::read $chan]]
     
     ::piLog::log [clock milliseconds] "debug" "::EC::serial_receiver recu $data "

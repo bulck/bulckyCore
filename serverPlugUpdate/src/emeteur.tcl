@@ -253,7 +253,7 @@ proc updatePlug {plugNumber} {
         
     } elseif {$plgPrgm == ""} {
     
-        ::piLog::log [clock milliseconds] "error" "Plug $plugNumber programme is empty, on passe la prise a 0"
+        ::piLog::log [clock milliseconds] "error" "Plug $plugNumber programme is empty, on passe la prise a off"
         
         # On envoi la commande au module
         set statusError [::${module}::setValue $plugNumber "off" $::plug($plugNumber,adress)]
