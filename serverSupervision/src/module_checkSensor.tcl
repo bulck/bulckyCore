@@ -214,6 +214,16 @@ proc checkSensor::sendAlert {processID} {
 
     # On calcul les données a mettre dans le mail 
     set nbSecAlert [expr [clock seconds] - $XMLprocess($processID,startAlertInS)]
+    
+    # On formate la donnée pour être lisible
+    if {[expr $nbSecAlert / 3600] > 0} {
+        set nbSecAlert "[expr $nbSecAlert / 3600] heure(s)"
+    } elseif {[expr $nbSecAlert / 60] > 0} {
+        set nbSecAlert "[expr $nbSecAlert / 60] minutes"
+    } else {
+        set nbSecAlert "$nbSecAlert secondes"
+    }
+    
     set seuil $XMLprocess($processID,valueSeuil)
     set capteur $XMLprocess($processID,sensor)
     
@@ -227,20 +237,20 @@ proc checkSensor::sendAlert {processID} {
     }
 
     if {$XMLprocess($processID,alertIf) == "up"} {
-        set msgAlert "La valeur du capteur $capteur $sensorName est supérieure au seuil de $seuil depuis $nbSecAlert secondes."
+        set msgAlert "La valeur du capteur $sensorName est supérieure au seuil de $seuil depuis $nbSecAlert."
     } elseif {$XMLprocess($processID,alertIf) == "down"} {
-        set msgAlert "La valeur du capteur $capteur $sensorName est inférieure au seuil de $seuil depuis $nbSecAlert secondes."
+        set msgAlert "La valeur du capteur $sensorName est inférieure au seuil de $seuil depuis $nbSecAlert."
     } else {
-        set msgAlert "La valeur du capteur en défaut de communication depuis $nbSecAlert secondes."
+        set msgAlert "La valeur du capteur en défaut de communication depuis $nbSecAlert."
     }
     
     set message "Alerte générée le [clock format [clock seconds] -format "%Y/%m/%d %H:%M:%S"] : "
     
     set message "${message}\\n${msgAlert}"
     
-    set message "${message}\\nVous recevrez un nouvel eMail lorsque tout sera rentré dans l'ordre"
+    set message "${message}\\n\\nVous recevrez un nouvel eMail lorsque tout sera rentré dans l'ordre."
     
-    set message "${message}\\nMessage envoyé automatiquement"
+    set message "${message}\\n\\nMessage envoyé automatiquement."
     
     # On envoi le message
     ::piServer::sendToServer $::piServer::portNumber(serverMail) "$::piServer::portNumber(serverSupervision) [incr ::TrameIndex] sendMail $XMLprocess($processID,eMail) \"${title}\" \"${message}\""
@@ -266,7 +276,7 @@ proc checkSensor::sendRetToNormal {processID} {
     
     set message "${message}\\nLa valeur du capteur $capteur $sensorName est redevenue normale."
 
-    set message "${message}\\nMessage envoyé automatiquement"
+    set message "${message}\\nMessage envoyé automatiquement."
     
     # On envoi le message
     ::piServer::sendToServer $::piServer::portNumber(serverMail) "$::piServer::portNumber(serverSupervision) [incr ::TrameIndex] sendMail $XMLprocess($processID,eMail) \"${title}\" \"${message}\""
