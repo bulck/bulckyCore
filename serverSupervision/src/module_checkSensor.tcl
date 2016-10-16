@@ -246,7 +246,7 @@ proc checkSensor::sendAlert {processID} {
     
     set message "Alerte générée le [clock format [clock seconds] -format "%Y/%m/%d %H:%M:%S"] : "
     
-    set message "${message}\\n${msgAlert}"
+    set message "${message}\\n\\n${msgAlert}"
     
     set message "${message}\\n\\nVous recevrez un nouvel eMail lorsque tout sera rentré dans l'ordre."
     
@@ -274,9 +274,9 @@ proc checkSensor::sendRetToNormal {processID} {
     
     set message "Retour à la normal généré le [clock format [clock seconds] -format "%Y/%m/%d %H:%M:%S"] : "
     
-    set message "${message}\\nLa valeur du capteur $capteur $sensorName est redevenue normale."
+    set message "${message}\\n\\nLa valeur du capteur $sensorName est redevenue normale."
 
-    set message "${message}\\nMessage envoyé automatiquement."
+    set message "${message}\\n\\nMessage envoyé automatiquement."
     
     # On envoi le message
     ::piServer::sendToServer $::piServer::portNumber(serverMail) "$::piServer::portNumber(serverSupervision) [incr ::TrameIndex] sendMail $XMLprocess($processID,eMail) \"${title}\" \"${message}\""
