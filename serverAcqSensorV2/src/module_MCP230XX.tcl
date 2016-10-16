@@ -115,6 +115,9 @@ proc ::MCP230XX::read {index sensor} {
                 # Registre
                 if {[expr $registerVal & 1 << ($input - 1)] == 0} {
                     set value [expr $value + $incrValue] 
+                } else {
+                    # Si la valeur est nulle, on n'essaye pas d'incrémenter
+                    break
                 }
 
             }
