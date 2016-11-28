@@ -34,7 +34,8 @@ proc ::EC::serial_receiver {chan sensorIdx} {
     set result [split [string map {"?" ""} $data] ","]
     set goodValue [lindex $result 0]
     
-    if {[string is double $goodValue]} {
+    if {[string is double $goodValue] && $goodValue != 0 && $goodValue < 1000} {
+        set goodValue [expr round($goodValue)]
         set ::sensor($sensorIdx,value)      $goodValue
         set ::sensor($sensorIdx,value,1)    $goodValue
         set ::sensor($sensorIdx,type)       $::configXML(sensor,$sensorIdx,nom)

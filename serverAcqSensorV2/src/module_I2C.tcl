@@ -100,7 +100,7 @@ proc ::I2C::read {index sensor} {
     
     # Seulement si la valeur est cohérente
     if {$computedValue < 100 && $computedValue > -30} {
-        set value $computedValue
+        set value [format "%.1f" $computedValue]
     } else {
         ::piLog::log [clock milliseconds] "error" "::I2C::read index $index : La valeur n'est pas cohérente $computedValue"
     }
