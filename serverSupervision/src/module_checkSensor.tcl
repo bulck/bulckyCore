@@ -20,6 +20,7 @@ proc checkSensor::start {arrayIn} {
         $processID,alertIf       "up" \
         $processID,startAlertInS 0 \
         $processID,messageSend   0 \
+        $processID,hostnameValue [exec hostname] \
     ]
     
     for {set i 0} {$i < [llength $arrayIn]} {incr i 2} {
@@ -227,8 +228,7 @@ proc checkSensor::sendAlert {processID} {
     set seuil $XMLprocess($processID,valueSeuil)
     set capteur $XMLprocess($processID,sensor)
     
-    set hostnameValue [exec hostname]
-    set title "$hostnameValue : Alerte"
+    set title "$XMLprocess($processID,hostnameValue) : Alerte"
     
     # SI le nom du capteur est définit , on l'ajoute dans le message 
     set sensorName ""
@@ -239,12 +239,16 @@ proc checkSensor::sendAlert {processID} {
     if {$XMLprocess($processID,alertIf) == "up"} {
         set msgAlert "La valeur du capteur $sensorName est supérieure au seuil de $seuil depuis $nbSecAlert."
     } elseif {$XMLprocess($processID,alertIf) == "down"} {
-        set msgAlert "La valeur du capteur $sensorName est inférieure au seuil de $seuil depuis $nbSecAlert."
+        if {[string match -nocase "*pression*" $sensorName]} {
+            set msgAlert "Vérifier l'irrigation. Il y a un problème sur $sensorName. \\n Nettoyer les filtres noirs et la cuve.  \\n (Capteur : $sensorName , en alerte depuis  $nbSecAlert)."
+        } else {
+            set msgAlert "La valeur du capteur $sensorName est inférieure au seuil de $seuil depuis $nbSecAlert."
+        }
     } else {
         set msgAlert "La valeur du capteur en défaut de communication depuis $nbSecAlert."
     }
     
-    set message "Alerte générée le [clock format [clock seconds] -format "%Y/%m/%d %H:%M:%S"] : "
+    set message "Alerte le [clock format [clock seconds] -format "%Y/%m/%d %H:%M:%S"] : "
     
     set message "${message}\\n\\n${msgAlert}"
     
@@ -263,8 +267,7 @@ proc checkSensor::sendRetToNormal {processID} {
     set seuil $XMLprocess($processID,valueSeuil)
     set capteur $XMLprocess($processID,sensor)
 
-    set hostnameValue [exec hostname]
-    set title "$hostnameValue : Alerte"
+    set title "$XMLprocess($processID,hostnameValue) : Alerte"
     
     # Si le nom du capteur est définit , on l'ajoute dans le message 
     set sensorName ""
@@ -274,7 +277,13 @@ proc checkSensor::sendRetToNormal {processID} {
     
     set message "Retour à la normal généré le [clock format [clock seconds] -format "%Y/%m/%d %H:%M:%S"] : "
     
-    set message "${message}\\n\\nLa valeur du capteur $sensorName est redevenue normale."
+    if {[string match -nocase "*pression*" $sensorName]} {
+        set msgAlert "${message}\\n\\nL'irrgation est de retour à la normale suite au problème sur $sensorName."
+    } else {
+         set message "${message}\\n\\nLa valeur du capteur $sensorName est redevenue normale."
+    }
+    
+   
 
     set message "${message}\\n\\nMessage envoyé automatiquement."
     
