@@ -240,7 +240,7 @@ proc checkSensor::sendAlert {processID} {
         set msgAlert "La valeur du capteur $sensorName est supérieure au seuil de $seuil depuis $nbSecAlert."
     } elseif {$XMLprocess($processID,alertIf) == "down"} {
         if {[string match -nocase "*pression*" $sensorName]} {
-            set msgAlert "Vérifier l'irrigation. Il y a un problème sur $sensorName. \\n Nettoyer les filtres noirs et la cuve.  \\n (Capteur : $sensorName , en alerte depuis  $nbSecAlert)."
+            set msgAlert "Vérifier l'irrigation : il y a un problème sur $sensorName.\\n - Nettoyer les filtres noirs\\n - Nettoyer la cuve.\\n\\n (Capteur : $sensorName , en alerte depuis  $nbSecAlert)."
         } else {
             set msgAlert "La valeur du capteur $sensorName est inférieure au seuil de $seuil depuis $nbSecAlert."
         }
