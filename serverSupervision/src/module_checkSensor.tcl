@@ -278,7 +278,7 @@ proc checkSensor::sendRetToNormal {processID} {
     set message "Retour à la normal généré le [clock format [clock seconds] -format "%Y/%m/%d %H:%M:%S"] : "
     
     if {[string match -nocase "*pression*" $sensorName]} {
-        set msgAlert "${message}\\n\\nL'irrgation est de retour à la normale suite au problème sur $sensorName."
+        set msgAlert "${message}\\n\\nIrrigation de retour à la normale suite au problème sur $sensorName."
     } else {
          set message "${message}\\n\\nLa valeur du capteur $sensorName est redevenue normale."
     }
